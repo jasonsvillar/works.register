@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-sequence-client_id" author="jason-villar">
+        <createSequence sequenceName="client_id_seq" cycle="false" minValue="1" maxValue="9223372036854775807"
+                        startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="create-table-client" author="jason-villar">
+        <createTable tableName="client">
+            <column name="id" type="bigint" defaultValueComputed="nextval('client_id_seq')">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="surname" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="dni" type="varchar(255)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

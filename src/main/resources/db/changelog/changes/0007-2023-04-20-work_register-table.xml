@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-sequence-work_register_id" author="jason-villar">
+        <createSequence sequenceName="work_register_id_seq" cycle="false" minValue="1" maxValue="9223372036854775807"
+                        startValue="1" incrementBy="1"/>
+    </changeSet>
+
+    <changeSet id="create-table-work_register" author="jason-villar">
+        <createTable tableName="work_register">
+            <column name="id" type="bigint" defaultValueComputed="nextval('work_register_id_seq')">
+                <constraints nullable="false" unique="true" primaryKey="true"/>
+            </column>
+            <column name="user_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="title" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_from" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_from" type="time">
+                <constraints nullable="false"/>
+            </column>
+            <column name="date_to" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="time_to" type="time">
+                <constraints nullable="false"/>
+            </column>
+            <column name="payment" type="decimal">
+                <constraints nullable="false"/>
+            </column>
+            <column name="service_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="client_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-client_id">
+        <addForeignKeyConstraint  baseColumnNames="client_id"
+                                  baseTableName="work_register"
+                                  constraintName="fk_work_register_client_client_id"
+                                  referencedColumnNames="id"
+                                  referencedTableName="client"/>
+    </changeSet>
+
+    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-service_id">
+        <addForeignKeyConstraint  baseColumnNames="service_id"
+                                  baseTableName="work_register"
+                                  constraintName="fk_work_register_service_service_id"
+                                  referencedColumnNames="id"
+                                  referencedTableName="service"/>
+    </changeSet>
+</databaseChangeLog>
