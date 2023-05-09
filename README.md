@@ -11,10 +11,13 @@ Api Rest made with:
 - Swagger 3.
 - Testing with JUnit 5, Mockito and TestContainer.
 - Code Review with SonarQube.
+- Spring Security with Basic Authentication.
 
 ## To do
 
-- Implement Spring Security with Basic Authentication, OAuth and JWT.
+- ~~Implement Spring Security with Basic Authentication.~~
+- Implement Spring Security with OAuth.
+- Implement Spring Security with JWT.
 - Develop Frontend using Angular 15 or 16.
 - Rewrite unit tests using BDD.
 - Use kubernetes to run all the project.
