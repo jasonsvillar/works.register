@@ -20,6 +20,7 @@ public class UserMapper implements Function<User, UserDTO> {
         return User.builder()
                 .name(userRequest.name())
                 .email(userRequest.email())
+                .password(userRequest.password())
                 .build();
     }
 }

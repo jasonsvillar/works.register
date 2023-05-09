@@ -10,6 +10,10 @@ public record UserRequest(
 
         @NotNull
         @NotBlank
-        String email
+        String email,
+
+        @NotNull
+        @NotBlank
+        String password
 ) {
 }
