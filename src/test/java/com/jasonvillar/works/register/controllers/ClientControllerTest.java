@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -136,13 +137,17 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isCreated());
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("dni must be unique");
 
         this.mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isBadRequest());
     }
 
@@ -154,7 +159,9 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post("/clients").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isBadRequest());
     }
 }

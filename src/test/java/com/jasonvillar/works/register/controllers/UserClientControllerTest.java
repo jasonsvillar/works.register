@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -121,13 +122,17 @@ class UserClientControllerTest extends ControllerTestTemplate {
         Mockito.when(clientService.getById(1)).thenReturn(clientEntity);
 
         this.mockMvc.perform(post("/users-clients").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isCreated());
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(UserClient.class))).thenReturn("userId must exist");
 
         this.mockMvc.perform(post("/users-clients").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isBadRequest());
     }
 }

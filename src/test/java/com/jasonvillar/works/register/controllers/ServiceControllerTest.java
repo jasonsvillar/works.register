@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -89,13 +90,17 @@ class ServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.save(Mockito.any(Service.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isCreated());
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("name must be unique");
 
         this.mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson))
+                        .content(requestJson)
+                        .with(csrf())
+                )
                 .andExpect(status().isBadRequest());
     }
 }
