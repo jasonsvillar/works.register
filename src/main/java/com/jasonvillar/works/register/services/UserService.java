@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.services;
 import com.jasonvillar.works.register.entities.User;
 import com.jasonvillar.works.register.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,7 +75,13 @@ public class UserService {
         return message.toString();
     }
 
+    public String plainPasswordToBcrypt(String password) {
+        return new BCryptPasswordEncoder().encode(password);
+    }
+
     public User save(User user) {
+        String password = this.plainPasswordToBcrypt(user.getPassword());
+        user.setPassword(password);
         return this.userRepository.save(user);
     }
 }
