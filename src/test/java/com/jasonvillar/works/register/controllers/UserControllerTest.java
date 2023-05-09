@@ -28,9 +28,10 @@ class UserControllerTest extends ControllerTestTemplate {
     private final User entity = User.builder()
             .name("Name")
             .email("test@test.com")
+            .password("top-secret-encrypted-password")
             .build();
 
-    private final UserRequest request = new UserRequest("Name", "test@test.com");
+    private final UserRequest request = new UserRequest("Name", "test@test.com", "pass");
 
     @BeforeEach
     public void setup() {

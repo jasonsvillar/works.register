@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ class UserServiceTest {
     private User entity = User.builder()
             .name("Name")
             .email("test@test.com")
+            .password("top-secret-encrypted-password")
             .build();
 
     @BeforeEach
@@ -37,6 +39,7 @@ class UserServiceTest {
         User newEntity = User.builder()
                 .name("Name")
                 .email("test@test.com")
+                .password("top-secret-encrypted-password")
                 .build();
         Mockito.when(repository.save(newEntity)).thenReturn(entity);
 
@@ -177,5 +180,17 @@ class UserServiceTest {
 
         exist = service.isExistEmail("Nonexistent email");
         Assertions.assertThat(exist).isFalse();
+    }
+
+    @Test
+    void givenPlainPassword_whenSaveUser_thenEncodeBcrypt() {
+        String topSecretPassword = "top-secret-password";
+        String encrypted = this.service.plainPasswordToBcrypt(topSecretPassword);
+
+        boolean ok = BCrypt.checkpw("Incorrect password", encrypted);
+        Assertions.assertThat(ok).isFalse();
+
+        ok = BCrypt.checkpw(topSecretPassword, encrypted);
+        Assertions.assertThat(ok).isTrue();
     }
 }

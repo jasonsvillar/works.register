@@ -6,6 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -27,9 +28,12 @@ class UserRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenUser_WhenSave_thenCheckIfNotNull() {
+        String password = new BCryptPasswordEncoder().encode("yo");
+
         User user = User.builder()
                 .name("test")
                 .email("test@test.com")
+                .password(password)
                 .build();
 
         User userSaved = userRepository.save(user);
