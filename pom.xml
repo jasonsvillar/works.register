@@ -62,7 +62,6 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 			<version>6.0.3</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
@@ -109,11 +108,15 @@
 			<artifactId>jackson-datatype-jsr310</artifactId>
 			<version>2.15.0</version>
 		</dependency>
-
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 			<version>3.0.6</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.ulisesbocchio</groupId>
+			<artifactId>jasypt-spring-boot-starter</artifactId>
+			<version>3.0.5</version>
 		</dependency>
 	</dependencies>
 	<dependencyManagement>
@@ -161,6 +164,11 @@
 						</goals>
 					</execution>
 				</executions>
+			</plugin>
+			<plugin>
+				<groupId>com.github.ulisesbocchio</groupId>
+				<artifactId>jasypt-maven-plugin</artifactId>
+				<version>3.0.5</version>
 			</plugin>
 		</plugins>
 	</build>
