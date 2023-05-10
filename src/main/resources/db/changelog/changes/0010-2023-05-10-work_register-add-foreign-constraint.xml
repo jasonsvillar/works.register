@@ -6,11 +6,11 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-user_id">
-        <addForeignKeyConstraint  baseColumnNames="user_id"
-                                  baseTableName="work_register"
-                                  constraintName="fk_work_register_user_user_id"
-                                  referencedColumnNames="id"
-                                  referencedTableName="user"/>
+    <changeSet author="jason-villar" id="addForeignKeyConstraint-user_id">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="work_register"
+                                 constraintName="fk_work_register_user_user_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="user"/>
     </changeSet>
 </databaseChangeLog>

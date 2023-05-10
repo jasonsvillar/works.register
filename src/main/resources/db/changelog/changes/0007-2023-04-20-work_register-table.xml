@@ -46,19 +46,19 @@
         </createTable>
     </changeSet>
 
-    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-client_id">
-        <addForeignKeyConstraint  baseColumnNames="client_id"
-                                  baseTableName="work_register"
-                                  constraintName="fk_work_register_client_client_id"
-                                  referencedColumnNames="id"
-                                  referencedTableName="client"/>
+    <changeSet author="jason-villar" id="addForeignKeyConstraint-client_id">
+        <addForeignKeyConstraint baseColumnNames="client_id"
+                                 baseTableName="work_register"
+                                 constraintName="fk_work_register_client_client_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="client"/>
     </changeSet>
 
-    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-service_id">
-        <addForeignKeyConstraint  baseColumnNames="service_id"
-                                  baseTableName="work_register"
-                                  constraintName="fk_work_register_service_service_id"
-                                  referencedColumnNames="id"
-                                  referencedTableName="service"/>
+    <changeSet author="jason-villar" id="addForeignKeyConstraint-service_id">
+        <addForeignKeyConstraint baseColumnNames="service_id"
+                                 baseTableName="work_register"
+                                 constraintName="fk_work_register_service_service_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="service"/>
     </changeSet>
 </databaseChangeLog>
