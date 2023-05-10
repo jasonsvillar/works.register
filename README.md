@@ -14,6 +14,9 @@ Api Rest made with:
 - Spring Security with Basic Authentication.
 - Encrypt application.properties values with jasypt.
 
+D.E.R:
+![der](readme/der.png "der")
+
 ## To do
 
 - ~~Implement Spring Security with Basic Authentication.~~
