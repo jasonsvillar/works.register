@@ -15,7 +15,8 @@ Api Rest made with:
 - Encrypt application.properties values with jasypt.
 
 D.E.R:
-![der](readme/der.png "der")
+
+<img alt="der" src="readme/der.png" title="der" width="600"/>
 
 ## To do
 
