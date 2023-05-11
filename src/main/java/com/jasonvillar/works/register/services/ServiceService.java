@@ -1,13 +1,8 @@
 package com.jasonvillar.works.register.services;
 
-import com.jasonvillar.works.register.dto.service.ServiceDTO;
-import com.jasonvillar.works.register.dto.service.ServiceMapper;
-import com.jasonvillar.works.register.dto.service.ServiceRequest;
 import com.jasonvillar.works.register.entities.Service;
 import com.jasonvillar.works.register.repositories.ServiceRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
