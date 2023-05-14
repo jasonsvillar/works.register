@@ -18,7 +18,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("clients")
+@RequestMapping("api/v1/clients")
 public class ClientController {
     private final ClientService service;
 

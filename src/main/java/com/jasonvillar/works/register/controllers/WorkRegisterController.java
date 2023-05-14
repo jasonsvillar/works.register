@@ -21,7 +21,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("works-registers")
+@RequestMapping("api/v1/works-registers")
 public class WorkRegisterController {
     private final WorkRegisterService service;
 

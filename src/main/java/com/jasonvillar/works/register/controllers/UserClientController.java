@@ -20,7 +20,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("users-clients")
+@RequestMapping("api/v1/users-clients")
 public class UserClientController {
     private final UserClientService service;
 
