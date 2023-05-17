@@ -14,13 +14,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.oauth2.core.OAuth2RefreshToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
 @RestController
-@CrossOrigin
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class AuthController {
     private final OAuth2AuthorizedClientService clientService;
 
     @PostMapping("/basic-authentication")
-    public ResponseEntity<?> basicAuthentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
+    public ResponseEntity<AuthenticationResponse> basicAuthentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken (
                         authenticationRequest.userName(),
@@ -62,13 +62,16 @@ public class AuthController {
                             oauthToken.getName());
 
             String accessToken = client.getAccessToken().getTokenValue();
-            String refreshToken = client.getRefreshToken().getTokenValue();
 
-            HashMap<String, String> map = new HashMap<String, String>();
+            HashMap<String, String> map = new HashMap<>();
             map.put("access_token", accessToken);
             map.put("scope", "read:user");
             map.put("token_type", "bearer");
-            map.put("refresh_token", refreshToken);
+
+            OAuth2RefreshToken oAuth2RefreshToken = client.getRefreshToken();
+            if (oAuth2RefreshToken != null) {
+                map.put("refresh_token", oAuth2RefreshToken.getTokenValue());
+            }
 
             return ResponseEntity.ok("Authenticated");
         }

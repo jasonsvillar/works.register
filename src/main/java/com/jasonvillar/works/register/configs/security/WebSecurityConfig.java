@@ -34,13 +34,14 @@ public class WebSecurityConfig {
     }
 
     @Bean
+    @SuppressWarnings("java:S4502")
     SecurityFilterChain getSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.headers().frameOptions().disable();
         httpSecurity.cors();
         httpSecurity.csrf().disable();
 
         httpSecurity.authorizeHttpRequests(
-                (requests) -> requests
+                requests -> requests
                         .requestMatchers("/api/v1/**").authenticated()
                         .anyRequest().permitAll()
         );
@@ -51,7 +52,7 @@ public class WebSecurityConfig {
                 .defaultSuccessUrl("/api/auth/oauth2/success", true);
 
         httpSecurity.logout(
-                (logout) -> logout
+                logout -> logout
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessUrl("/api/auth/logout/success")
         );
