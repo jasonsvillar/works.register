@@ -42,13 +42,13 @@ class ServiceControllerTest extends ControllerTestTemplate {
     void givenServices_whenGetRequest_thenCheckIfOk() throws Exception {
         Mockito.when(service.getList()).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/services")
+        this.mockMvc.perform(get(this.endpointBegin + "/services")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getList()).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/services")
+        this.mockMvc.perform(get(this.endpointBegin + "/services")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -58,11 +58,11 @@ class ServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get("/services/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/services/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get("/services/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/services/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -71,13 +71,13 @@ class ServiceControllerTest extends ControllerTestTemplate {
     void givenServices_whenGetRequestByName_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByNameLike("Name")).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/services/name-like/{name}", "Name")
+        this.mockMvc.perform(get(this.endpointBegin + "/services/name-like/{name}", "Name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByNameLike("Nonexistent name")).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/services/name-like/{name}", "Nonexistent name")
+        this.mockMvc.perform(get(this.endpointBegin + "/services/name-like/{name}", "Nonexistent name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -89,7 +89,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("");
         Mockito.when(service.save(Mockito.any(Service.class))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/services").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -97,7 +97,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("name must be unique");
 
-        this.mockMvc.perform(post("/services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/services").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )

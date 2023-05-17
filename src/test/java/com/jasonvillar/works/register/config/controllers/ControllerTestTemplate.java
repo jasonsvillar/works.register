@@ -20,6 +20,8 @@ public class ControllerTestTemplate {
 
     public ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
+    public final String endpointBegin = "/api/v1";
+
     @BeforeEach
     public void setup() {
         mapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);;

@@ -68,13 +68,13 @@ class UserServiceControllerTest extends ControllerTestTemplate {
     void givenUserServices_whenGetRequest_thenCheckIfOk() throws Exception {
         Mockito.when(service.getList()).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users-services")
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getList()).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users-services")
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -84,11 +84,11 @@ class UserServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get("/users-services/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get("/users-services/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -97,13 +97,13 @@ class UserServiceControllerTest extends ControllerTestTemplate {
     void givenUserServices_whenGetRequestByUserId_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByUserId(1)).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users-services/user-id/{userId}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services/user-id/{userId}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByUserId(0)).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users-services/user-id/{userId}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/users-services/user-id/{userId}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -117,7 +117,7 @@ class UserServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(userService.getById(1)).thenReturn(userEntity);
         Mockito.when(serviceService.getById(1)).thenReturn(serviceEntity);
 
-        this.mockMvc.perform(post("/users-services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/users-services").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -125,7 +125,7 @@ class UserServiceControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(UserService.class))).thenReturn("userId must exist");
 
-        this.mockMvc.perform(post("/users-services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/users-services").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )

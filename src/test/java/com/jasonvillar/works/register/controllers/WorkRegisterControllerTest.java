@@ -101,13 +101,13 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     void givenWorkRegisters_whenGetRequest_thenCheckIfOk() throws Exception {
         Mockito.when(service.getList()).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/works-registers")
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getList()).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/works-registers")
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -117,11 +117,11 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get("/works-registers/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get("/works-registers/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -130,13 +130,13 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     void givenWorkRegisters_whenGetRequestByUserId_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByUserId(1)).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/works-registers/user-id/{userId}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByUserId(0)).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/works-registers/user-id/{userId}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -145,13 +145,13 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     void givenWorkRegisters_whenGetRequestByClientId_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByClientId(1)).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/works-registers/client-id/{clientId}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/client-id/{clientId}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByClientId(0)).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/works-registers/client-id/{clientId}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/client-id/{clientId}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -160,13 +160,13 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     void givenWorkRegisters_whenGetRequestByUserIdAndClientId_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByUserIdAndClientId(1, 1)).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/works-registers/user-id/{userId}/client-id/{clientId}", 1, 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}/client-id/{clientId}", 1, 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByUserIdAndClientId(0, 0)).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/works-registers/user-id/{userId}/client-id/{clientId}", 0, 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}/client-id/{clientId}", 0, 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -175,13 +175,13 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     void givenWorkRegisters_whenGetRequestByTitle_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByTitleLike("Title")).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/works-registers/title-like/{title}", "Title")
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/title-like/{title}", "Title")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByTitleLike("Nonexistent title")).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/works-registers/title-like/{title}", "Nonexistent title")
+        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/title-like/{title}", "Nonexistent title")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -196,7 +196,7 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
         Mockito.when(serviceService.getById(1)).thenReturn(serviceEntity);
         Mockito.when(clientService.getById(1)).thenReturn(clientEntity);
 
-        this.mockMvc.perform(post("/works-registers").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/works-registers").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -204,7 +204,7 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(WorkRegister.class))).thenReturn("userId must exist");
 
-        this.mockMvc.perform(post("/works-registers").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/works-registers").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )

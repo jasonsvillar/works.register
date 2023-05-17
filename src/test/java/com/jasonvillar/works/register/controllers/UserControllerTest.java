@@ -44,13 +44,13 @@ class UserControllerTest extends ControllerTestTemplate {
     void givenUsers_whenGetRequest_thenCheckIfOk() throws Exception {
         Mockito.when(service.getList()).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users")
+        this.mockMvc.perform(get(this.endpointBegin + "/users")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getList()).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users")
+        this.mockMvc.perform(get(this.endpointBegin + "/users")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNoContent());
     }
@@ -60,11 +60,11 @@ class UserControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get("/users/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/users/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get("/users/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/users/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -73,13 +73,13 @@ class UserControllerTest extends ControllerTestTemplate {
     void givenUsers_whenGetRequestByName_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByNameLike("Name")).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users/name-like/{name}", "Name")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/name-like/{name}", "Name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByNameLike("Nonexistent name")).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users/name-like/{name}", "Nonexistent name")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/name-like/{name}", "Nonexistent name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -88,13 +88,13 @@ class UserControllerTest extends ControllerTestTemplate {
     void givenUsers_whenGetRequestByNameAndEmail_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByNameLikeAndEmailLike("Name", "test@test.com")).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users/name-like/{name}/email-like/{email}", "Name", "test@test.com")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/name-like/{name}/email-like/{email}", "Name", "test@test.com")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByNameLikeAndEmailLike("Nonexistent name", "Nonexistent email")).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users/name-like/{name}/email-like/{email}", "Nonexistent name", "Nonexistent email")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/name-like/{name}/email-like/{email}", "Nonexistent name", "Nonexistent email")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -103,13 +103,13 @@ class UserControllerTest extends ControllerTestTemplate {
     void givenUsers_whenGetRequestByEmail_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByEmailLike("test@test.com")).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get("/users/email-like/{email}", "test@test.com")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/email-like/{email}", "test@test.com")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
         Mockito.when(service.getListByEmailLike("Nonexistent name")).thenReturn(Collections.emptyList());
 
-        this.mockMvc.perform(get("/users/email-like/{email}", "Nonexistent email")
+        this.mockMvc.perform(get(this.endpointBegin + "/users/email-like/{email}", "Nonexistent email")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -121,7 +121,7 @@ class UserControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("");
         Mockito.when(service.save(Mockito.any(User.class))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/users").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -129,7 +129,7 @@ class UserControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("name must be unique");
 
-        this.mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/users").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
