@@ -12,7 +12,8 @@ Api Rest made with:
 - Testing with JUnit 5, Mockito and TestContainer.
 - Code Review with SonarQube.
 - Spring Security with Basic Authentication.
-- Spring Security with OAuth2 GitHub Authentication.
+- Spring Security with OAuth2 GitHub Authentication and JSession.
+- Implement Spring Security with JWT on the Basic Auth.
 - Encrypt application.properties values with jasypt.
 
 D.E.R:
@@ -22,8 +23,9 @@ D.E.R:
 ## To do
 
 - ~~Implement Spring Security with Basic Authentication.~~
-- ~~Implement Spring Security with OAuth2 GitHub Authentication.~~
-- Implement Spring Security with JWT.
+- ~~Implement Spring Security with OAuth2 GitHub Authentication and JSession.~~
+- ~~Implement Spring Security with JWT on the Basic Auth.~~
+- Create new EndPoints for Info of the owner User authenticated with Basic Auth.
 - Develop Frontend using Angular 15 or 16.
 - Rewrite unit tests using BDD.
 - Use kubernetes to run all the project.
