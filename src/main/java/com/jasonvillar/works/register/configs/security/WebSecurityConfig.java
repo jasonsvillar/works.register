@@ -17,7 +17,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtTokenFilter jwtAuthenticationFilter;
     private final SecurityUserDetailsService securityUserDetailsService;
 
@@ -36,26 +35,28 @@ public class WebSecurityConfig {
 
     @Bean
     SecurityFilterChain getSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        //httpSecurity.headers().frameOptions().disable();
+        httpSecurity.headers().frameOptions().disable();
         httpSecurity.cors();
         httpSecurity.csrf().disable();
-        //httpSecurity.httpBasic(); // For Enable Basic Aut. Actually is disabled.
 
         httpSecurity.authorizeHttpRequests(
                 (requests) -> requests
-                .requestMatchers("/api/v1/**").authenticated()
-                .anyRequest().permitAll()
+                        .requestMatchers("/api/v1/**").authenticated()
+                        .anyRequest().permitAll()
         );
 
-        //httpSecurity.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        // For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
+        httpSecurity.oauth2Login()
+                .loginPage("/api/auth/authentication-required")
+                .defaultSuccessUrl("/api/auth/oauth2/success", true);
 
-        httpSecurity.oauth2Login(); // For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
-        //httpSecurity.formLogin(); // For User and Password Inputs
+        httpSecurity.logout(
+                (logout) -> logout
+                        .logoutUrl("/api/auth/logout")
+                        .logoutSuccessUrl("/api/auth/logout/success")
+        );
 
-        //Disable the JWTEntryPoint for these endpoints
-        httpSecurity.exceptionHandling().authenticationEntryPoint(jwtAuthenticationEntryPoint);
-
-        httpSecurity.authenticationProvider(authenticationProvider());
+        httpSecurity.authenticationProvider(authenticationProvider()); // For implement custom DAO Basic Auth
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();
