@@ -1,8 +1,5 @@
-package com.jasonvillar.works.register;
+package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.configs.security.JwtTokenFilter;
-import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
-import com.jasonvillar.works.register.configs.security.SecurityUser;
 import com.jasonvillar.works.register.controllers.UserController;
 import com.jasonvillar.works.register.dto.user.UserDTO;
 import com.jasonvillar.works.register.dto.user.UserMapper;

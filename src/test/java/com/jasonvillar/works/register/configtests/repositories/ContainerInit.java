@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.config.repositories;
+package com.jasonvillar.works.register.configtests.repositories;
 
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContextInitializer;

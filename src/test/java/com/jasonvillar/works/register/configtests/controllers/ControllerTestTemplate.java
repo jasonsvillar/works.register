@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.config.controllers;
+package com.jasonvillar.works.register.configtests.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;

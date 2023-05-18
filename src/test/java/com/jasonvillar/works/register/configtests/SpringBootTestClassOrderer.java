@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.config;
+package com.jasonvillar.works.register.configtests;
 
 import org.junit.jupiter.api.ClassDescriptor;
 import org.junit.jupiter.api.ClassOrderer;

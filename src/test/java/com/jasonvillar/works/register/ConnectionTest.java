@@ -1,7 +1,7 @@
 package com.jasonvillar.works.register;
 
-import com.jasonvillar.works.register.config.repositories.ContainerInit;
-import com.jasonvillar.works.register.config.repositories.Postgres15_2TC;
+import com.jasonvillar.works.register.configtests.repositories.ContainerInit;
+import com.jasonvillar.works.register.configtests.repositories.Postgres15_2TC;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

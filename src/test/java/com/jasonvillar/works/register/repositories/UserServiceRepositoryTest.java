@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.repositories;
 
-import com.jasonvillar.works.register.config.repositories.DataJpaTestTemplate;
+import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.entities.*;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;

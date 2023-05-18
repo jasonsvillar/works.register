@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.config.repositories;
+package com.jasonvillar.works.register.configtests.repositories;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;

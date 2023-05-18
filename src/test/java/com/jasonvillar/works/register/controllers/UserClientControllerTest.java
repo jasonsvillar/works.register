@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.controllers;
 
-import com.jasonvillar.works.register.config.controllers.ControllerTestTemplate;
+import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.dto.client.ClientMapper;
 import com.jasonvillar.works.register.dto.user.UserMapper;
 import com.jasonvillar.works.register.dto.userclient.UserClientMapper;
