@@ -15,10 +15,12 @@ class SpringBootTestClassOrderer implements ClassOrderer {
     private static int getOrder(ClassDescriptor classDescriptor) {
         String className = classDescriptor.getDisplayName();
         if (className.endsWith("ControllerTest")) {
-            return 4;
+            return 5;
         } else if (className.endsWith("ServiceTest")) {
-            return 3;
+            return 4;
         } else if (className.endsWith("RepositoryTest")) {
+            return 3;
+        } else if (className.endsWith("ConfigTest")) {
             return 2;
         } else {
             return 1;
