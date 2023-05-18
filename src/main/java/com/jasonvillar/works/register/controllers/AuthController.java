@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.controllers;
 import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
 import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
 import com.jasonvillar.works.register.dto.security.AuthenticationResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
+@SecurityRequirements
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
