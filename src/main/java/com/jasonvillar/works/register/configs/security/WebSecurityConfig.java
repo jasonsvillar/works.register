@@ -48,8 +48,7 @@ public class WebSecurityConfig {
 
         // For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
         httpSecurity.oauth2Login()
-                .loginPage("/api/auth/authentication-required")
-                .defaultSuccessUrl("/api/auth/oauth2/success", true);
+                .loginPage("/api/auth/authentication-required");
 
         httpSecurity.logout(
                 logout -> logout
