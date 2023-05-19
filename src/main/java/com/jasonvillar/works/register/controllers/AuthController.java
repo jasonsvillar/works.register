@@ -48,37 +48,6 @@ public class AuthController {
         return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
-    @GetMapping("/oauth2/success")
-    public ResponseEntity<String> oauth2SuccessAuthentication() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        if (authentication.getPrincipal().equals("anonymousUser")) {
-            return new ResponseEntity<>("Authentication required", HttpStatus.UNAUTHORIZED);
-        } else {
-            OAuth2AuthenticationToken oauthToken =
-                    (OAuth2AuthenticationToken) authentication;
-
-            OAuth2AuthorizedClient client =
-                    clientService.loadAuthorizedClient(
-                            oauthToken.getAuthorizedClientRegistrationId(),
-                            oauthToken.getName());
-
-            String accessToken = client.getAccessToken().getTokenValue();
-
-            HashMap<String, String> map = new HashMap<>();
-            map.put("access_token", accessToken);
-            map.put("scope", "read:user");
-            map.put("token_type", "bearer");
-
-            OAuth2RefreshToken oAuth2RefreshToken = client.getRefreshToken();
-            if (oAuth2RefreshToken != null) {
-                map.put("refresh_token", oAuth2RefreshToken.getTokenValue());
-            }
-
-            return ResponseEntity.ok("Authenticated");
-        }
-    }
-
     @GetMapping("/authentication-required")
     public ResponseEntity<String> authenticationRequired() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
