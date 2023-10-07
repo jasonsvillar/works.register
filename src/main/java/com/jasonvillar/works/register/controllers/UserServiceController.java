@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.dto.userservice.UserServiceMapper;
 import com.jasonvillar.works.register.dto.userservice.UserServiceRequest;
 import com.jasonvillar.works.register.entities.UserService;
 import com.jasonvillar.works.register.services.UserServiceService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users-services")
+@Tag(name = "user - service", description = "the user - service API tag annotation")
 public class UserServiceController {
     private final UserServiceService service;
 

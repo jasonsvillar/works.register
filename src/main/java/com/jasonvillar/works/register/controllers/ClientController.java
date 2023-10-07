@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.dto.client.ClientMapper;
 import com.jasonvillar.works.register.dto.client.ClientRequest;
 import com.jasonvillar.works.register.entities.Client;
 import com.jasonvillar.works.register.services.ClientService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/clients")
+@Tag(name = "client", description = "the client API tag annotation")
 public class ClientController {
     private final ClientService service;
 

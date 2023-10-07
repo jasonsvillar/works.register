@@ -8,6 +8,7 @@ import com.jasonvillar.works.register.services.ClientService;
 import com.jasonvillar.works.register.services.UserService;
 import com.jasonvillar.works.register.services.ServiceService;
 import com.jasonvillar.works.register.services.WorkRegisterService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +23,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/works-registers")
+@Tag(name = "work", description = "the work API tag annotation")
 public class WorkRegisterController {
     private final WorkRegisterService service;
 

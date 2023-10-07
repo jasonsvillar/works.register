@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.dto.service.ServiceMapper;
 import com.jasonvillar.works.register.dto.service.ServiceRequest;
 import com.jasonvillar.works.register.entities.Service;
 import com.jasonvillar.works.register.services.ServiceService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/services")
+@Tag(name = "service", description = "the service API tag annotation")
 public class ServiceController {
     private final ServiceService service;
 

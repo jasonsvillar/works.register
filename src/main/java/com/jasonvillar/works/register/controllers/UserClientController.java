@@ -7,6 +7,7 @@ import com.jasonvillar.works.register.entities.UserClient;
 import com.jasonvillar.works.register.services.ClientService;
 import com.jasonvillar.works.register.services.UserClientService;
 import com.jasonvillar.works.register.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +22,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1/users-clients")
+@Tag(name = "user - client", description = "the user - client API tag annotation")
 public class UserClientController {
     private final UserClientService service;
 
