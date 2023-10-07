@@ -8,7 +8,7 @@ Api Rest made with:
 - Framework Spring boot 3.
 - Liquibase - For Database creation and migration.
 - Relational Database - Postgres.
-- Swagger 3.
+- Swagger 3. Access URL _**/doc/swagger-ui/index.html**_
 - Testing with JUnit 5, Mockito and TestContainer.
 - Code Review with SonarQube.
 - Spring Security with Basic Authentication.
