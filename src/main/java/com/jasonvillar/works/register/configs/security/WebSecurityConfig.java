@@ -43,18 +43,13 @@ public class WebSecurityConfig {
         httpSecurity.authorizeHttpRequests(
                 requests -> requests
                         .requestMatchers("/api/v1/**").authenticated()
+                        .requestMatchers("/api/auth/custom-logout").authenticated()
                         .anyRequest().permitAll()
         );
 
         // For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
         httpSecurity.oauth2Login()
                 .loginPage("/api/auth/authentication-required");
-
-        httpSecurity.logout(
-                logout -> logout
-                        .logoutUrl("/api/auth/logout")
-                        .logoutSuccessUrl("/api/auth/logout/success")
-        );
 
         httpSecurity.authenticationProvider(authenticationProvider()); // For implement custom DAO Basic Auth
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

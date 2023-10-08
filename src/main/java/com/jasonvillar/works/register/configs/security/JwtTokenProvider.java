@@ -46,6 +46,7 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(this.getSignInKey()).build().parseClaimsJws(token);
+            // check if token is in blacklist
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");

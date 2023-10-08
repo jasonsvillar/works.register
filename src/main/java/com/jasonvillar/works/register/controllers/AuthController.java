@@ -4,7 +4,8 @@ import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
 import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
 import com.jasonvillar.works.register.dto.security.AuthenticationResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,6 +31,8 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final OAuth2AuthorizedClientService clientService;
+
+    SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
 
     @PostMapping("/basic-authentication")
     public ResponseEntity<AuthenticationResponse> basicAuthentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
@@ -52,6 +56,14 @@ public class AuthController {
         } else {
             return ResponseEntity.ok("You already are authenticated");
         }
+    }
+
+    @PostMapping("/custom-logout")
+    public ResponseEntity<String> performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
+        String bearerToken = jwtTokenProvider.resolveToken(request);
+        this.logoutHandler.logout(request, response, authentication);
+        //send token to blacklist
+        return ResponseEntity.ok("Logout success");
     }
 
     @GetMapping( "/logout/success")
