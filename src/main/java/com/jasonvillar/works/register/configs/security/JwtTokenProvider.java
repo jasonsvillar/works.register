@@ -16,18 +16,22 @@ import java.util.Date;
 @Component
 @Slf4j
 public class JwtTokenProvider {
-    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+
+    private Key getSignInKey() {
+        String secretKey = "asd+SFG5fg-QWEKLsfdgsd4115SDADGHJGH4sd5f4sd4gs32d1534hg54da35sf4g5r44g35dfa1g352dfg135f45hj45k4jk5l4j35kl4546413sd13sa4r534hb53df1b35n135hm454l543d1vg32d1b534";
+        return Keys.hmacShaKeyFor(secretKey.getBytes());
+    }
 
     public String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 3600000);
+        Date expiryDate = new Date(now.getTime() + 600000);
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(expiryDate)
-                .signWith(key, SignatureAlgorithm.HS512)
+                .signWith(this.getSignInKey(), SignatureAlgorithm.HS512)
                 .compact();
     }
 
@@ -41,7 +45,7 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder().setSigningKey(this.getSignInKey()).build().parseClaimsJws(token);
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
@@ -60,7 +64,7 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(this.getSignInKey())
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
