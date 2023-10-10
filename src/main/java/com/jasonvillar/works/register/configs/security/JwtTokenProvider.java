@@ -1,9 +1,11 @@
 package com.jasonvillar.works.register.configs.security;
 
+import com.jasonvillar.works.register.services.JWTBlacklistService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -15,7 +17,10 @@ import java.util.Date;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class JwtTokenProvider {
+
+    private final JWTBlacklistService jwtBlacklistService;
 
     private Key getSignInKey() {
         String secretKey = "asd+SFG5fg-QWEKLsfdgsd4115SDADGHJGH4sd5f4sd4gs32d1534hg54da35sf4g5r44g35dfa1g352dfg135f45hj45k4jk5l4j35kl4546413sd13sa4r534hb53df1b35n135hm454l543d1vg32d1b534";
@@ -25,7 +30,9 @@ public class JwtTokenProvider {
     public String createToken(Authentication authentication) {
         UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + 600000);
+        int minutes = 60;
+        int minutesInMilliseconds = minutes * 60 * 1000;
+        Date expiryDate = new Date(now.getTime() + minutesInMilliseconds);
 
         return Jwts.builder()
                 .setSubject(userDetails.getUsername())
@@ -43,10 +50,15 @@ public class JwtTokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String jwt) {
         try {
-            Jwts.parserBuilder().setSigningKey(this.getSignInKey()).build().parseClaimsJws(token);
-            // check if token is in blacklist
+            Jwts.parserBuilder().setSigningKey(this.getSignInKey()).build().parseClaimsJws(jwt);
+
+            boolean isInBlacklist = this.jwtBlacklistService.isInBlacklist(jwt);
+            if (isInBlacklist) {
+                return false;
+            }
+
             return true;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
@@ -63,12 +75,20 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public String getUsername(String token) {
+    public String getUsername(String jwt) {
         return Jwts.parserBuilder()
                 .setSigningKey(this.getSignInKey())
                 .build()
-                .parseClaimsJws(token)
+                .parseClaimsJws(jwt)
                 .getBody()
                 .getSubject();
+    }
+
+    public Date getExpirationDate(String jwt) {
+        return Jwts.parserBuilder()
+                .setSigningKey(this.getSignInKey())
+                .build()
+                .parseClaimsJws(jwt)
+                .getBody().getExpiration();
     }
 }

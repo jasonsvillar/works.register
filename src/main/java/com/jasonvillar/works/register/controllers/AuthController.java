@@ -3,6 +3,9 @@ package com.jasonvillar.works.register.controllers;
 import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
 import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
 import com.jasonvillar.works.register.dto.security.AuthenticationResponse;
+import com.jasonvillar.works.register.entities.JWTBlacklist;
+import com.jasonvillar.works.register.scheduleTasks.DeleteToExpireJWT;
+import com.jasonvillar.works.register.services.JWTBlacklistService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,29 +13,35 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
 @SecurityRequirements
+@Transactional
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
     private final JwtTokenProvider jwtTokenProvider;
 
-    private final OAuth2AuthorizedClientService clientService;
-
     SecurityContextLogoutHandler logoutHandler = new SecurityContextLogoutHandler();
+
+    private final JWTBlacklistService jwtBlacklistService;
+
+    private final TaskScheduler taskScheduler;
 
     @PostMapping("/basic-authentication")
     public ResponseEntity<AuthenticationResponse> basicAuthentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
@@ -60,9 +69,20 @@ public class AuthController {
 
     @PostMapping("/custom-logout")
     public ResponseEntity<String> performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
-        String bearerToken = jwtTokenProvider.resolveToken(request);
+        String jwt = this.jwtTokenProvider.resolveToken(request);
         this.logoutHandler.logout(request, response, authentication);
-        //send token to blacklist
+
+        Date expiration = this.jwtTokenProvider.getExpirationDate(jwt);
+
+        JWTBlacklist jwtBlacklist = new JWTBlacklist();
+        jwtBlacklist.setToken(jwt);
+        jwtBlacklist.setDateExpire(expiration);
+
+        this.jwtBlacklistService.save(jwtBlacklist);
+
+        DeleteToExpireJWT task = new DeleteToExpireJWT(jwt, this.jwtBlacklistService);
+        this.taskScheduler.schedule(task, expiration.toInstant());
+
         return ResponseEntity.ok("Logout success");
     }
 

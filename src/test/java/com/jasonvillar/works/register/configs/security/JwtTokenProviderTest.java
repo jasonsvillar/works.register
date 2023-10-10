@@ -1,9 +1,12 @@
 package com.jasonvillar.works.register.configs.security;
 
 import com.jasonvillar.works.register.entities.User;
+import com.jasonvillar.works.register.services.JWTBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
@@ -15,6 +18,9 @@ import static org.mockito.Mockito.when;
 
 @ContextConfiguration
 class JwtTokenProviderTest {
+    @MockBean
+    private JWTBlacklistService jwtBlacklistService = Mockito.mock(JWTBlacklistService.class);
+
     private final User user = User.builder()
             .name("Name")
             .password("Sarasa")
@@ -23,7 +29,7 @@ class JwtTokenProviderTest {
 
     SecurityUser principal = new SecurityUser(user);
 
-    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider();
+    JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(jwtBlacklistService);
 
     Authentication authentication =
             new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
@@ -57,11 +63,9 @@ class JwtTokenProviderTest {
 
         String token = jwtTokenProvider.createToken(authentication);
 
-        boolean isValid = jwtTokenProvider.validateToken(token);
-
         String invalidToken = token + "asd123";
 
-        isValid = jwtTokenProvider.validateToken(invalidToken);
+        boolean isValid = jwtTokenProvider.validateToken(invalidToken);
 
         Assertions.assertThat(isValid).isFalse();
     }
