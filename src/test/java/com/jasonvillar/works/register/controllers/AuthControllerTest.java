@@ -5,19 +5,16 @@ import com.jasonvillar.works.register.configs.security.SecurityUser;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
 import com.jasonvillar.works.register.entities.User;
-import org.junit.jupiter.api.BeforeEach;
+import com.jasonvillar.works.register.services.JWTBlacklistService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.scheduling.TaskScheduler;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.List;
@@ -37,7 +34,10 @@ class AuthControllerTest extends ControllerTestTemplate {
     private JwtTokenProvider jwtTokenProvider;
 
     @MockBean
-    private OAuth2AuthorizedClientService clientService;
+    private JWTBlacklistService jwtBlacklistService;
+
+    @MockBean
+    private TaskScheduler taskScheduler;
 
     private final User user = User.builder()
             .name("Test Name")
