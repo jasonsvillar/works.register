@@ -4,7 +4,7 @@ import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
 import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
 import com.jasonvillar.works.register.dto.security.AuthenticationResponse;
 import com.jasonvillar.works.register.entities.JWTBlacklist;
-import com.jasonvillar.works.register.scheduleTasks.DeleteToExpireJWT;
+import com.jasonvillar.works.register.schedule_tasks.DeleteToExpireJWT;
 import com.jasonvillar.works.register.services.JWTBlacklistService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;

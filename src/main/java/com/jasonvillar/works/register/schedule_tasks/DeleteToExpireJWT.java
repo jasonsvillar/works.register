@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.scheduleTasks;
+package com.jasonvillar.works.register.schedule_tasks;
 
 import com.jasonvillar.works.register.services.JWTBlacklistService;
 import lombok.RequiredArgsConstructor;
