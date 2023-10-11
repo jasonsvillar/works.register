@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.SignatureException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -22,8 +23,10 @@ public class JwtTokenProvider {
 
     private final JWTBlacklistService jwtBlacklistService;
 
+    @Value("${jwt.keyForEncrypt}")
+    private String secretKey;
+
     private Key getSignInKey() {
-        String secretKey = "asd+SFG5fg-QWEKLsfdgsd4115SDADGHJGH4sd5f4sd4gs32d1534hg54da35sf4g5r44g35dfa1g352dfg135f45hj45k4jk5l4j35kl4546413sd13sa4r534hb53df1b35n135hm454l543d1vg32d1b534";
         return Keys.hmacShaKeyFor(secretKey.getBytes());
     }
 

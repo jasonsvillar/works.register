@@ -4,6 +4,7 @@ import com.jasonvillar.works.register.entities.User;
 import com.jasonvillar.works.register.services.JWTBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -33,6 +35,11 @@ class JwtTokenProviderTest {
 
     Authentication authentication =
             new UsernamePasswordAuthenticationToken(principal, "password", principal.getAuthorities());
+
+    @BeforeEach
+    public void setUp() {
+        ReflectionTestUtils.setField(jwtTokenProvider, "secretKey", "1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+    }
 
     @Test
     void createTokenTest() {
