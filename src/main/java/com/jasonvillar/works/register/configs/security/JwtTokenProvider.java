@@ -58,11 +58,7 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(this.getSignInKey()).build().parseClaimsJws(jwt);
 
             boolean isInBlacklist = this.jwtBlacklistService.isInBlacklist(jwt);
-            if (isInBlacklist) {
-                return false;
-            }
-
-            return true;
+            return !isInBlacklist;
         } catch (MalformedJwtException ex) {
             log.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
