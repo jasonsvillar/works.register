@@ -9,18 +9,18 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(uniqueConstraints = { @UniqueConstraint(name = "UniqueRoleAndPrivilege", columnNames = { "role_id", "privilege_id" }) })
-public class RolePrivilege {
+@Table(uniqueConstraints = { @UniqueConstraint(name = "UniqueUserAndRole", columnNames = { "user_id", "role_id" }) })
+public class UserRole {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "role_privilege_id_seq")
     @SequenceGenerator(name = "role_privilege_id_seq", sequenceName = "role_privilege_id_seq", allocationSize = 1)
     Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "role_id")
-    Role role;
+    @JoinColumn(name = "user_id")
+    User user;
 
     @ManyToOne
-    @JoinColumn(name = "privilege_id")
-    Privilege privilege;
+    @JoinColumn(name = "role_id")
+    Role role;
 }
