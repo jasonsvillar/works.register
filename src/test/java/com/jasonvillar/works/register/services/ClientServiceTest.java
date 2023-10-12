@@ -31,7 +31,7 @@ class ClientServiceTest {
 
     @BeforeEach
     void setup() {
-        entity.setId(Long.valueOf(1));
+        entity.setId(1L);
     }
 
     @Test
