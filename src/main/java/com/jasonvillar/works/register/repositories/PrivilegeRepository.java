@@ -9,9 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {
-    Privilege findPrivilegeById(Integer id);
+    Privilege findPrivilegeById(Long id);
 
-    Optional<Privilege> findOptionalById(Integer id);
+    Optional<Privilege> findOptionalById(Long id);
 
     Optional<Privilege> findOptionalByName(String name);
 

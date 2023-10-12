@@ -1,7 +1,6 @@
 package com.jasonvillar.works.register.repositories;
 
 import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.entities.Client;
 import com.jasonvillar.works.register.entities.Privilege;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -52,7 +51,7 @@ class PrivilegeRepositoryTest extends DataJpaTestTemplate {
         Optional<Privilege> optional = this.repository.findOptionalById(this.privilegeInDatabase.getId());
         Assertions.assertThat(optional).isPresent();
 
-        optional = this.repository.findOptionalById(0);
+        optional = this.repository.findOptionalById(0L);
         Assertions.assertThat(optional).isNotPresent();
     }
 

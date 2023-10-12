@@ -16,7 +16,7 @@ public class Privilege {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "privilege_id_seq")
     @SequenceGenerator(name = "privilege_id_seq", sequenceName = "privilege_id_seq", allocationSize = 1)
-    Integer id;
+    Long id;
 
     String name;
 

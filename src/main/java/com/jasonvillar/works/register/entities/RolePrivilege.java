@@ -14,7 +14,7 @@ public class RolePrivilege {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "role_privilege_id_seq")
     @SequenceGenerator(name = "role_privilege_id_seq", sequenceName = "role_privilege_id_seq", allocationSize = 1)
-    Integer id;
+    Long id;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
