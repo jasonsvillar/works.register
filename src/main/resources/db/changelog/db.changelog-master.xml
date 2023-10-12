@@ -14,4 +14,10 @@
     <include file="db/changelog/changes/0009-2023-05-09-user-table-add-column-password.xml"/>
     <include file="db/changelog/changes/0010-2023-05-10-work_register-add-foreign-constraint.xml"/>
     <include file="db/changelog/changes/0011-2023-10-08-jwt_blacklist-table.xml"/>
+    <include file="db/changelog/changes/0012-2023-10-11-privilege-table.xml"/>
+    <include file="db/changelog/changes/0013-2023-10-11-insert-privilege-add_user.xml"/>
+    <include file="db/changelog/changes/0014-2023-10-11-role-table.xml"/>
+    <include file="db/changelog/changes/0015-2023-10-11-insert-role-admin.xml"/>
+    <include file="db/changelog/changes/0016-2023-10-12-role_privilege-table.xml"/>
+    <include file="db/changelog/changes/0017-2023-10-12-insert-role_privilege.xml"/>
 </databaseChangeLog>
