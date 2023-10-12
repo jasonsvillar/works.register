@@ -67,7 +67,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/custom-logout")
+    @GetMapping("/custom-logout")
     public ResponseEntity<String> performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         String jwt = this.jwtTokenProvider.resolveToken(request);
         this.logoutHandler.logout(request, response, authentication);
