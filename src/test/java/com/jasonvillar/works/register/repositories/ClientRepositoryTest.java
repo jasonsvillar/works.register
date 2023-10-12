@@ -40,8 +40,8 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenEntityInTable_whenFindAll_thenCheckIfEmpty() {
-        List<Client> a = this.repository.findAll();
-        Assertions.assertThat(a).isNotEmpty();
+        List<Client> entityList = this.repository.findAll();
+        Assertions.assertThat(entityList).isNotEmpty();
     }
 
     @Test
