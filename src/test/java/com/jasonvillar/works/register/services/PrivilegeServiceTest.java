@@ -72,4 +72,14 @@ class PrivilegeServiceTest {
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Privilege.class);
     }
+
+    @Test
+    void givenRepositories_whenGetListByUserId_thenReturnList() {
+        Mockito.when(repository.findAllDistinctByInRoleListInUserListId(1)).thenReturn(List.of(entity));
+
+        List<Privilege> list = service.getListByUserId(1);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(Privilege.class);
+    }
 }

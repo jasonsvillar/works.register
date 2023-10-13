@@ -29,8 +29,7 @@ public class PrivilegeService {
         return this.privilegeRepository.findAllByNameContainingIgnoreCase(name);
     }
 
-    //TODO: feature to getPrivilegeOfUser
-//    public List<Privilege> getAllPrivilegeByUserId(long userId) {
-//        return this.privilegeRepository.findAllByUser
-//    }
+    public List<Privilege> getAllPrivilegeByUserId(long userId) {
+        return this.privilegeRepository.findAllDistinctByInRoleListInUserListId(userId);
+    }
 }
