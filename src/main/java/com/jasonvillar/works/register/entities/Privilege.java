@@ -21,10 +21,15 @@ public class Privilege {
     String name;
 
     @Builder
-    public Privilege(String name) {
+    public Privilege(String name, List<Role> inRoleList) {
         this.name = name;
+        this.inRoleList = inRoleList;
     }
 
-    @OneToMany(mappedBy = "privilege")
-    List<RolePrivilege> rolePrivilegeList;
+    @ManyToMany
+    @JoinTable(
+            name = "role_privilege",
+            joinColumns = @JoinColumn(name = "privilege_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    List<Role> inRoleList;
 }

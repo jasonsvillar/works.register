@@ -6,21 +6,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create-sequence-role_privilege_id" author="jason-villar">
-        <createSequence sequenceName="role_privilege_id_seq" cycle="false" minValue="1" maxValue="9223372036854775807"
-                        startValue="1" incrementBy="1"/>
-    </changeSet>
-
     <changeSet id="create-table-role_privilege" author="jason-villar">
         <createTable tableName="role_privilege">
-            <column name="id" type="bigint" defaultValueComputed="nextval('role_privilege_id_seq')">
-                <constraints nullable="false" unique="true" primaryKey="true"/>
-            </column>
             <column name="role_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_privilege_pk"/>
             </column>
             <column name="privilege_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="role_privilege_pk"/>
             </column>
         </createTable>
     </changeSet>

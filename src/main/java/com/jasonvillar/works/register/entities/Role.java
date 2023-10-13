@@ -21,13 +21,11 @@ public class Role {
     String name;
 
     @Builder
-    public Role(String name) {
+    public Role(String name, List<Privilege> hasPrivilegeList) {
         this.name = name;
+        this.hasPrivilegeList = hasPrivilegeList;
     }
 
-    @OneToMany(mappedBy = "role")
-    List<RolePrivilege> rolePrivilegeList;
-
-    @OneToMany(mappedBy = "role")
-    List<UserRole> userRoleList;
+    @ManyToMany(mappedBy = "inRoleList")
+    List<Privilege> hasPrivilegeList;
 }
