@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ExtendWith(MockitoExtension.class)
-public class RoleServiceTest {
+class RoleServiceTest {
     @Mock
     private RoleRepository repository;
 
