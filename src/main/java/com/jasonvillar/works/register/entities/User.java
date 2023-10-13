@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "`user`")
@@ -33,5 +34,15 @@ public class User {
     }
 
     @ManyToMany(mappedBy = "inUserList")
-    List<Role> hasRoleList;
+    Set<Role> hasRoleList;
+
+    public void addRole(Role role) {
+        this.hasRoleList.add(role);
+        role.getInUserList().add(this);
+    }
+
+    public void removeRole(Role role) {
+        this.hasRoleList.remove(role);
+        role.getInUserList().remove(this);
+    }
 }

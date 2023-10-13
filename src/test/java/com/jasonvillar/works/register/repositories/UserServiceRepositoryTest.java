@@ -46,6 +46,7 @@ class UserServiceRepositoryTest extends DataJpaTestTemplate {
     @AfterEach
     void setDown(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_role");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "\"user\"");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
     }

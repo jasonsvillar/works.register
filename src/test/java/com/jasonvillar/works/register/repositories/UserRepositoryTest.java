@@ -22,6 +22,7 @@ class UserRepositoryTest extends DataJpaTestTemplate {
 
     @BeforeEach
     void setUp() {
+        this.userRepository.findAll().forEach(user -> user.getHasRoleList().forEach(user::removeRole));
         this.userRepository.deleteAll();
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
     }

@@ -69,6 +69,7 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
     @AfterEach
     void setDown(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_role");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "\"user\"");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");

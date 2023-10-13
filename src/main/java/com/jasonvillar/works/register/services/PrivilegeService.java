@@ -14,18 +14,23 @@ public class PrivilegeService {
     private final PrivilegeRepository privilegeRepository;
 
     public List<Privilege> getList() {
-        return privilegeRepository.findAll();
+        return this.privilegeRepository.findAll();
     }
 
     public Privilege getById(long id) {
-        return privilegeRepository.findPrivilegeById(id);
+        return this.privilegeRepository.findPrivilegeById(id);
     }
 
     public Optional<Privilege> getOptionalById(long id) {
-        return privilegeRepository.findOptionalById(id);
+        return this.privilegeRepository.findOptionalById(id);
     }
 
     public List<Privilege> getListByNameLike(String name) {
-        return privilegeRepository.findAllByNameContainingIgnoreCase(name);
+        return this.privilegeRepository.findAllByNameContainingIgnoreCase(name);
     }
+
+    //TODO: feature to getPrivilegeOfUser
+//    public List<Privilege> getAllPrivilegeByUserId(long userId) {
+//        return this.privilegeRepository.findAllByUser
+//    }
 }
