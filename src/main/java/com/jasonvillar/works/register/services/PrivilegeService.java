@@ -3,8 +3,10 @@ package com.jasonvillar.works.register.services;
 import com.jasonvillar.works.register.entities.Privilege;
 import com.jasonvillar.works.register.repositories.PrivilegeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,5 +33,16 @@ public class PrivilegeService {
 
     public List<Privilege> getListByUserId(long userId) {
         return this.privilegeRepository.findAllDistinctByInRoleListInUserListId(userId);
+    }
+
+    public List<SimpleGrantedAuthority> getSimpleGrantedAutorityList(long userId) {
+        List<SimpleGrantedAuthority> simpleGrantedAuthorityList = new ArrayList<>();
+        this.getListByUserId(userId).forEach(
+                privilege -> simpleGrantedAuthorityList.add(
+                        new SimpleGrantedAuthority( privilege.getName() )
+                )
+        );
+
+        return simpleGrantedAuthorityList;
     }
 }

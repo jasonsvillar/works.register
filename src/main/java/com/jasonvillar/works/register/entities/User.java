@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.Set;
@@ -45,4 +46,7 @@ public class User {
         this.hasRoleList.remove(role);
         role.getInUserList().remove(this);
     }
+
+    @Transient
+    List<SimpleGrantedAuthority> authorityList;
 }
