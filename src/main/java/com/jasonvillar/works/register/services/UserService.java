@@ -13,7 +13,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final PrivilegeService privilegeService;
 
     public List<User> getList() {
         return this.userRepository.findAll();
