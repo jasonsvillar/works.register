@@ -66,7 +66,7 @@ class PrivilegeRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenEntityInTable_whenFindAllByNameContainingIgnoreCase_thenCheckIfEmpty() {
-        List<Privilege> entity = this.repository.findAllByNameContainingIgnoreCase("new");
+        List<Privilege> entity = this.repository.findAllByNameContainingIgnoreCase("test");
         Assertions.assertThat(entity).isNotEmpty();
 
         entity = this.repository.findAllByNameContainingIgnoreCase("privilege");
