@@ -28,4 +28,11 @@ public class Role {
 
     @ManyToMany(mappedBy = "inRoleList")
     List<Privilege> hasPrivilegeList;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "role_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    List<User> inUserList;
 }

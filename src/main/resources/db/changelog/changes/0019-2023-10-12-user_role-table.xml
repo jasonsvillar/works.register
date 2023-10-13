@@ -6,21 +6,13 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
          http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
-    <changeSet id="create-sequence-user_role_id" author="jason-villar">
-        <createSequence sequenceName="user_role_id_seq" cycle="false" minValue="1" maxValue="9223372036854775807"
-                        startValue="1" incrementBy="1"/>
-    </changeSet>
-
     <changeSet id="create-table-user_role" author="jason-villar">
         <createTable tableName="user_role">
-            <column name="id" type="bigint" defaultValueComputed="nextval('user_role_id_seq')">
-                <constraints nullable="false" unique="true" primaryKey="true"/>
-            </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_role_pk"/>
             </column>
             <column name="role_id" type="bigint">
-                <constraints nullable="false"/>
+                <constraints nullable="false" primaryKey="true" primaryKeyName="user_role_pk"/>
             </column>
         </createTable>
     </changeSet>
@@ -40,4 +32,5 @@
                                  referencedColumnNames="id"
                                  referencedTableName="role"/>
     </changeSet>
+
 </databaseChangeLog>

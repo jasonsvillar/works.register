@@ -32,6 +32,6 @@ public class User {
         this.password = password;
     }
 
-    @OneToMany(mappedBy = "user")
-    List<UserRole> userRoleList;
+    @ManyToMany(mappedBy = "inUserList")
+    List<Role> hasRoleList;
 }
