@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.repositories;
 import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.entities.Privilege;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +21,12 @@ class PrivilegeRepositoryTest extends DataJpaTestTemplate {
 
     @BeforeEach
     void setUp() {
-        this.repository.deleteAll();
         this.privilegeInDatabase = this.repository.save(this.privilegeInDatabase);
+    }
+
+    @AfterEach
+    void setDown() {
+        this.repository.deleteAll();
     }
 
     @Test
@@ -77,5 +82,11 @@ class PrivilegeRepositoryTest extends DataJpaTestTemplate {
 
         entity = this.repository.findAllByNameContainingIgnoreCase("Non existent name");
         Assertions.assertThat(entity).isEmpty();
+    }
+
+    @Test
+    void givenEntityInTable_whenFindAllByInRoleListInUserListId_thenCheckIfEmpty() {
+        List<Privilege> entityList = this.repository.findAllDistinctByInRoleListInUserListId(1);
+        Assertions.assertThat(entityList).isNotEmpty();
     }
 }

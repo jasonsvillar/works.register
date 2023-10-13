@@ -16,4 +16,6 @@ public interface PrivilegeRepository extends JpaRepository<Privilege, Long> {
     Optional<Privilege> findOptionalByName(String name);
 
     List<Privilege> findAllByNameContainingIgnoreCase(String name);
+
+    List<Privilege> findAllDistinctByInRoleListInUserListId(long userId);
 }
