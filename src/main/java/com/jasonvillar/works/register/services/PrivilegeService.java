@@ -29,7 +29,7 @@ public class PrivilegeService {
         return this.privilegeRepository.findAllByNameContainingIgnoreCase(name);
     }
 
-    public List<Privilege> getAllPrivilegeByUserId(long userId) {
+    public List<Privilege> getListByUserId(long userId) {
         return this.privilegeRepository.findAllDistinctByInRoleListInUserListId(userId);
     }
 }
