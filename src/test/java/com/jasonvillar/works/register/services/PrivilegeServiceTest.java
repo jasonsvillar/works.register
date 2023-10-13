@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.List;
 import java.util.Optional;
@@ -81,5 +82,15 @@ class PrivilegeServiceTest {
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Privilege.class);
+    }
+
+    @Test
+    void givenRepositories_whenGetSimpleGrantedAuthorityList_thenReturnList() {
+        Mockito.when(repository.findAllDistinctByInRoleListInUserListId(1)).thenReturn(List.of(entity));
+
+        List<SimpleGrantedAuthority> list = service.getSimpleGrantedAuthorityList(1);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(SimpleGrantedAuthority.class);
     }
 }

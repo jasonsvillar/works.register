@@ -35,7 +35,7 @@ public class PrivilegeService {
         return this.privilegeRepository.findAllDistinctByInRoleListInUserListId(userId);
     }
 
-    public List<SimpleGrantedAuthority> getSimpleGrantedAutorityList(long userId) {
+    public List<SimpleGrantedAuthority> getSimpleGrantedAuthorityList(long userId) {
         List<SimpleGrantedAuthority> simpleGrantedAuthorityList = new ArrayList<>();
         this.getListByUserId(userId).forEach(
                 privilege -> simpleGrantedAuthorityList.add(

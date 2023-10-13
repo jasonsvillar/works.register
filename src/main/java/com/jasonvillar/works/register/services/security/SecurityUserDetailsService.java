@@ -23,7 +23,7 @@ public class SecurityUserDetailsService implements UserDetailsService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            user.setAuthorityList(this.privilegeService.getSimpleGrantedAutorityList(user.getId()));
+            user.setAuthorityList(this.privilegeService.getSimpleGrantedAuthorityList(user.getId()));
             return new SecurityUser(user);
         }
 
