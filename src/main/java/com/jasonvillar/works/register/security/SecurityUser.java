@@ -1,4 +1,4 @@
-package com.jasonvillar.works.register.configs.security;
+package com.jasonvillar.works.register.security;
 
 import com.jasonvillar.works.register.user.User;
 import lombok.AllArgsConstructor;

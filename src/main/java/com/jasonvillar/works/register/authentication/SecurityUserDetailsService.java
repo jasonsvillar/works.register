@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.configs.security.SecurityUser;
+import com.jasonvillar.works.register.security.SecurityUser;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserService;
 import lombok.RequiredArgsConstructor;

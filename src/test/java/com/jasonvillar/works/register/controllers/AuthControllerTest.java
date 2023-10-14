@@ -1,8 +1,8 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.authentication.AuthController;
-import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
-import com.jasonvillar.works.register.configs.security.SecurityUser;
+import com.jasonvillar.works.register.security.JwtTokenProvider;
+import com.jasonvillar.works.register.security.SecurityUser;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.user.User;

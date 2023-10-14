@@ -1,5 +1,7 @@
 package com.jasonvillar.works.register.configs.security;
 
+import com.jasonvillar.works.register.security.JwtTokenProvider;
+import com.jasonvillar.works.register.security.SecurityUser;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.authentication.JWTBlacklistService;
 import jakarta.servlet.http.HttpServletRequest;

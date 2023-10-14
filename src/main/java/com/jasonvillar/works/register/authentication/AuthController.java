@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
+import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
