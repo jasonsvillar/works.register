@@ -1,15 +1,20 @@
 package com.jasonvillar.works.register.controllers;
 
+import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.client.ClientMapper;
-import com.jasonvillar.works.register.dto.service.ServiceMapper;
-import com.jasonvillar.works.register.dto.user.UserMapper;
-import com.jasonvillar.works.register.dto.workregister.WorkRegisterMapper;
-import com.jasonvillar.works.register.dto.workregister.WorkRegisterRequest;
-import com.jasonvillar.works.register.entities.*;
-import com.jasonvillar.works.register.services.ClientService;
-import com.jasonvillar.works.register.services.ServiceService;
-import com.jasonvillar.works.register.services.WorkRegisterService;
+import com.jasonvillar.works.register.client.port.out.ClientDTOMapper;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.service.Service;
+import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOMapper;
+import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequest;
+import com.jasonvillar.works.register.client.ClientService;
+import com.jasonvillar.works.register.service.ServiceService;
+import com.jasonvillar.works.register.work_register.WorkRegisterService;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.work_register.WorkRegister;
+import com.jasonvillar.works.register.work_register.WorkRegisterController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -30,13 +35,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {WorkRegisterController.class, WorkRegisterMapper.class, ClientMapper.class, ServiceMapper.class, UserMapper.class})
+@ContextConfiguration(classes = {WorkRegisterController.class, WorkRegisterDTOMapper.class, ClientDTOMapper.class, ServiceDTOMapper.class, UserDTOMapper.class})
 class WorkRegisterControllerTest extends ControllerTestTemplate {
     @MockBean
     private WorkRegisterService service;
 
     @MockBean
-    private com.jasonvillar.works.register.services.UserService userService;
+    private UserService userService;
 
     @MockBean
     private ServiceService serviceService;

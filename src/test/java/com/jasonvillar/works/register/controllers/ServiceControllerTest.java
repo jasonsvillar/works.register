@@ -1,10 +1,11 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.service.ServiceMapper;
-import com.jasonvillar.works.register.dto.service.ServiceRequest;
-import com.jasonvillar.works.register.entities.Service;
-import com.jasonvillar.works.register.services.ServiceService;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.service.port.in.ServiceRequest;
+import com.jasonvillar.works.register.service.Service;
+import com.jasonvillar.works.register.service.ServiceController;
+import com.jasonvillar.works.register.service.ServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {ServiceController.class, ServiceMapper.class})
+@ContextConfiguration(classes = {ServiceController.class, ServiceDTOMapper.class})
 class ServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private ServiceService service;

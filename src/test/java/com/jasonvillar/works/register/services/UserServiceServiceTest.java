@@ -1,7 +1,9 @@
 package com.jasonvillar.works.register.services;
 
-import com.jasonvillar.works.register.entities.UserService;
-import com.jasonvillar.works.register.repositories.UserServiceRepository;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceRepository;
+import com.jasonvillar.works.register.service.ServiceService;
+import com.jasonvillar.works.register.user_service.UserServiceService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +22,7 @@ class UserServiceServiceTest {
     private UserServiceRepository repository;
 
     @Mock
-    private com.jasonvillar.works.register.services.UserService userService;
+    private com.jasonvillar.works.register.user.UserService userService;
 
     @Mock
     private ServiceService serviceService;

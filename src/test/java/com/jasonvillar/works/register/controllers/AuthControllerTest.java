@@ -1,11 +1,12 @@
 package com.jasonvillar.works.register.controllers;
 
+import com.jasonvillar.works.register.authentication.AuthController;
 import com.jasonvillar.works.register.configs.security.JwtTokenProvider;
 import com.jasonvillar.works.register.configs.security.SecurityUser;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.security.AuthenticationRequest;
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.services.JWTBlacklistService;
+import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.authentication.JWTBlacklistService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -16,8 +17,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ContextConfiguration;
-
-import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;

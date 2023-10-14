@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.entities.User;
+import com.jasonvillar.works.register.user.User;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

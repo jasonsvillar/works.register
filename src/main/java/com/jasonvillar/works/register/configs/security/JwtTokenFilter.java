@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.services.security.SecurityUserDetailsService;
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

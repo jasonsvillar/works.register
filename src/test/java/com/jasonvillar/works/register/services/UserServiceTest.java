@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.services;
 
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.repositories.UserRepository;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserRepository;
+import com.jasonvillar.works.register.user.UserService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

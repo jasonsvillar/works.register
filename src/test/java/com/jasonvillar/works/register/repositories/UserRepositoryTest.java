@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.repositories;
 
 import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.entities.User;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

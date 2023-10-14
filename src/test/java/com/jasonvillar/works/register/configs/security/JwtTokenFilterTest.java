@@ -1,11 +1,11 @@
 package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.controllers.UserController;
-import com.jasonvillar.works.register.dto.user.UserDTO;
-import com.jasonvillar.works.register.dto.user.UserMapper;
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.services.UserService;
-import com.jasonvillar.works.register.services.security.SecurityUserDetailsService;
+import com.jasonvillar.works.register.user.UserController;
+import com.jasonvillar.works.register.user.port.out.UserDTO;
+import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -22,7 +22,7 @@ class JwtTokenFilterTest {
     private UserService userService = Mockito.mock(UserService.class);
 
     @MockBean
-    private UserMapper userMapper = Mockito.mock(UserMapper.class);
+    private UserDTOMapper userDTOMapper = Mockito.mock(UserDTOMapper.class);
 
     @MockBean
     private SecurityUserDetailsService securityUserDetailsService = Mockito.mock(SecurityUserDetailsService.class);
@@ -40,11 +40,11 @@ class JwtTokenFilterTest {
         );
         List<User> listUser = List.of(User.builder().build());
         Mockito.when(userService.getList()).thenReturn(listUser);
-        Mockito.when(userMapper.apply(
+        Mockito.when(userDTOMapper.apply(
                 User.builder().name("extractedUserName").build()
         )).thenReturn(new UserDTO(1, "extractedUserName", "test@test.com"));
 
-        standaloneSetup(new UserController(userService, userMapper))
+        standaloneSetup(new UserController(userService, userDTOMapper))
                 .addFilters(new JwtTokenFilter(jwtTokenProvider, securityUserDetailsService)).build()
                 .perform(
                         get("/api/v1/users").header("Authorization", "Bearer randomBearerToken")
@@ -53,7 +53,7 @@ class JwtTokenFilterTest {
 
         Mockito.when(jwtTokenProvider.validateToken(Mockito.anyString())).thenReturn(false);
 
-        standaloneSetup(new UserController(userService, userMapper))
+        standaloneSetup(new UserController(userService, userDTOMapper))
                 .addFilters(new JwtTokenFilter(jwtTokenProvider, securityUserDetailsService)).build()
                 .perform(
                         get("/api/v1/users")

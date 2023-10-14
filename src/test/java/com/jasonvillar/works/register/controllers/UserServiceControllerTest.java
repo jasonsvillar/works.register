@@ -1,14 +1,16 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.service.ServiceMapper;
-import com.jasonvillar.works.register.dto.user.UserMapper;
-import com.jasonvillar.works.register.dto.userclient.UserClientRequest;
-import com.jasonvillar.works.register.dto.userservice.UserServiceMapper;
-import com.jasonvillar.works.register.entities.Service;
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.entities.UserService;
-import com.jasonvillar.works.register.services.*;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.service.ServiceService;
+import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user_client.port.in.UserClientRequest;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOMapper;
+import com.jasonvillar.works.register.service.Service;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceController;
+import com.jasonvillar.works.register.user_service.UserServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -25,13 +27,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserServiceController.class, UserServiceMapper.class, UserMapper.class, ServiceMapper.class})
+@ContextConfiguration(classes = {UserServiceController.class, UserServiceDTOMapper.class, UserDTOMapper.class, ServiceDTOMapper.class})
 class UserServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserServiceService service;
 
     @MockBean
-    private com.jasonvillar.works.register.services.UserService userService;
+    private com.jasonvillar.works.register.user.UserService userService;
 
     @MockBean
     private ServiceService serviceService;

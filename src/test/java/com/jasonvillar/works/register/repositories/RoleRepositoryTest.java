@@ -1,8 +1,10 @@
 package com.jasonvillar.works.register.repositories;
 
+import com.jasonvillar.works.register.authentication.PrivilegeRepository;
+import com.jasonvillar.works.register.authentication.RoleRepository;
 import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.entities.Privilege;
-import com.jasonvillar.works.register.entities.Role;
+import com.jasonvillar.works.register.authentication.Privilege;
+import com.jasonvillar.works.register.authentication.Role;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

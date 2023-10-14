@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.services.security.SecurityUserDetailsService;
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

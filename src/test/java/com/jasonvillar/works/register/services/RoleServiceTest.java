@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.services;
 
-import com.jasonvillar.works.register.entities.Role;
-import com.jasonvillar.works.register.repositories.RoleRepository;
+import com.jasonvillar.works.register.authentication.Role;
+import com.jasonvillar.works.register.authentication.RoleRepository;
+import com.jasonvillar.works.register.authentication.RoleService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

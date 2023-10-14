@@ -1,16 +1,17 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.client.ClientMapper;
-import com.jasonvillar.works.register.dto.user.UserMapper;
-import com.jasonvillar.works.register.dto.userclient.UserClientMapper;
-import com.jasonvillar.works.register.dto.userclient.UserClientRequest;
-import com.jasonvillar.works.register.entities.Client;
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.entities.UserClient;
-import com.jasonvillar.works.register.services.ClientService;
-import com.jasonvillar.works.register.services.UserClientService;
-import com.jasonvillar.works.register.services.UserService;
+import com.jasonvillar.works.register.client.port.out.ClientDTOMapper;
+import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user_client.port.out.UserClientDTOMapper;
+import com.jasonvillar.works.register.user_client.port.in.UserClientRequest;
+import com.jasonvillar.works.register.client.Client;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user_client.UserClient;
+import com.jasonvillar.works.register.client.ClientService;
+import com.jasonvillar.works.register.user_client.UserClientService;
+import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.user_client.UserClientController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserClientController.class, UserClientMapper.class, UserMapper.class, ClientMapper.class})
+@ContextConfiguration(classes = {UserClientController.class, UserClientDTOMapper.class, UserDTOMapper.class, ClientDTOMapper.class})
 class UserClientControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserClientService service;

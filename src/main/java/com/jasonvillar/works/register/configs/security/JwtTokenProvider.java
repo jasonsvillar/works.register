@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register.configs.security;
 
-import com.jasonvillar.works.register.services.JWTBlacklistService;
+import com.jasonvillar.works.register.authentication.JWTBlacklistService;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;

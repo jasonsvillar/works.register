@@ -1,10 +1,11 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.dto.user.UserMapper;
-import com.jasonvillar.works.register.dto.user.UserRequest;
-import com.jasonvillar.works.register.entities.User;
-import com.jasonvillar.works.register.services.UserService;
+import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user.port.in.UserRequest;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.user.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -21,7 +22,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserController.class, UserMapper.class})
+@ContextConfiguration(classes = {UserController.class, UserDTOMapper.class})
 class UserControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserService service;

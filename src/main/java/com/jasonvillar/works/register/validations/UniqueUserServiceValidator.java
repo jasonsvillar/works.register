@@ -1,7 +1,7 @@
 package com.jasonvillar.works.register.validations;
 
-import com.jasonvillar.works.register.entities.UserService;
-import com.jasonvillar.works.register.repositories.UserServiceRepository;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 import lombok.RequiredArgsConstructor;
