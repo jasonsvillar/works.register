@@ -1,7 +1,6 @@
 package com.jasonvillar.works.register.repositories;
 
 import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.entities.Client;
 import com.jasonvillar.works.register.entities.Privilege;
 import com.jasonvillar.works.register.entities.Role;
 import org.assertj.core.api.Assertions;
@@ -12,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Optional;
 
-public class RoleRepositoryTest extends DataJpaTestTemplate {
+class RoleRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     RoleRepository roleRepository;
 

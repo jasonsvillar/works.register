@@ -56,7 +56,7 @@ class AuthIT {
     }
 
     @Test
-    public void testBasicAuth() throws JSONException {
+    void testBasicAuth() throws JSONException {
         AuthenticationRequest authenticationRequest = new AuthenticationRequest("Admin", "admin");
 
         HttpEntity<AuthenticationRequest> authenticationRequestLogin = new HttpEntity<>(authenticationRequest, headers);
