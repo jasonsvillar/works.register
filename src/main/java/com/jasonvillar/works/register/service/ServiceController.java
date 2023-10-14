@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.service;
 
+import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
-import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,13 +23,15 @@ import java.util.Optional;
 public class ServiceController {
     private final ServiceService service;
 
-    private final ServiceDTOMapper mapper;
+    private final ServiceDTOAdapter serviceDTOAdapter;
+
+    private final ServiceRequestAdapter serviceRequestAdapter;
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<ServiceDTO> getService(@PathVariable long id) {
         Optional<Service> optional = this.service.getOptionalById(id);
         if (optional.isPresent()) {
-            ServiceDTO dto = mapper.apply(optional.get());
+            ServiceDTO dto = serviceDTOAdapter.apply(optional.get());
             return ResponseEntity.ok().body(dto);
         } else {
             return ResponseEntity.notFound().build();
@@ -37,7 +40,7 @@ public class ServiceController {
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<ServiceDTO>> getListService() {
-        List<ServiceDTO> listDTO = this.service.getList().stream().map(mapper).toList();
+        List<ServiceDTO> listDTO = this.service.getList().stream().map(serviceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -48,7 +51,7 @@ public class ServiceController {
 
     @GetMapping(value = "/name-like/{name}", produces = "application/json")
     public ResponseEntity<List<ServiceDTO>> getListServiceByNameLike(@PathVariable String name) {
-        List<ServiceDTO> listDTO = this.service.getListByNameLike(name).stream().map(mapper).toList();
+        List<ServiceDTO> listDTO = this.service.getListByNameLike(name).stream().map(serviceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -59,12 +62,12 @@ public class ServiceController {
 
     @PostMapping
     public ResponseEntity<Object> saveService(@Valid @RequestBody ServiceRequest request) {
-        Service entity = this.mapper.toEntity(request);
+        Service entity = this.serviceRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {
             entity = this.service.save(entity);
-            ServiceDTO dto = this.mapper.apply(entity);
+            ServiceDTO dto = this.serviceDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
             return ResponseEntity.badRequest().body(message);

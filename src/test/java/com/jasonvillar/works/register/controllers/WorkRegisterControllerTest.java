@@ -2,11 +2,12 @@ package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.client.port.out.ClientDTOMapper;
-import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.Service;
-import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
-import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOMapper;
+import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
+import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequestAdapter;
+import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOAdapter;
 import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequest;
 import com.jasonvillar.works.register.client.ClientService;
 import com.jasonvillar.works.register.service.ServiceService;
@@ -35,7 +36,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {WorkRegisterController.class, WorkRegisterDTOMapper.class, ClientDTOMapper.class, ServiceDTOMapper.class, UserDTOMapper.class})
+@ContextConfiguration(classes = {WorkRegisterController.class, WorkRegisterRequestAdapter.class, WorkRegisterDTOAdapter.class, ClientDTOAdapter.class, ServiceDTOAdapter.class, UserDTOAdapter.class})
 class WorkRegisterControllerTest extends ControllerTestTemplate {
     @MockBean
     private WorkRegisterService service;

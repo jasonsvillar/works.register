@@ -1,11 +1,12 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.service.port.out.ServiceDTOMapper;
+import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.ServiceService;
-import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user_client.port.in.UserClientRequest;
-import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOMapper;
+import com.jasonvillar.works.register.user_service.port.in.UserServiceRequestAdapter;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user_service.UserService;
@@ -27,7 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserServiceController.class, UserServiceDTOMapper.class, UserDTOMapper.class, ServiceDTOMapper.class})
+@ContextConfiguration(classes = {UserServiceController.class, UserServiceRequestAdapter.class, UserServiceDTOAdapter.class, UserDTOAdapter.class, ServiceDTOAdapter.class})
 class UserServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserServiceService service;

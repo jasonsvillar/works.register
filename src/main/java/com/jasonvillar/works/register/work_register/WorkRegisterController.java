@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.work_register;
 
+import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequestAdapter;
 import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTO;
-import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOMapper;
+import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOAdapter;
 import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequest;
 import com.jasonvillar.works.register.client.ClientService;
 import com.jasonvillar.works.register.user.UserService;
@@ -31,13 +32,15 @@ public class WorkRegisterController {
 
     private final ClientService clientService;
 
-    private final WorkRegisterDTOMapper mapper;
+    private final WorkRegisterRequestAdapter workRegisterRequestAdapter;
+
+    private final WorkRegisterDTOAdapter workRegisterDTOAdapter;
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<WorkRegisterDTO> getWorkRegister(@PathVariable long id) {
         Optional<WorkRegister> optional = this.service.getOptionalById(id);
         if (optional.isPresent()) {
-            WorkRegisterDTO dto = mapper.apply(optional.get());
+            WorkRegisterDTO dto = workRegisterDTOAdapter.apply(optional.get());
             return ResponseEntity.ok().body(dto);
         } else {
             return ResponseEntity.notFound().build();
@@ -46,7 +49,7 @@ public class WorkRegisterController {
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegister() {
-        List<WorkRegisterDTO> listDTO = this.service.getList().stream().map(mapper).toList();
+        List<WorkRegisterDTO> listDTO = this.service.getList().stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -57,7 +60,7 @@ public class WorkRegisterController {
 
     @GetMapping(value = "/user-id/{userId}", produces = "application/json")
     public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByUserId(@PathVariable long userId) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByUserId(userId).stream().map(mapper).toList();
+        List<WorkRegisterDTO> listDTO = this.service.getListByUserId(userId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -68,7 +71,7 @@ public class WorkRegisterController {
 
     @GetMapping(value = "/client-id/{clientId}", produces = "application/json")
     public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByClientId(@PathVariable long clientId) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByClientId(clientId).stream().map(mapper).toList();
+        List<WorkRegisterDTO> listDTO = this.service.getListByClientId(clientId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -79,7 +82,7 @@ public class WorkRegisterController {
 
     @GetMapping(value = "/user-id/{userId}/client-id/{clientId}", produces = "application/json")
     public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByUserIdAndClientId(@PathVariable long userId, @PathVariable long clientId) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByUserIdAndClientId(userId, clientId).stream().map(mapper).toList();
+        List<WorkRegisterDTO> listDTO = this.service.getListByUserIdAndClientId(userId, clientId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -90,7 +93,7 @@ public class WorkRegisterController {
 
     @GetMapping(value = "/title-like/{title}", produces = "application/json")
     public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByTitleLike(@PathVariable String title) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByTitleLike(title).stream().map(mapper).toList();
+        List<WorkRegisterDTO> listDTO = this.service.getListByTitleLike(title).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -101,7 +104,7 @@ public class WorkRegisterController {
 
     @PostMapping
     public ResponseEntity<Object> saveWorkRegister(@Valid @RequestBody WorkRegisterRequest request) {
-        WorkRegister entity = this.mapper.toEntity(request);
+        WorkRegister entity = this.workRegisterRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {
@@ -110,7 +113,7 @@ public class WorkRegisterController {
             entity.setService(serviceService.getById(entity.getServiceId()));
             entity.setClient(clientService.getById(entity.getClientId()));
 
-            WorkRegisterDTO dto = this.mapper.apply(entity);
+            WorkRegisterDTO dto = this.workRegisterDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
             return ResponseEntity.badRequest().body(message);

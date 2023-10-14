@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
+import com.jasonvillar.works.register.user.port.in.UserRequestAdapter;
+import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserService;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserController.class, UserDTOMapper.class})
+@ContextConfiguration(classes = {UserController.class, UserRequestAdapter.class, UserDTOAdapter.class})
 class UserControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserService service;

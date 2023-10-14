@@ -1,7 +1,8 @@
 package com.jasonvillar.works.register.user_service;
 
+import com.jasonvillar.works.register.user_service.port.in.UserServiceRequestAdapter;
 import com.jasonvillar.works.register.user_service.port.out.UserServiceDTO;
-import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOMapper;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -22,14 +23,16 @@ import java.util.Optional;
 public class UserServiceController {
     private final UserServiceService service;
 
-    private final UserServiceDTOMapper mapper;
+    private final UserServiceRequestAdapter userServiceRequestAdapter;
+
+    private final UserServiceDTOAdapter userServiceDTOAdapter;
 
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<UserServiceDTO> getUserService(@PathVariable long id) {
         Optional<UserService> optional = this.service.getOptionalById(id);
 
         if (optional.isPresent()) {
-            UserServiceDTO dto = mapper.apply(optional.get());
+            UserServiceDTO dto = userServiceDTOAdapter.apply(optional.get());
             return ResponseEntity.ok().body(dto);
         } else {
             return ResponseEntity.notFound().build();
@@ -38,7 +41,7 @@ public class UserServiceController {
 
     @GetMapping(value = "/user-id/{userId}", produces = "application/json")
     public ResponseEntity<List<UserServiceDTO>> getListUserServiceByUserId(@PathVariable long userId) {
-        List<UserServiceDTO> listDTO = this.service.getListByUserId(userId).stream().map(mapper).toList();
+        List<UserServiceDTO> listDTO = this.service.getListByUserId(userId).stream().map(userServiceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -49,7 +52,7 @@ public class UserServiceController {
 
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<UserServiceDTO>> getListUserService() {
-        List<UserServiceDTO> listDTO = this.service.getList().stream().map(mapper).toList();
+        List<UserServiceDTO> listDTO = this.service.getList().stream().map(userServiceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -60,11 +63,11 @@ public class UserServiceController {
 
     @PostMapping
     public ResponseEntity<Object> saveUserService(@Valid @RequestBody UserServiceRequest request) {
-        UserService entity = this.mapper.toEntity(request);
+        UserService entity = this.userServiceRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
         if (message.isEmpty()) {
             entity = this.service.save(entity);
-            UserServiceDTO dto = this.mapper.apply(entity);
+            UserServiceDTO dto = this.userServiceDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
             return ResponseEntity.badRequest().body(message);

@@ -1,9 +1,10 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.client.port.out.ClientDTOMapper;
-import com.jasonvillar.works.register.user.port.out.UserDTOMapper;
-import com.jasonvillar.works.register.user_client.port.out.UserClientDTOMapper;
+import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
+import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
+import com.jasonvillar.works.register.user_client.port.in.UserClientRequestAdapter;
+import com.jasonvillar.works.register.user_client.port.out.UserClientDTOAdapter;
 import com.jasonvillar.works.register.user_client.port.in.UserClientRequest;
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.user.User;
@@ -28,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {UserClientController.class, UserClientDTOMapper.class, UserDTOMapper.class, ClientDTOMapper.class})
+@ContextConfiguration(classes = {UserClientController.class, UserClientRequestAdapter.class, UserClientDTOAdapter.class, UserDTOAdapter.class, ClientDTOAdapter.class})
 class UserClientControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserClientService service;

@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.user;
 
-import com.jasonvillar.works.register.user.port.in.AddAdminRoleToUserRequest;
 import com.jasonvillar.works.register.authentication.Role;
 import com.jasonvillar.works.register.authentication.RoleService;
 import lombok.RequiredArgsConstructor;
@@ -90,10 +89,10 @@ public class UserService {
     }
 
     @Transactional
-    public boolean addAdminRoleToUser(AddAdminRoleToUserRequest userToAdmin) {
-        User user = this.getById(userToAdmin.id());
+    public boolean addAdminRoleToUserById(long id) {
+        User user = this.getById(id);
         Role roleAdmin = this.roleService.getById(1);
-        Set<Role> roleList = this.roleService.getListByUserId(userToAdmin.id());
+        Set<Role> roleList = this.roleService.getListByUserId(id);
 
         user.setHasRoleList(roleList);
         user.addRole(roleAdmin);

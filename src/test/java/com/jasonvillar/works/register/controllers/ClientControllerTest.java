@@ -1,8 +1,9 @@
 package com.jasonvillar.works.register.controllers;
 
 import com.jasonvillar.works.register.client.ClientController;
+import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.configtests.controllers.ControllerTestTemplate;
-import com.jasonvillar.works.register.client.port.out.ClientDTOMapper;
+import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.client.ClientService;
@@ -22,7 +23,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {ClientController.class, ClientDTOMapper.class})
+@ContextConfiguration(classes = {ClientController.class, ClientRequestAdapter.class, ClientDTOAdapter.class})
 class ClientControllerTest extends ControllerTestTemplate {
     @MockBean
     private ClientService service;
