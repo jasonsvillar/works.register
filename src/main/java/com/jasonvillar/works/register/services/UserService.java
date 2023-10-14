@@ -1,18 +1,23 @@
 package com.jasonvillar.works.register.services;
 
+import com.jasonvillar.works.register.dto.user.AddAdminRoleToUserRequest;
+import com.jasonvillar.works.register.entities.Role;
 import com.jasonvillar.works.register.entities.User;
 import com.jasonvillar.works.register.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final RoleService roleService;
 
     public List<User> getList() {
         return this.userRepository.findAll();
@@ -83,5 +88,16 @@ public class UserService {
         String password = this.plainPasswordToBcrypt(user.getPassword());
         user.setPassword(password);
         return this.userRepository.save(user);
+    }
+
+    @Transactional
+    public boolean addAdminRoleToUser(AddAdminRoleToUserRequest userToAdmin) {
+        User user = this.getById(userToAdmin.id());
+        Role roleAdmin = this.roleService.getById(1);
+        Set<Role> roleList = this.roleService.getListByUserId(userToAdmin.id());
+
+        user.setHasRoleList(roleList);
+        user.addRole(roleAdmin);
+        return true;
     }
 }

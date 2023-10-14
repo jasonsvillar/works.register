@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -27,5 +28,9 @@ public class RoleService {
 
     public List<Role> getListByNameLike(String name) {
         return roleRepository.findAllByNameContainingIgnoreCase(name);
+    }
+
+    public Set<Role> getListByUserId(long id) {
+        return roleRepository.findAllByInUserListId(id);
     }
 }

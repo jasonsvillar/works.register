@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.controllers;
 
+import com.jasonvillar.works.register.dto.user.AddAdminRoleToUserRequest;
 import com.jasonvillar.works.register.dto.user.UserMapper;
 import com.jasonvillar.works.register.dto.user.UserRequest;
 import com.jasonvillar.works.register.dto.user.UserDTO;
@@ -28,6 +29,7 @@ public class UserController {
 
     private final UserMapper mapper;
 
+    @Secured("View users")
     @GetMapping(value = "/{id}", produces = "application/json")
     public ResponseEntity<UserDTO> getUser(@PathVariable long id) {
         Optional<User> optional = this.service.getOptionalById(id);
@@ -39,6 +41,7 @@ public class UserController {
         }
     }
 
+    @Secured("View users")
     @GetMapping(produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUser() {
         List<UserDTO> listDTO = this.service.getList().stream().map(mapper).toList();
@@ -50,6 +53,7 @@ public class UserController {
         }
     }
 
+    @Secured("View users")
     @GetMapping(value = "/name-like/{name}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByNameLike(@PathVariable String name) {
         List<UserDTO> listDTO = this.service.getListByNameLike(name).stream().map(mapper).toList();
@@ -61,6 +65,7 @@ public class UserController {
         }
     }
 
+    @Secured("View users")
     @GetMapping(value = "/email-like/{email}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByEmailLike(@PathVariable String email) {
         List<UserDTO> listDTO = this.service.getListByEmailLike(email).stream().map(mapper).toList();
@@ -72,6 +77,7 @@ public class UserController {
         }
     }
 
+    @Secured("View users")
     @GetMapping(value = "/name-like/{name}/email-like/{email}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByNameLikeAndEmailLike(@PathVariable String name, @PathVariable String email) {
         List<UserDTO> listDTO = this.service.getListByNameLikeAndEmailLike(name, email).stream().map(mapper).toList();
@@ -83,7 +89,6 @@ public class UserController {
         }
     }
 
-    @Secured("Add user")
     @PostMapping
     public ResponseEntity<Object> saveUser(@Valid @RequestBody UserRequest request) {
         User entity = this.mapper.toEntity(request);
@@ -95,6 +100,16 @@ public class UserController {
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
             return ResponseEntity.badRequest().body(message);
+        }
+    }
+
+    @Secured("Add admin role to user")
+    @PostMapping(value = "/add-role/admin")
+    public ResponseEntity<String> addAdminRoleToUser(@Valid @RequestBody AddAdminRoleToUserRequest request) {
+        if(this.service.addAdminRoleToUser(request)) {
+            return new ResponseEntity<>("Added admin role to user with id " + request.id(), HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("An error has occurred", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }
