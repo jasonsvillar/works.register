@@ -1,6 +1,6 @@
 package com.jasonvillar.works.register;
 
-import com.jasonvillar.works.register.configtests.repositories.DataJpaTestTemplate;
+import com.jasonvillar.works.register.configs_for_tests.repositories.DataJpaTestTemplate;
 import org.junit.jupiter.api.Test;
 
 class ApplicationTest extends DataJpaTestTemplate {
