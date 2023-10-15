@@ -1,10 +1,13 @@
 package com.jasonvillar.works.register.client;
 
+import com.jasonvillar.works.register.user_client.UserClient;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Setter
@@ -28,4 +31,7 @@ public class Client {
         this.surname = surname;
         this.dni = dni;
     }
+
+    @OneToMany(mappedBy = "client")
+    List<UserClient> userClientList;
 }
