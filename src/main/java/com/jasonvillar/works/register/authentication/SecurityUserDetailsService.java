@@ -28,4 +28,8 @@ public class SecurityUserDetailsService implements UserDetailsService {
 
         throw new UsernameNotFoundException("User not found: " + username);
     }
+
+    public long getAuthenticatedUserId(UserDetails userDetails) {
+        return ((SecurityUser) userDetails).getId();
+    }
 }
