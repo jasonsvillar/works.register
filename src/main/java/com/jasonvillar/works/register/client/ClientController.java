@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.client;
 
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
@@ -9,6 +10,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,9 +30,12 @@ public class ClientController {
 
     private final ClientDTOAdapter clientDTOAdapter;
 
+    private final SecurityUserDetailsService securityUserDetailsService;
+
     @GetMapping(value = "/clients",produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClient() {
-        List<ClientDTO> listDTO = this.service.getList().stream().map(clientDTOAdapter).toList();
+    public ResponseEntity<List<ClientDTO>> getListClient(@AuthenticationPrincipal UserDetails userDetails) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ClientDTO> listDTO = this.service.getListByUserId(userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -39,8 +45,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/client/{id}", produces = "application/json")
-    public ResponseEntity<ClientDTO> getClientById(@PathVariable long id) {
-        Optional<Client> optional = this.service.getOptionalById(id);
+    public ResponseEntity<ClientDTO> getClientById(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        Optional<Client> optional = this.service.getOptionalByIdAndUserId(id, userId);
         if (optional.isPresent()) {
             ClientDTO dto = clientDTOAdapter.apply(optional.get());
             return ResponseEntity.ok().body(dto);

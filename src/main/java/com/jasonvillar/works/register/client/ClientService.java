@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.client.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,5 +66,13 @@ public class ClientService {
         }
 
         return message.toString();
+    }
+
+    public List<Client> getListByUserId(long userId) {
+        return clientRepository.findAllByUserClientListUserId(userId);
+    }
+
+    public Optional<Client> getOptionalByIdAndUserId(long id, long userId) {
+        return clientRepository.findOptionalByIdAndUserClientListUserId(id, userId);
     }
 }
