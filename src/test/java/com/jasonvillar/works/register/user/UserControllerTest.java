@@ -4,9 +4,6 @@ import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTe
 import com.jasonvillar.works.register.user.port.in.UserRequestAdapter;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
-import com.jasonvillar.works.register.user.User;
-import com.jasonvillar.works.register.user.UserService;
-import com.jasonvillar.works.register.user.UserController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

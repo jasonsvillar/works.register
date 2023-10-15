@@ -18,7 +18,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("api/v1/clients")
+@RequestMapping("api/v1")
 @Tag(name = "client", description = "the client API tag annotation")
 public class ClientController {
     private final ClientService service;
@@ -27,7 +27,7 @@ public class ClientController {
 
     private final ClientDTOAdapter clientDTOAdapter;
 
-    @GetMapping(produces = "application/json")
+    @GetMapping(value = "/clients",produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClient() {
         List<ClientDTO> listDTO = this.service.getList().stream().map(clientDTOAdapter).toList();
 
@@ -38,7 +38,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/client/{id}", produces = "application/json")
     public ResponseEntity<ClientDTO> getClientById(@PathVariable long id) {
         Optional<Client> optional = this.service.getOptionalById(id);
         if (optional.isPresent()) {
@@ -49,7 +49,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping(value = "/name-like/{name}", produces = "application/json")
+    @GetMapping(value = "/clients/name-like/{name}", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClientByNameLike(@PathVariable String name) {
         List<ClientDTO> listDTO = this.service.getListByNameLike(name).stream().map(clientDTOAdapter).toList();
 
@@ -60,7 +60,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping(value = "/surname-like/{surname}", produces = "application/json")
+    @GetMapping(value = "/clients/surname-like/{surname}", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClientBySurnameLike(@PathVariable String surname) {
         List<ClientDTO> listDTO = this.service.getListBySurnameLike(surname).stream().map(clientDTOAdapter).toList();
 
@@ -71,7 +71,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping(value = "/dni-like/{dni}", produces = "application/json")
+    @GetMapping(value = "/clients/dni-like/{dni}", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClientByDniLike(@PathVariable String dni) {
         List<ClientDTO> listDTO = this.service.getListByDniLike(dni).stream().map(clientDTOAdapter).toList();
 
@@ -82,7 +82,7 @@ public class ClientController {
         }
     }
 
-    @GetMapping(value = "/name-like/{name}/surname-like/{surname}", produces = "application/json")
+    @GetMapping(value = "/clients/name-like/{name}/surname-like/{surname}", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClientByNameLikeAndSurnameLike(@PathVariable String name, @PathVariable String surname) {
         List<ClientDTO> listDTO = this.service.getListByNameLikeAndSurnameLike(name, surname).stream().map(clientDTOAdapter).toList();
 
@@ -93,7 +93,7 @@ public class ClientController {
         }
     }
 
-    @PostMapping
+    @PostMapping(value = "/client")
     public ResponseEntity<Object> saveClient(@Valid @RequestBody ClientRequest request) {
         Client entity = this.clientRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);

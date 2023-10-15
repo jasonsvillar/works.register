@@ -1,12 +1,9 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.client.ClientController;
 import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
-import com.jasonvillar.works.register.client.Client;
-import com.jasonvillar.works.register.client.ClientService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -62,11 +59,11 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/clients/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/client/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/clients/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/client/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -138,7 +135,7 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("");
         Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post(this.endpointBegin + "/clients").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -146,7 +143,7 @@ class ClientControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("dni must be unique");
 
-        this.mockMvc.perform(post(this.endpointBegin + "/clients").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -160,7 +157,7 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("");
         Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post(this.endpointBegin + "/clients").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )

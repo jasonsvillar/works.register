@@ -9,9 +9,6 @@ import com.jasonvillar.works.register.user_service.port.in.UserServiceRequestAda
 import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.user.User;
-import com.jasonvillar.works.register.user_service.UserService;
-import com.jasonvillar.works.register.user_service.UserServiceController;
-import com.jasonvillar.works.register.user_service.UserServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

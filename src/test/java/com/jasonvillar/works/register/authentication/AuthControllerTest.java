@@ -1,12 +1,10 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.authentication.AuthController;
 import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.security.SecurityUser;
 import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.user.User;
-import com.jasonvillar.works.register.authentication.JWTBlacklistService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.boot.test.mock.mockito.MockBean;

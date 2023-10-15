@@ -3,7 +3,6 @@ package com.jasonvillar.works.register.authentication;
 import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -16,7 +15,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,8 +24,6 @@ import java.util.Date;
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
-@SecurityRequirements
-@Transactional
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;
@@ -64,7 +60,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/custom-logout")
+    @GetMapping("/logout-jwt")
     public ResponseEntity<String> performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         String jwt = this.jwtTokenProvider.resolveToken(request);
         this.logoutHandler.logout(request, response, authentication);

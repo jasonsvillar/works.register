@@ -11,11 +11,8 @@ import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOAdap
 import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequest;
 import com.jasonvillar.works.register.client.ClientService;
 import com.jasonvillar.works.register.service.ServiceService;
-import com.jasonvillar.works.register.work_register.WorkRegisterService;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserService;
-import com.jasonvillar.works.register.work_register.WorkRegister;
-import com.jasonvillar.works.register.work_register.WorkRegisterController;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

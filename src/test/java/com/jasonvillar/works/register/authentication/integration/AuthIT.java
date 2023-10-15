@@ -90,7 +90,7 @@ class AuthIT {
         // Logout
 
         ResponseEntity<String> logoutGet = restTemplate.exchange(
-                createURLWithPort("/api/auth/custom-logout"),
+                createURLWithPort("/api/auth/logout-jwt"),
                 HttpMethod.GET, jwtHeader, String.class
         );
 

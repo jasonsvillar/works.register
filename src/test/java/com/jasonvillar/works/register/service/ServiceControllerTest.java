@@ -4,9 +4,6 @@ import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTe
 import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
-import com.jasonvillar.works.register.service.Service;
-import com.jasonvillar.works.register.service.ServiceController;
-import com.jasonvillar.works.register.service.ServiceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
