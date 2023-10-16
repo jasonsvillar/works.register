@@ -57,8 +57,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/clients/name-like/{name}", produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClientByNameLike(@PathVariable String name) {
-        List<ClientDTO> listDTO = this.service.getListByNameLike(name).stream().map(clientDTOAdapter).toList();
+    public ResponseEntity<List<ClientDTO>> getListClientByNameLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String name) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ClientDTO> listDTO = this.service.getListByNameLikeAndUserId(name, userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -68,8 +69,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/clients/surname-like/{surname}", produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClientBySurnameLike(@PathVariable String surname) {
-        List<ClientDTO> listDTO = this.service.getListBySurnameLike(surname).stream().map(clientDTOAdapter).toList();
+    public ResponseEntity<List<ClientDTO>> getListClientBySurnameLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String surname) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ClientDTO> listDTO = this.service.getListBySurnameLikeAndUserId(surname, userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -79,8 +81,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/clients/dni-like/{dni}", produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClientByDniLike(@PathVariable String dni) {
-        List<ClientDTO> listDTO = this.service.getListByDniLike(dni).stream().map(clientDTOAdapter).toList();
+    public ResponseEntity<List<ClientDTO>> getListClientByDniLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String dni) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ClientDTO> listDTO = this.service.getListByDniLikeAndUserId(dni, userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -90,8 +93,9 @@ public class ClientController {
     }
 
     @GetMapping(value = "/clients/name-like/{name}/surname-like/{surname}", produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClientByNameLikeAndSurnameLike(@PathVariable String name, @PathVariable String surname) {
-        List<ClientDTO> listDTO = this.service.getListByNameLikeAndSurnameLike(name, surname).stream().map(clientDTOAdapter).toList();
+    public ResponseEntity<List<ClientDTO>> getListClientByNameLikeAndSurnameLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String name, @PathVariable String surname) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ClientDTO> listDTO = this.service.getListByNameLikeAndSurnameLikeAndUserId(name, surname, userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -101,12 +105,13 @@ public class ClientController {
     }
 
     @PostMapping(value = "/client")
-    public ResponseEntity<Object> saveClient(@Valid @RequestBody ClientRequest request) {
+    public ResponseEntity<Object> saveClient(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ClientRequest request) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         Client entity = this.clientRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {
-            entity = this.service.save(entity);
+            entity = this.service.saveWithUser(entity, userId);
             ClientDTO dto = this.clientDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {

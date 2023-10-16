@@ -16,4 +16,8 @@ public interface ClientRepository extends JpaRepository<Client, Long> {
     List<Client> findAllByDniContainingIgnoreCase(String dni);
     List<Client> findAllByUserClientListUserId(long userId);
     Optional<Client> findOptionalByIdAndUserClientListUserId(long id, long userId);
+    List<Client> findAllByNameContainingIgnoreCaseAndUserClientListUserId(String name, long userId);
+    List<Client> findAllBySurnameContainingIgnoreCaseAndUserClientListUserId(String surname, long userId);
+    List<Client> findAllByDniContainingIgnoreCaseAndUserClientListUserId(String dni, long userId);
+    List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId(String name, String surname, long userId);
 }
