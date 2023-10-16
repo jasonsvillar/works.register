@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.client.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

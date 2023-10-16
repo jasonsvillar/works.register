@@ -1,8 +1,5 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.authentication.Privilege;
-import com.jasonvillar.works.register.authentication.PrivilegeRepository;
-import com.jasonvillar.works.register.authentication.PrivilegeService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

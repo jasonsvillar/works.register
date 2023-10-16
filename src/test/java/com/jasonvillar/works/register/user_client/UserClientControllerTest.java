@@ -58,10 +58,10 @@ class UserClientControllerTest extends ControllerTestTemplate {
     @BeforeEach
     public void setup() {
         super.setup();
-        entity.setId(Long.valueOf(1));
+        entity.setId(1L);
 
-        userEntity.setId(Long.valueOf(1));
-        clientEntity.setId(Long.valueOf(1));
+        userEntity.setId(1L);
+        clientEntity.setId(1L);
 
         entity.setUser(userEntity);
         entity.setClient(clientEntity);

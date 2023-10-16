@@ -1,13 +1,10 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.client.Client;
-import com.jasonvillar.works.register.client.ClientRepository;
 import com.jasonvillar.works.register.user_client.UserClient;
 import com.jasonvillar.works.register.user_client.UserClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 

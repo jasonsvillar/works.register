@@ -1,8 +1,5 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.client.Client;
-import com.jasonvillar.works.register.client.ClientRepository;
-import com.jasonvillar.works.register.client.ClientService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

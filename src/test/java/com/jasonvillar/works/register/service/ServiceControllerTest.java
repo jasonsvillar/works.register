@@ -34,7 +34,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
     @BeforeEach
     public void setup() {
         super.setup();
-        entity.setId(Long.valueOf(1));
+        entity.setId(1L);
     }
 
     @Test

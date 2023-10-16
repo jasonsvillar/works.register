@@ -1,8 +1,6 @@
 package com.jasonvillar.works.register.service;
 
 import com.jasonvillar.works.register.configs_for_tests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.service.Service;
-import com.jasonvillar.works.register.service.ServiceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
