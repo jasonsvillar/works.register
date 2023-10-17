@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.client;
 
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -24,6 +26,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ClientControllerTest extends ControllerTestTemplate {
     @MockBean
     private ClientService service;
+
+    @MockBean
+    private SecurityUserDetailsService securityUserDetailsService;
 
     private final Client entity = Client.builder()
             .name("Name")
@@ -40,24 +45,18 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequest_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getList()).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestByUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByUserId(0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        Mockito.when(service.getList()).thenReturn(Collections.emptyList());
-
-        this.mockMvc.perform(get(this.endpointBegin + "/clients")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
     }
 
     @Test
-    void givenClients_whenGetRequestById_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
-        Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
+    void givenClients_whenGetRequestByIdAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getOptionalByIdAndUserId(1, 0)).thenReturn(Optional.of(entity));
+        Mockito.when(service.getOptionalByIdAndUserId(0, 0)).thenReturn(Optional.empty());
 
         this.mockMvc.perform(get(this.endpointBegin + "/client/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
@@ -69,14 +68,14 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestByName_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByNameLike("Name")).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestByNameAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByNameLikeAndUserId("Name", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/name-like/{name}", "Name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListByNameLike("Nonexistent name")).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListByNameLikeAndUserId("Nonexistent name", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/name-like/{name}", "Nonexistent name")
                         .accept(MediaType.APPLICATION_JSON))
@@ -84,14 +83,14 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestBySurname_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListBySurnameLike("Surname")).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestBySurnameAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListBySurnameLikeAndUserId("Surname", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/surname-like/{surname}", "Surname")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListBySurnameLike("Nonexistent surname")).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListBySurnameLikeAndUserId("Nonexistent surname", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/surname-like/{name}", "Nonexistent surname")
                         .accept(MediaType.APPLICATION_JSON))
@@ -99,14 +98,14 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestByDni_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByDniLike("11222333")).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestByDniAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByDniLikeAndUserId("11222333", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/dni-like/{dni}", "11222333")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListByDniLike("00000000")).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListByDniLikeAndUserId("00000000", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/dni-like/{dni}", "00000000")
                         .accept(MediaType.APPLICATION_JSON))
@@ -114,14 +113,14 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestByNameAndSurname_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByNameLikeAndSurnameLike("Name", "Surname")).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestByNameAndSurnameAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByNameLikeAndSurnameLikeAndUserId("Name", "Surname", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/name-like/{name}/surname-like/{surname}", "Name", "Surname")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListByNameLikeAndSurnameLike("Nonexistent name", "Nonexistent surname")).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListByNameLikeAndSurnameLikeAndUserId("Nonexistent name", "Nonexistent surname", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/name-like/{name}/surname-like/{surname}", "Nonexistent name", "Nonexistent surname")
                         .accept(MediaType.APPLICATION_JSON))
@@ -129,11 +128,11 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenNewClient_whenSave_thenCheckIfCreated() throws Exception {
+    void givenNewClientWithUserId_whenSave_thenCheckIfCreated() throws Exception {
         String requestJson = ow.writeValueAsString(this.request);
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("");
-        Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
+        Mockito.when(service.saveWithUser(Mockito.any(Client.class), eq(0L) )).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)

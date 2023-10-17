@@ -1,7 +1,7 @@
 package com.jasonvillar.works.register.client;
 
 import com.jasonvillar.works.register.user_client.UserClient;
-import com.jasonvillar.works.register.user_client.UserClientService;
+import com.jasonvillar.works.register.user_client.UserClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +12,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClientService {
     private final ClientRepository clientRepository;
-    private final UserClientService userClientService;
+    private final UserClientRepository userClientRepository;
 
     public List<Client> getList() {
         return clientRepository.findAll();
@@ -66,7 +66,7 @@ public class ClientService {
                 .userId(userId)
                 .build();
 
-        this.userClientService.save(userClient);
+        this.userClientRepository.save(userClient);
 
         return clientSaved;
     }

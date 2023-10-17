@@ -1,8 +1,6 @@
 package com.jasonvillar.works.register.user_client;
 
 import com.jasonvillar.works.register.client.ClientService;
-import com.jasonvillar.works.register.user_client.UserClient;
-import com.jasonvillar.works.register.user_client.UserClientRepository;
 import com.jasonvillar.works.register.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
