@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.service;
 
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -31,6 +33,9 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     private final ServiceRequest request = new ServiceRequest("Name");
 
+    @MockBean
+    private SecurityUserDetailsService securityUserDetailsService;
+
     @BeforeEach
     public void setup() {
         super.setup();
@@ -39,42 +44,36 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     @Test
     void givenServices_whenGetRequest_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getList()).thenReturn(List.of(entity));
+        Mockito.when(service.getListByUserId(0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/services")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
-        Mockito.when(service.getList()).thenReturn(Collections.emptyList());
-
-        this.mockMvc.perform(get(this.endpointBegin + "/services")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNoContent());
     }
 
     @Test
     void givenServices_whenGetRequestById_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
-        Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
+        Mockito.when(service.getOptionalByIdAndUserId(1, 0)).thenReturn(Optional.of(entity));
+        Mockito.when(service.getOptionalByIdAndUserId(0, 0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/services/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/service/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/services/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/service/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void givenServices_whenGetRequestByName_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByNameLike("Name")).thenReturn(List.of(entity));
+        Mockito.when(service.getListByNameLikeAndUserId("Name", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/name-like/{name}", "Name")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListByNameLike("Nonexistent name")).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListByNameLikeAndUserId("Nonexistent name", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/name-like/{name}", "Nonexistent name")
                         .accept(MediaType.APPLICATION_JSON))
@@ -86,9 +85,9 @@ class ServiceControllerTest extends ControllerTestTemplate {
         String requestJson = ow.writeValueAsString(this.request);
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("");
-        Mockito.when(service.save(Mockito.any(Service.class))).thenReturn(this.entity);
+        Mockito.when(service.saveWithUser(Mockito.any(Service.class), eq(0L))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post(this.endpointBegin + "/services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -96,7 +95,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("name must be unique");
 
-        this.mockMvc.perform(post(this.endpointBegin + "/services").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
