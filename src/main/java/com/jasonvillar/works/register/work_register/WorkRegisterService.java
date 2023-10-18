@@ -8,6 +8,7 @@ import com.jasonvillar.works.register.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +38,10 @@ public class WorkRegisterService {
 
     public List<WorkRegister> getListByTitleLike(String title) {
         return this.repository.findAllByTitleContainingIgnoreCase(title);
+    }
+
+    public List<WorkRegister> getListByTitleLikeAndUserId(String title, long userId) {
+        return this.repository.findAllByTitleContainingIgnoreCaseAndUserId(title, userId);
     }
 
     public WorkRegister getById(long id) {
@@ -73,5 +78,9 @@ public class WorkRegisterService {
         }
 
         return message.toString();
+    }
+
+    public Optional<WorkRegister> getOptionalByIdAndUserId(long id, long userId) {
+        return this.repository.findOptionalByIdAndUserId(id, userId);
     }
 }

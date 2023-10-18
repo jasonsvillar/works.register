@@ -7,8 +7,6 @@ import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.service.ServiceRepository;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserRepository;
-import com.jasonvillar.works.register.work_register.WorkRegister;
-import com.jasonvillar.works.register.work_register.WorkRegisterRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -172,6 +170,26 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
         Assertions.assertThat(workRegister).isNotEmpty();
 
         workRegister = this.workRegisterRepository.findAllByTitleContainingIgnoreCase("Nonexistent name");
+        Assertions.assertThat(workRegister).isEmpty();
+    }
+
+    /*---------------------------------------------------*/
+
+    @Test
+    void givenWorkRegisterInTable_whenFindOptionalByIdAndUserId_thenIsPresentAssertionsTrueAndFalse() {
+        Optional<WorkRegister> workRegister = this.workRegisterRepository.findOptionalByIdAndUserId(this.workRegisterInDatabase.getId(), this.userInDatabase.getId());
+        Assertions.assertThat(workRegister).isPresent();
+
+        workRegister = this.workRegisterRepository.findOptionalByIdAndUserId(this.workRegisterInDatabase.getId(), 0);
+        Assertions.assertThat(workRegister).isNotPresent();
+    }
+
+    @Test
+    void givenWorkRegisterInTable_whenFindAllByTitleContainingIgnoreCaseAndUserId_thenCheckIfEmpty() {
+        List<WorkRegister> workRegister = this.workRegisterRepository.findAllByTitleContainingIgnoreCaseAndUserId("ummy", userInDatabase.getId());
+        Assertions.assertThat(workRegister).isNotEmpty();
+
+        workRegister = this.workRegisterRepository.findAllByTitleContainingIgnoreCaseAndUserId("ummy", 0);
         Assertions.assertThat(workRegister).isEmpty();
     }
 }

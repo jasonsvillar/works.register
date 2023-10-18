@@ -25,8 +25,6 @@ public record WorkRegisterRequest(
         @NotNull
         BigDecimal payment,
         @NotNull
-        long userId,
-        @NotNull
         long serviceId,
         @NotNull
         long clientId

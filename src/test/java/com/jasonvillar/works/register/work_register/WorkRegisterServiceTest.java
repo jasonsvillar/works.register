@@ -1,11 +1,8 @@
 package com.jasonvillar.works.register.work_register;
 
 import com.jasonvillar.works.register.client.ClientService;
-import com.jasonvillar.works.register.work_register.WorkRegister;
-import com.jasonvillar.works.register.work_register.WorkRegisterRepository;
 import com.jasonvillar.works.register.service.ServiceService;
 import com.jasonvillar.works.register.user.UserService;
-import com.jasonvillar.works.register.work_register.WorkRegisterService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,7 +49,7 @@ class WorkRegisterServiceTest {
 
     @BeforeEach
     void setup() {
-        entity.setId(Long.valueOf(1));
+        entity.setId(1L);
     }
 
     @Test
@@ -161,5 +158,27 @@ class WorkRegisterServiceTest {
 
         message = this.service.getValidationsMessageWhenCantBeSaved(this.entity);
         Assertions.assertThat(message).isEmpty();
+    }
+
+    @Test
+    void givenRepositories_whenGetListByTitleLikeAndUserId_thenReturnList() {
+        Mockito.when(repository.findAllByTitleContainingIgnoreCaseAndUserId("Test work", 1)).thenReturn(List.of(entity));
+
+        List<WorkRegister> list = service.getListByTitleLikeAndUserId("Test work", 1);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(WorkRegister.class);
+    }
+
+    @Test
+    void givenRepositories_whenGetOptionalByIdAndUserId_thenReturnOptional() {
+        Mockito.when(repository.findOptionalByIdAndUserId(1, 1)).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByIdAndUserId(2, 1)).thenReturn(Optional.empty());
+
+        Optional<WorkRegister> optional = service.getOptionalByIdAndUserId(1, 1);
+        Assertions.assertThat(optional).isPresent();
+
+        optional = service.getOptionalByIdAndUserId(2, 1);
+        Assertions.assertThat(optional).isNotPresent();
     }
 }

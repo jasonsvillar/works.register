@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.work_register;
 
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequestAdapter;
 import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTO;
 import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTOAdapter;
@@ -12,6 +13,8 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +24,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("api/v1/works-registers")
+@RequestMapping("api/v1")
 @Tag(name = "work", description = "the work API tag annotation")
 public class WorkRegisterController {
     private final WorkRegisterService service;
@@ -36,9 +39,12 @@ public class WorkRegisterController {
 
     private final WorkRegisterDTOAdapter workRegisterDTOAdapter;
 
-    @GetMapping(value = "/{id}", produces = "application/json")
-    public ResponseEntity<WorkRegisterDTO> getWorkRegister(@PathVariable long id) {
-        Optional<WorkRegister> optional = this.service.getOptionalById(id);
+    private final SecurityUserDetailsService securityUserDetailsService;
+
+    @GetMapping(value = "/work/{id}", produces = "application/json")
+    public ResponseEntity<WorkRegisterDTO> getWorkRegister(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        Optional<WorkRegister> optional = this.service.getOptionalByIdAndUserId(id, userId);
         if (optional.isPresent()) {
             WorkRegisterDTO dto = workRegisterDTOAdapter.apply(optional.get());
             return ResponseEntity.ok().body(dto);
@@ -47,9 +53,10 @@ public class WorkRegisterController {
         }
     }
 
-    @GetMapping(produces = "application/json")
-    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegister() {
-        List<WorkRegisterDTO> listDTO = this.service.getList().stream().map(workRegisterDTOAdapter).toList();
+    @GetMapping(value = "/works", produces = "application/json")
+    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegister(@AuthenticationPrincipal UserDetails userDetails) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<WorkRegisterDTO> listDTO = this.service.getListByUserId(userId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -58,30 +65,9 @@ public class WorkRegisterController {
         }
     }
 
-    @GetMapping(value = "/user-id/{userId}", produces = "application/json")
-    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByUserId(@PathVariable long userId) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByUserId(userId).stream().map(workRegisterDTOAdapter).toList();
-
-        if (listDTO.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(listDTO);
-        }
-    }
-
-    @GetMapping(value = "/client-id/{clientId}", produces = "application/json")
-    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByClientId(@PathVariable long clientId) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByClientId(clientId).stream().map(workRegisterDTOAdapter).toList();
-
-        if (listDTO.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            return ResponseEntity.ok().body(listDTO);
-        }
-    }
-
-    @GetMapping(value = "/user-id/{userId}/client-id/{clientId}", produces = "application/json")
-    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByUserIdAndClientId(@PathVariable long userId, @PathVariable long clientId) {
+    @GetMapping(value = "/works/client-id/{clientId}", produces = "application/json")
+    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByClientId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long clientId) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         List<WorkRegisterDTO> listDTO = this.service.getListByUserIdAndClientId(userId, clientId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
@@ -91,9 +77,10 @@ public class WorkRegisterController {
         }
     }
 
-    @GetMapping(value = "/title-like/{title}", produces = "application/json")
-    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByTitleLike(@PathVariable String title) {
-        List<WorkRegisterDTO> listDTO = this.service.getListByTitleLike(title).stream().map(workRegisterDTOAdapter).toList();
+    @GetMapping(value = "/works/title/{title}", produces = "application/json")
+    public ResponseEntity<List<WorkRegisterDTO>> getListWorkRegisterByTitleLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String title) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<WorkRegisterDTO> listDTO = this.service.getListByTitleLikeAndUserId(title, userId).stream().map(workRegisterDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -102,9 +89,11 @@ public class WorkRegisterController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Object> saveWorkRegister(@Valid @RequestBody WorkRegisterRequest request) {
+    @PostMapping(value = "/work")
+    public ResponseEntity<Object> saveWorkRegister(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody WorkRegisterRequest request) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         WorkRegister entity = this.workRegisterRequestAdapter.toEntity(request);
+        entity.setId(userId);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {

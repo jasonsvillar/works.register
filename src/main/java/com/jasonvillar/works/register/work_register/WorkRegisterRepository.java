@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.work_register;
 
-import com.jasonvillar.works.register.work_register.WorkRegister;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -22,4 +21,8 @@ public interface WorkRegisterRepository extends JpaRepository<WorkRegister, Long
     Optional<WorkRegister> findOptionalById(long id);
 
     List<WorkRegister> findAllByServiceId(long id);
+
+    Optional<WorkRegister> findOptionalByIdAndUserId(long id, long userId);
+
+    List<WorkRegister> findAllByTitleContainingIgnoreCaseAndUserId(String title, long userId);
 }

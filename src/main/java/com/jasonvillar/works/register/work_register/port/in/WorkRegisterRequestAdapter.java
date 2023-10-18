@@ -6,16 +6,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class WorkRegisterRequestAdapter {
     public WorkRegister toEntity(WorkRegisterRequest workRegisterRequest) {
-        return new WorkRegister(
-                workRegisterRequest.title(),
-                workRegisterRequest.dateFrom(),
-                workRegisterRequest.timeFrom(),
-                workRegisterRequest.dateTo(),
-                workRegisterRequest.timeTo(),
-                workRegisterRequest.payment(),
-                workRegisterRequest.userId(),
-                workRegisterRequest.serviceId(),
-                workRegisterRequest.clientId()
-        );
+        return WorkRegister.builder()
+                .title(workRegisterRequest.title())
+                .dateFrom(workRegisterRequest.dateFrom())
+                .timeFrom(workRegisterRequest.timeFrom())
+                .dateTo(workRegisterRequest.dateTo())
+                .timeTo(workRegisterRequest.timeTo())
+                .payment(workRegisterRequest.payment())
+                .serviceId(workRegisterRequest.serviceId())
+                .clientId(workRegisterRequest.clientId())
+                .build();
     }
 }
