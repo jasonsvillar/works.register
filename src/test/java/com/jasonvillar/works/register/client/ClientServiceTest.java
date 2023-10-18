@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.user_client.UserClientService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,9 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 class ClientServiceTest {
     @Mock
     private ClientRepository repository;
-
-    @Mock
-    private UserClientService userClientService;
 
     @InjectMocks
     private ClientService service;

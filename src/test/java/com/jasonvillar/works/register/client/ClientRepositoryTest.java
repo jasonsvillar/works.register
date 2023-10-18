@@ -41,7 +41,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
-    void givenEntity_WhenSave_thenCheckIfNotNull() {
+    void givenEntity_whenSave_thenCheckIfNotNull() {
         Client entity = Client.builder()
                 .name("test")
                 .surname("test")

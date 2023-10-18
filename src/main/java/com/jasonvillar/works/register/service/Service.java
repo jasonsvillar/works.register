@@ -1,10 +1,13 @@
 package com.jasonvillar.works.register.service;
 
+import com.jasonvillar.works.register.user_service.UserService;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Entity
 @Setter
@@ -22,4 +25,7 @@ public class Service {
     public Service(String name) {
         this.name = name;
     }
+
+    @OneToMany(mappedBy = "service")
+    List<UserService> userServiceList;
 }

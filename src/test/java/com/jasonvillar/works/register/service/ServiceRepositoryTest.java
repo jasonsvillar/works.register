@@ -1,10 +1,14 @@
 package com.jasonvillar.works.register.service;
 
 import com.jasonvillar.works.register.configs_for_tests.repositories.DataJpaTestTemplate;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,18 +17,29 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     ServiceRepository serviceRepository;
 
+    @Autowired
+    UserServiceRepository userServiceRepository;
+
     private Service serviceInDatabase = Service.builder()
             .name("Dummy name")
             .build();
 
+    private UserService userServiceInDatabase = UserService.builder()
+            .userId(1)
+            .serviceId(0)
+            .build();
+
     @BeforeEach
-    void setUp() {
-        this.serviceRepository.deleteAll();
+    void setUp(@Autowired JdbcTemplate jdbcTemplate) {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
         this.serviceInDatabase = this.serviceRepository.save(this.serviceInDatabase);
+        this.userServiceInDatabase.setServiceId(this.serviceInDatabase.getId());
+        this.userServiceInDatabase = this.userServiceRepository.save(this.userServiceInDatabase);
     }
 
     @Test
-    void givenService_WhenSave_thenCheckIfNotNull() {
+    void givenService_whenSave_thenCheckIfNotNull() {
         Service service = Service.builder()
                 .name("test")
                 .build();
@@ -76,5 +91,31 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
 
         service = this.serviceRepository.findOptionalByName("Nonexistent name");
         Assertions.assertThat(service).isNotPresent();
+    }
+
+    @Test
+    void givenServiceInTable_whenFindAllByUserServiceListUserId_thenCheckIfEmpty() {
+        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void givenServiceInTable_whenFindAllByNameContainingIgnoreCaseAndUserServiceListUserId_thenCheckIfEmpty() {
+        List<Service> serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 1);
+        Assertions.assertThat(serviceList).isNotEmpty();
+
+        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 1);
+        Assertions.assertThat(serviceList).isNotEmpty();
+
+        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 0);
+        Assertions.assertThat(serviceList).isEmpty();
+    }
+
+    @Test
+    void givenServiceInTable_whenFindOptionalByIdAndUserServiceListUserId_thenIsPresentAssertionsTrue() {
+        Optional<Service> service = this.serviceRepository.findOptionalByIdAndUserServiceListUserId(this.serviceInDatabase.getId(), 1);
+
+        Assertions.assertThat(service).isPresent();
     }
 }

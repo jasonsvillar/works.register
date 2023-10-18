@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.service;
 
-import com.jasonvillar.works.register.service.Service;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -13,4 +12,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     Optional<Service> findOptionalById(long id);
     Optional<Service> findOptionalByName(String name);
     List<Service> findAllByNameContainingIgnoreCase(String name);
+    Optional<Service> findOptionalByIdAndUserServiceListUserId(long id, long userId);
+    List<Service> findAllByUserServiceListUserId(long userId);
+    List<Service> findAllByNameContainingIgnoreCaseAndUserServiceListUserId(String name, long userId);
 }

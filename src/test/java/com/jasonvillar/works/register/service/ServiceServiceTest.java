@@ -1,8 +1,7 @@
 package com.jasonvillar.works.register.service;
 
-import com.jasonvillar.works.register.service.Service;
-import com.jasonvillar.works.register.service.ServiceRepository;
-import com.jasonvillar.works.register.service.ServiceService;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+
 @ExtendWith(MockitoExtension.class)
 class ServiceServiceTest {
     @Mock
@@ -22,6 +23,9 @@ class ServiceServiceTest {
 
     @InjectMocks
     private ServiceService service;
+
+    @Mock
+    private UserServiceRepository userServiceRepository;
 
     private Service entity = Service.builder()
             .name("Name")
@@ -126,5 +130,56 @@ class ServiceServiceTest {
 
         exist = service.isExistName("Nonexistent name");
         Assertions.assertThat(exist).isFalse();
+    }
+
+    @Test
+    void givenRepositories_whenGetOptionalByIdAndUserId_thenReturnOptional() {
+        Mockito.when(repository.findOptionalByIdAndUserServiceListUserId(1, 1)).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByIdAndUserServiceListUserId(1, 0)).thenReturn(Optional.empty());
+
+        Optional<Service> optional = service.getOptionalByIdAndUserId(1, 1);
+        Assertions.assertThat(optional).isPresent();
+
+        optional = service.getOptionalByIdAndUserId(1, 0);
+        Assertions.assertThat(optional).isNotPresent();
+    }
+
+    @Test
+    void givenRepositories_whenGetListByUserId_thenReturnList() {
+        Mockito.when(repository.findAllByUserServiceListUserId(1)).thenReturn(List.of(entity));
+
+        List<Service> list = service.getListByUserId(1);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(Service.class);
+    }
+
+    @Test
+    void givenRepositories_whenGetListByNameLikeAndUserId_thenReturnOptional() {
+        Mockito.when(repository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("Name", 1)).thenReturn(List.of(entity));
+
+        List<Service> list = service.getListByNameLikeAndUserId("Name", 1);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(Service.class);
+    }
+
+    @Test
+    void givenEntity_whenSaveWithUser_themReturnEntitySaved() {
+        Service newEntity = Service.builder()
+                .name("Name")
+                .build();
+        newEntity.setId(1L);
+        Mockito.when(repository.save(newEntity)).thenReturn(entity);
+
+        UserService userService = UserService.builder()
+                .userId(1)
+                .serviceId(1)
+                .build();
+        userService.setId(1L);
+        Mockito.when(userServiceRepository.save(any())).thenReturn(userService);
+
+        Service entitySaved = service.saveWithUser(newEntity, 1L);
+        Assertions.assertThat(entitySaved.getId()).isEqualTo(1);
     }
 }

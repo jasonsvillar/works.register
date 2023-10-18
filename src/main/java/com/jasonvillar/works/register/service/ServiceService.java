@@ -1,5 +1,7 @@
 package com.jasonvillar.works.register.service;
 
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
@@ -9,6 +11,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ServiceService {
     private final ServiceRepository serviceRepository;
+    private final UserServiceRepository userServiceRepository;
 
     public List<Service> getList() {
         return this.serviceRepository.findAll();
@@ -50,5 +53,30 @@ public class ServiceService {
 
     public Service save(Service service) {
         return this.serviceRepository.save(service);
+    }
+
+    public Optional<Service> getOptionalByIdAndUserId(long id, long userId) {
+        return this.serviceRepository.findOptionalByIdAndUserServiceListUserId(id, userId);
+    }
+
+    public List<Service> getListByUserId(long userId) {
+        return this.serviceRepository.findAllByUserServiceListUserId(userId);
+    }
+
+    public List<Service> getListByNameLikeAndUserId(String name, long userId) {
+        return this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId(name, userId);
+    }
+
+    public Service saveWithUser(Service entity, long userId) {
+        Service serviceSaved = this.save(entity);
+
+        UserService userService = UserService.builder()
+                .serviceId(serviceSaved.getId())
+                .userId(userId)
+                .build();
+
+        this.userServiceRepository.save(userService);
+
+        return serviceSaved;
     }
 }
