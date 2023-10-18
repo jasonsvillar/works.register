@@ -127,21 +127,6 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenWorkRegisters_whenGetRequestByUserId_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByUserId(1)).thenReturn(List.of(entity));
-
-        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}", 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        Mockito.when(service.getListByUserId(0)).thenReturn(Collections.emptyList());
-
-        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}", 0)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
     void givenWorkRegisters_whenGetRequestByClientIdAndUserId_thenCheckIfOk() throws Exception {
         Mockito.when(service.getListByUserIdAndClientId(0, 1)).thenReturn(List.of(entity));
 
@@ -152,21 +137,6 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getListByUserIdAndClientId(0, 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/works/client-id/{clientId}", 0)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void givenWorkRegisters_whenGetRequestByUserIdAndClientId_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByUserIdAndClientId(1, 1)).thenReturn(List.of(entity));
-
-        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}/client-id/{clientId}", 1, 1)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-
-        Mockito.when(service.getListByUserIdAndClientId(0, 0)).thenReturn(Collections.emptyList());
-
-        this.mockMvc.perform(get(this.endpointBegin + "/works-registers/user-id/{userId}/client-id/{clientId}", 0, 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
