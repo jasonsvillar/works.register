@@ -63,7 +63,7 @@ class WorkRegisterControllerTest extends ControllerTestTemplate {
     private final Client clientEntity = Client.builder()
             .name("Name")
             .surname("Surname")
-            .dni("11222333")
+            .identificationNumber("11222333")
             .build();
 
     private final WorkRegister entity = WorkRegister.builder()

@@ -83,7 +83,7 @@ public class ClientController {
     @GetMapping(value = "/clients/dni-like/{dni}", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClientByDniLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String dni) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        List<ClientDTO> listDTO = this.service.getListByDniLikeAndUserId(dni, userId).stream().map(clientDTOAdapter).toList();
+        List<ClientDTO> listDTO = this.service.getListByIdentificationNumberLikeAndUserId(dni, userId).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -108,14 +108,13 @@ public class ClientController {
     public ResponseEntity<Object> saveClient(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ClientRequest request) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         Client entity = this.clientRequestAdapter.toEntity(request);
-        String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
+        String message = this.service.getValidationsMessageWhenCantBeSaved(entity, userId);
 
         if (message.isEmpty()) {
-            entity = this.service.saveWithUser(entity, userId);
+            entity = this.service.save(entity);
             ClientDTO dto = this.clientDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
-            // TODO: get existent clientId and save with the current user
             return ResponseEntity.badRequest().body(message);
         }
     }

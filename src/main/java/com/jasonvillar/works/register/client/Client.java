@@ -1,13 +1,11 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.user_client.UserClient;
+import com.jasonvillar.works.register.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Setter
@@ -17,21 +15,23 @@ public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO, generator = "client_id_seq")
     @SequenceGenerator(name = "client_id_seq", sequenceName = "client_id_seq", allocationSize = 1)
-    Long id;
+    private Long id;
 
-    String name;
+    private String name;
 
-    String surname;
+    private String surname;
 
-    String identificationNumber;
+    private String identificationNumber;
 
     @Builder
-    public Client(String name, String surname, String identificationNumber) {
+    public Client(String name, String surname, String identificationNumber, User user) {
         this.name = name;
         this.surname = surname;
         this.identificationNumber = identificationNumber;
+        this.user = user;
     }
 
-    @OneToMany(mappedBy = "client")
-    List<UserClient> userClientList;
+    @ManyToOne
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private User user;
 }

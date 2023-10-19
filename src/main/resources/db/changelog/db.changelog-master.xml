@@ -10,7 +10,7 @@
     <include file="db/changelog/changes/0005-2023-04-20-user_service-table.xml"/>
     <include file="db/changelog/changes/0006-2023-04-20-client-table.xml"/>
     <include file="db/changelog/changes/0007-2023-04-20-work_register-table.xml"/>
-    <include file="db/changelog/changes/0008-2023-04-27-user_client-table.xml"/>
+    <include file="db/changelog/changes/0008-2023-10-19-client-table-add_foreign_constraint.xml"/>
     <include file="db/changelog/changes/0009-2023-05-09-user-table-add-column-password.xml"/>
     <include file="db/changelog/changes/0010-2023-05-10-work_register-add-foreign-constraint.xml"/>
     <include file="db/changelog/changes/0011-2023-10-08-jwt_blacklist-table.xml"/>

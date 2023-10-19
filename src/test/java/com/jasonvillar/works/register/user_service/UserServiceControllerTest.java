@@ -4,7 +4,7 @@ import com.jasonvillar.works.register.configs_for_tests.controllers.ControllerTe
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.ServiceService;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
-import com.jasonvillar.works.register.user_client.port.in.UserClientRequest;
+import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequestAdapter;
 import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import com.jasonvillar.works.register.service.Service;
@@ -50,15 +50,15 @@ class UserServiceControllerTest extends ControllerTestTemplate {
             .serviceId(1)
             .build();
 
-    private final UserClientRequest request = new UserClientRequest(1, 1);
+    private final UserServiceRequest request = new UserServiceRequest(1, 1);
 
     @BeforeEach
     public void setup() {
         super.setup();
-        entity.setId(Long.valueOf(1));
+        entity.setId(1L);
 
-        userEntity.setId(Long.valueOf(1));
-        serviceEntity.setId(Long.valueOf(1));
+        userEntity.setId(1L);
+        serviceEntity.setId(1L);
 
         entity.setUser(userEntity);
         entity.setService(serviceEntity);

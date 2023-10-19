@@ -1,7 +1,5 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.user_client.UserClient;
-import com.jasonvillar.works.register.user_client.UserClientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +10,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClientService {
     private final ClientRepository clientRepository;
-    private final UserClientRepository userClientRepository;
 
     public List<Client> getList() {
         return clientRepository.findAll();
@@ -26,12 +23,12 @@ public class ClientService {
         return clientRepository.findOptionalById(id);
     }
 
-    public Optional<Client> getOptionalByDni(String dni) {
-        return clientRepository.findOptionalByDni(dni);
+    public Optional<Client> getOptionalByIdentificationNumberAndUserId(String identificationNumber, long userId) {
+        return clientRepository.findOptionalByIdentificationNumberAndUserId(identificationNumber, userId);
     }
 
-    public List<Client> getListByDniLike(String dni) {
-        return clientRepository.findAllByDniContainingIgnoreCase(dni);
+    public List<Client> getListByIdentificationNumberLike(String identificationNumber) {
+        return clientRepository.findAllByIdentificationNumberContainingIgnoreCase(identificationNumber);
     }
 
     public List<Client> getListByNameLike(String name) {
@@ -50,31 +47,18 @@ public class ClientService {
         return this.getOptionalById(id).isPresent();
     }
 
-    public boolean isExistDni(String dni) {
-        return this.getOptionalByDni(dni).isPresent();
+    public boolean isExistIdentificationNumberForUserId(String identificationNumber, long userId) {
+        return this.getOptionalByIdentificationNumberAndUserId(identificationNumber, userId).isPresent();
     }
 
     public Client save(Client entity) {
         return clientRepository.save(entity);
     }
 
-    public Client saveWithUser(Client entity, long userId) {
-        Client clientSaved = this.save(entity);
-
-        UserClient userClient = UserClient.builder()
-                .clientId(clientSaved.getId())
-                .userId(userId)
-                .build();
-
-        this.userClientRepository.save(userClient);
-
-        return clientSaved;
-    }
-
-    public String getValidationsMessageWhenCantBeSaved(Client entity) {
+    public String getValidationsMessageWhenCantBeSaved(Client entity, long userId) {
         StringBuilder message = new StringBuilder();
 
-        if (this.isExistDni(entity.getIdentificationNumber())) {
+        if (this.isExistIdentificationNumberForUserId(entity.getIdentificationNumber(), userId)) {
             message.append("identification number must be unique");
         }
 
@@ -82,26 +66,26 @@ public class ClientService {
     }
 
     public List<Client> getListByUserId(long userId) {
-        return clientRepository.findAllByUserClientListUserId(userId);
+        return clientRepository.findAllByUserId(userId);
     }
 
     public Optional<Client> getOptionalByIdAndUserId(long id, long userId) {
-        return clientRepository.findOptionalByIdAndUserClientListUserId(id, userId);
+        return clientRepository.findOptionalByIdAndUserId(id, userId);
     }
 
     public List<Client> getListByNameLikeAndUserId(String name, long userId) {
-        return clientRepository.findAllByNameContainingIgnoreCaseAndUserClientListUserId(name, userId);
+        return clientRepository.findAllByNameContainingIgnoreCaseAndUserId(name, userId);
     }
 
     public List<Client> getListBySurnameLikeAndUserId(String surname, long userId) {
-        return clientRepository.findAllBySurnameContainingIgnoreCaseAndUserClientListUserId(surname, userId);
+        return clientRepository.findAllBySurnameContainingIgnoreCaseAndUserId(surname, userId);
     }
 
-    public List<Client> getListByDniLikeAndUserId(String dni, long userId) {
-        return clientRepository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(dni, userId);
+    public List<Client> getListByIdentificationNumberLikeAndUserId(String IdentificationNumber, long userId) {
+        return clientRepository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId(IdentificationNumber, userId);
     }
 
     public List<Client> getListByNameLikeAndSurnameLikeAndUserId(String name, String surname, long userId) {
-        return this.clientRepository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId(name, surname, userId);
+        return this.clientRepository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId(name, surname, userId);
     }
 }

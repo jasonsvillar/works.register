@@ -1,8 +1,7 @@
 package com.jasonvillar.works.register.client;
 
 import com.jasonvillar.works.register.configs_for_tests.repositories.DataJpaTestTemplate;
-import com.jasonvillar.works.register.user_client.UserClient;
-import com.jasonvillar.works.register.user_client.UserClientRepository;
+import com.jasonvillar.works.register.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,27 +16,23 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     ClientRepository repository;
 
-    @Autowired
-    UserClientRepository userClientRepository;
+    private User userInDatabase = User.builder()
+            .name("Dummy name")
+            .email("Dummy surname")
+            .id(1)
+            .build();
 
     private Client clientInDatabase = Client.builder()
             .name("Dummy name")
             .surname("Dummy surname")
             .identificationNumber("11222333")
-            .build();
-
-    private UserClient userClientInDatabase = UserClient.builder()
-            .userId(1)
-            .clientId(0)
+            .user(this.userInDatabase)
             .build();
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_client");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         this.clientInDatabase = this.repository.save(this.clientInDatabase);
-        this.userClientInDatabase.setClientId(clientInDatabase.getId());
-        this.userClientInDatabase = this.userClientRepository.save(this.userClientInDatabase);
     }
 
     @Test
@@ -74,11 +69,11 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
-    void givenEntityInTable_whenFindOptionalByDni_thenIsPresentAssertionsTrueAndFalse() {
-        Optional<Client> optional = this.repository.findOptionalByDni(this.clientInDatabase.getIdentificationNumber());
+    void givenEntityInTable_whenFindOptionalByIdentificationNumber_thenIsPresentAssertionsTrueAndFalse() {
+        Optional<Client> optional = this.repository.findOptionalByIdentificationNumber(this.clientInDatabase.getIdentificationNumber());
         Assertions.assertThat(optional).isPresent();
 
-        optional = this.repository.findOptionalByDni("00000000");
+        optional = this.repository.findOptionalByIdentificationNumber("00000000");
         Assertions.assertThat(optional).isNotPresent();
     }
 
@@ -113,14 +108,14 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
-    void givenEntityInTable_whenFindAllByDniContainingIgnoreCase_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByDniContainingIgnoreCase("11222333");
+    void givenEntityInTable_whenFindAllByIdentificationNumberContainingIgnoreCase_thenCheckIfEmpty() {
+        List<Client> entity = this.repository.findAllByIdentificationNumberContainingIgnoreCase("11222333");
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByDniContainingIgnoreCase("122233");
+        entity = this.repository.findAllByIdentificationNumberContainingIgnoreCase("122233");
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByDniContainingIgnoreCase("000");
+        entity = this.repository.findAllByIdentificationNumberContainingIgnoreCase("000");
         Assertions.assertThat(entity).isEmpty();
     }
 
@@ -135,55 +130,55 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenEntityInTable_whenFindAllByUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByUserClientListUserId(this.userClientInDatabase.getUserId());
+        List<Client> entity = this.repository.findAllByUserId(this.userInDatabase.getId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByUserClientListUserId(0);
+        entity = this.repository.findAllByUserId(0);
         Assertions.assertThat(entity).isEmpty();
     }
 
     @Test
     void givenEntityInTable_whenFindOptionalByIdAndUserClientListUserId_thenCheckIfPresent() {
-        Optional<Client> entity = this.repository.findOptionalByIdAndUserClientListUserId(clientInDatabase.getId(), this.userClientInDatabase.getUserId());
+        Optional<Client> entity = this.repository.findOptionalByIdAndUserId(clientInDatabase.getId(), this.userInDatabase.getId());
         Assertions.assertThat(entity).isPresent();
 
-        entity = this.repository.findOptionalByIdAndUserClientListUserId(clientInDatabase.getId(), 0);
+        entity = this.repository.findOptionalByIdAndUserId(clientInDatabase.getId(), 0);
         Assertions.assertThat(entity).isNotPresent();
     }
 
     @Test
     void givenEntityInTable_whenFindAllByNameContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByNameContainingIgnoreCaseAndUserClientListUserId("dummy nam", this.userClientInDatabase.getUserId());
+        List<Client> entity = this.repository.findAllByNameContainingIgnoreCaseAndUserId("dummy nam", this.userInDatabase.getId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByNameContainingIgnoreCaseAndUserClientListUserId("dummy nam", 0);
+        entity = this.repository.findAllByNameContainingIgnoreCaseAndUserId("dummy nam", 0);
         Assertions.assertThat(entity).isEmpty();
     }
 
     @Test
     void givenEntityInTable_whenFindAllBySurnameContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllBySurnameContainingIgnoreCaseAndUserClientListUserId("dummy surnam", this.userClientInDatabase.getUserId());
+        List<Client> entity = this.repository.findAllBySurnameContainingIgnoreCaseAndUserId("dummy surnam", this.userInDatabase.getId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllBySurnameContainingIgnoreCaseAndUserClientListUserId("dummy surnam", 0);
+        entity = this.repository.findAllBySurnameContainingIgnoreCaseAndUserId("dummy surnam", 0);
         Assertions.assertThat(entity).isEmpty();
     }
 
     @Test
-    void givenEntityInTable_whenFindAllByDniContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getIdentificationNumber(), this.userClientInDatabase.getUserId());
+    void givenEntityInTable_whenFindAllByIdentificationNumberContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
+        List<Client> entity = this.repository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId(this.clientInDatabase.getIdentificationNumber(), this.userInDatabase.getId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getIdentificationNumber(), 0);
+        entity = this.repository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId(this.clientInDatabase.getIdentificationNumber(), 0);
         Assertions.assertThat(entity).isEmpty();
     }
 
     @Test
     void givenEntityInTable_whenFindAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId("dummy nam", "dummy surnam", this.userClientInDatabase.getUserId());
+        List<Client> entity = this.repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId("dummy nam", "dummy surnam", this.userInDatabase.getId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId("dummy nam", "dummy surnam", 0);
+        entity = this.repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId("dummy nam", "dummy surnam", 0);
         Assertions.assertThat(entity).isEmpty();
     }
 }

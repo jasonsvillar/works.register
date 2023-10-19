@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.client;
 
+import com.jasonvillar.works.register.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,17 @@ class ClientServiceTest {
     @InjectMocks
     private ClientService service;
 
+    private User userInDatabase = User.builder()
+            .name("Dummy name")
+            .email("Dummy surname")
+            .id(1)
+            .build();
+
     private Client entity = Client.builder()
             .name("Name")
             .surname("Surname")
-            .dni("11222333")
+            .identificationNumber("11222333")
+            .user(this.userInDatabase)
             .build();
 
     @BeforeEach
@@ -67,22 +75,22 @@ class ClientServiceTest {
     }
 
     @Test
-    void givenRepositories_whenGetOptionalByDni_thenReturnOptional() {
-        Mockito.when(repository.findOptionalByDni("11222333")).thenReturn(Optional.of(entity));
-        Mockito.when(repository.findOptionalByDni("00000000")).thenReturn(Optional.empty());
+    void givenRepositories_whenGetOptionalByIdentificationNumber_thenReturnOptional() {
+        Mockito.when(repository.findOptionalByIdentificationNumberAndUserId("11222333", 1)).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByIdentificationNumberAndUserId("00000000", 1)).thenReturn(Optional.empty());
 
-        Optional<Client> optional = service.getOptionalByDni("11222333");
+        Optional<Client> optional = service.getOptionalByIdentificationNumberAndUserId("11222333", 1);
         Assertions.assertThat(optional).isPresent();
 
-        optional = service.getOptionalByDni("00000000");
+        optional = service.getOptionalByIdentificationNumberAndUserId("00000000", 1);
         Assertions.assertThat(optional).isNotPresent();
     }
 
     @Test
-    void givenRepositories_whenGetListByDniLike_thenReturnList() {
-        Mockito.when(repository.findAllByDniContainingIgnoreCase("11222333")).thenReturn(List.of(entity));
+    void givenRepositories_whenGetListByIdentificationNumberLike_thenReturnList() {
+        Mockito.when(repository.findAllByIdentificationNumberContainingIgnoreCase("11222333")).thenReturn(List.of(entity));
 
-        List<Client> list = service.getListByDniLike("11222333");
+        List<Client> list = service.getListByIdentificationNumberLike("11222333");
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Client.class);
@@ -131,14 +139,14 @@ class ClientServiceTest {
     }
 
     @Test
-    void givenRequest_whenIsExistDni_thenCheckTrueAndFalse() {
-        Mockito.when(repository.findOptionalByDni("11222333")).thenReturn(Optional.of(entity));
-        Mockito.when(repository.findOptionalByDni("00000000")).thenReturn(Optional.empty());
+    void givenRequest_whenIsExistIdentificationNumber_thenCheckTrueAndFalse() {
+        Mockito.when(repository.findOptionalByIdentificationNumberAndUserId("11222333", 1)).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByIdentificationNumberAndUserId("00000000", 1)).thenReturn(Optional.empty());
 
-        boolean exist = service.isExistDni("11222333");
+        boolean exist = service.isExistIdentificationNumberForUserId("11222333", 1);
         Assertions.assertThat(exist).isTrue();
 
-        exist = service.isExistDni("00000000");
+        exist = service.isExistIdentificationNumberForUserId("00000000", 1);
         Assertions.assertThat(exist).isFalse();
     }
 
@@ -147,7 +155,7 @@ class ClientServiceTest {
         Client newEntity = Client.builder()
                 .name("Name")
                 .surname("Surname")
-                .dni("11222333")
+                .identificationNumber("11222333")
                 .build();
         Mockito.when(repository.save(newEntity)).thenReturn(entity);
 
@@ -157,14 +165,14 @@ class ClientServiceTest {
 
     @Test
     void givenEntity_whenGetValidationsMessageWhenCantBeSaved_themReturnMessage() {
-        Mockito.when(repository.findOptionalByDni("11222333")).thenReturn(Optional.of(this.entity));
-        String message = this.service.getValidationsMessageWhenCantBeSaved(this.entity);
+        Mockito.when(repository.findOptionalByIdentificationNumberAndUserId("11222333", 1)).thenReturn(Optional.of(this.entity));
+        String message = this.service.getValidationsMessageWhenCantBeSaved(this.entity, userInDatabase.getId());
         Assertions.assertThat(message).isNotEmpty();
     }
 
     @Test
     void givenRepositories_whenGetListByUserId_thenReturnList() {
-        Mockito.when(repository.findAllByUserClientListUserId(any(long.class))).thenReturn(List.of(entity));
+        Mockito.when(repository.findAllByUserId(any(long.class))).thenReturn(List.of(entity));
 
         List<Client> list = service.getListByUserId(1);
 
@@ -173,8 +181,8 @@ class ClientServiceTest {
     }
 
     @Test
-    void givenRepositories_whenGetListByUserId_thenReturnOptional() {
-        Mockito.when(repository.findOptionalByIdAndUserClientListUserId(any(long.class), any(long.class))).thenReturn(Optional.of(entity));
+    void givenRepositories_whenGetOptionalByUserId_thenReturnOptional() {
+        Mockito.when(repository.findOptionalByIdAndUserId(any(long.class), any(long.class))).thenReturn(Optional.of(entity));
 
         Optional<Client> optional = service.getOptionalByIdAndUserId(1 ,1);
 
@@ -183,7 +191,7 @@ class ClientServiceTest {
 
     @Test
     void givenRepositories_whenGetListByNameLikeAndUserId_thenReturnList() {
-        Mockito.when(repository.findAllByNameContainingIgnoreCaseAndUserClientListUserId("name", 1)).thenReturn(List.of(entity));
+        Mockito.when(repository.findAllByNameContainingIgnoreCaseAndUserId("name", 1)).thenReturn(List.of(entity));
 
         List<Client> list = service.getListByNameLikeAndUserId("name", 1);
 
@@ -193,7 +201,7 @@ class ClientServiceTest {
 
     @Test
     void givenRepositories_whenGetListBySurnameLikeAndUserId_thenReturnList() {
-        Mockito.when(repository.findAllBySurnameContainingIgnoreCaseAndUserClientListUserId("surname", 1)).thenReturn(List.of(entity));
+        Mockito.when(repository.findAllBySurnameContainingIgnoreCaseAndUserId("surname", 1)).thenReturn(List.of(entity));
 
         List<Client> list = service.getListBySurnameLikeAndUserId("surname", 1);
 
@@ -202,10 +210,10 @@ class ClientServiceTest {
     }
 
     @Test
-    void givenRepositories_whenGetListByDniLikeAndUserId_thenReturnList() {
-        Mockito.when(repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId("11222333", 1)).thenReturn(List.of(entity));
+    void givenRepositories_whenGetListByIdentificationNumberLikeAndUserId_thenReturnList() {
+        Mockito.when(repository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId("11222333", 1)).thenReturn(List.of(entity));
 
-        List<Client> list = service.getListByDniLikeAndUserId("11222333", 1);
+        List<Client> list = service.getListByIdentificationNumberLikeAndUserId("11222333", 1);
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Client.class);
@@ -213,7 +221,7 @@ class ClientServiceTest {
 
     @Test
     void givenRepositories_whenGetListByNameLikeAndSurnameLikeAndUserId_thenReturnList() {
-        Mockito.when(repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId("name", "surname", 1)).thenReturn(List.of(entity));
+        Mockito.when(repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId("name", "surname", 1)).thenReturn(List.of(entity));
 
         List<Client> list = service.getListByNameLikeAndSurnameLikeAndUserId("name", "surname", 1);
 

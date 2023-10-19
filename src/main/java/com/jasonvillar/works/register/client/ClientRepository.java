@@ -8,15 +8,16 @@ import java.util.Optional;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     Client findClientById(long id);
     Optional<Client> findOptionalById(long id);
-    Optional<Client> findOptionalByDni(String dni);
+    Optional<Client> findOptionalByIdentificationNumber(String identificationNumber);
+    Optional<Client> findOptionalByIdentificationNumberAndUserId(String identificationNumber, long userId);
     List<Client> findAllByNameContainingIgnoreCase(String name);
     List<Client> findAllBySurnameContainingIgnoreCase(String surname);
     List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCase(String name, String surname);
-    List<Client> findAllByDniContainingIgnoreCase(String dni);
-    List<Client> findAllByUserClientListUserId(long userId);
-    Optional<Client> findOptionalByIdAndUserClientListUserId(long id, long userId);
-    List<Client> findAllByNameContainingIgnoreCaseAndUserClientListUserId(String name, long userId);
-    List<Client> findAllBySurnameContainingIgnoreCaseAndUserClientListUserId(String surname, long userId);
-    List<Client> findAllByDniContainingIgnoreCaseAndUserClientListUserId(String dni, long userId);
-    List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserClientListUserId(String name, String surname, long userId);
+    List<Client> findAllByIdentificationNumberContainingIgnoreCase(String identificationNumber);
+    List<Client> findAllByUserId(long userId);
+    Optional<Client> findOptionalByIdAndUserId(long id, long userId);
+    List<Client> findAllByNameContainingIgnoreCaseAndUserId(String name, long userId);
+    List<Client> findAllBySurnameContainingIgnoreCaseAndUserId(String surname, long userId);
+    List<Client> findAllByIdentificationNumberContainingIgnoreCaseAndUserId(String identificationNumber, long userId);
+    List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId(String name, String surname, long userId);
 }

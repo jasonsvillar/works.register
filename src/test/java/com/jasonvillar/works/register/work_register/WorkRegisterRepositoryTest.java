@@ -46,7 +46,7 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
     private Client clientInDatabase = Client.builder()
             .name("Client dummy name")
             .surname("Client dummy surname")
-            .dni("11222333")
+            .identificationNumber("11222333")
             .build();
 
     private WorkRegister workRegisterInDatabase = WorkRegister.builder()

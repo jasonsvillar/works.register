@@ -33,7 +33,7 @@ class ClientControllerTest extends ControllerTestTemplate {
     private final Client entity = Client.builder()
             .name("Name")
             .surname("Surname")
-            .dni("11222333")
+            .identificationNumber("11222333")
             .build();
 
     private final ClientRequest request = new ClientRequest("Name", "Surname", "11222333");
@@ -98,14 +98,14 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestByDniAndUserId_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByDniLikeAndUserId("11222333", 0)).thenReturn(List.of(entity));
+    void givenClients_whenGetRequestByIdentificationNumberAndUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByIdentificationNumberLikeAndUserId("11222333", 0)).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/dni-like/{dni}", "11222333")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        Mockito.when(service.getListByDniLikeAndUserId("00000000", 0)).thenReturn(Collections.emptyList());
+        Mockito.when(service.getListByIdentificationNumberLikeAndUserId("00000000", 0)).thenReturn(Collections.emptyList());
 
         this.mockMvc.perform(get(this.endpointBegin + "/clients/dni-like/{dni}", "00000000")
                         .accept(MediaType.APPLICATION_JSON))
@@ -131,8 +131,8 @@ class ClientControllerTest extends ControllerTestTemplate {
     void givenNewClientWithUserId_whenSave_thenCheckIfCreated() throws Exception {
         String requestJson = ow.writeValueAsString(this.request);
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("");
-        Mockito.when(service.saveWithUser(Mockito.any(Client.class), eq(0L) )).thenReturn(this.entity);
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class), eq(0L))).thenReturn("");
+        Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -140,7 +140,7 @@ class ClientControllerTest extends ControllerTestTemplate {
                 )
                 .andExpect(status().isCreated());
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("dni must be unique");
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class), eq(0L))).thenReturn("dni must be unique");
 
         this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -153,7 +153,7 @@ class ClientControllerTest extends ControllerTestTemplate {
     void givenNewClientWithNullAndEmptyProperties_whenBadRequest_thenCheckIsBadRequest() throws Exception {
         String requestJson = ow.writeValueAsString(new ClientRequest("", null, ""));
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class))).thenReturn("");
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Client.class), eq(0))).thenReturn("");
         Mockito.when(service.save(Mockito.any(Client.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)

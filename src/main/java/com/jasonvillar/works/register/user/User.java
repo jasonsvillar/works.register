@@ -1,6 +1,7 @@
 package com.jasonvillar.works.register.user;
 
 import com.jasonvillar.works.register.authentication.Role;
+import com.jasonvillar.works.register.client.Client;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,14 +30,15 @@ public class User {
     private String password;
 
     @Builder
-    public User(String name, String email, String password) {
+    public User(String name, String email, String password, long id) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.id = id;
     }
 
     @ManyToMany(mappedBy = "inUserList")
-    Set<Role> hasRoleList;
+    private Set<Role> hasRoleList;
 
     public void addRole(Role role) {
         this.hasRoleList.add(role);
@@ -49,5 +51,8 @@ public class User {
     }
 
     @Transient
-    List<SimpleGrantedAuthority> authorityList;
+    private List<SimpleGrantedAuthority> authorityList;
+
+    @OneToMany(mappedBy = "user")
+    private List<Client> clientList;
 }
