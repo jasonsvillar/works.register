@@ -23,7 +23,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     private Client clientInDatabase = Client.builder()
             .name("Dummy name")
             .surname("Dummy surname")
-            .dni("11222333")
+            .identificationNumber("11222333")
             .build();
 
     private UserClient userClientInDatabase = UserClient.builder()
@@ -45,7 +45,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
         Client entity = Client.builder()
                 .name("test")
                 .surname("test")
-                .dni("00000000")
+                .identificationNumber("00000000")
                 .build();
 
         Client clientSaved = this.repository.save(entity);
@@ -75,7 +75,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenEntityInTable_whenFindOptionalByDni_thenIsPresentAssertionsTrueAndFalse() {
-        Optional<Client> optional = this.repository.findOptionalByDni(this.clientInDatabase.getDni());
+        Optional<Client> optional = this.repository.findOptionalByDni(this.clientInDatabase.getIdentificationNumber());
         Assertions.assertThat(optional).isPresent();
 
         optional = this.repository.findOptionalByDni("00000000");
@@ -171,10 +171,10 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenEntityInTable_whenFindAllByDniContainingIgnoreCaseAndUserClientListUserId_thenCheckIfEmpty() {
-        List<Client> entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getDni(), this.userClientInDatabase.getUserId());
+        List<Client> entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getIdentificationNumber(), this.userClientInDatabase.getUserId());
         Assertions.assertThat(entity).isNotEmpty();
 
-        entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getDni(), 0);
+        entity = this.repository.findAllByDniContainingIgnoreCaseAndUserClientListUserId(this.clientInDatabase.getIdentificationNumber(), 0);
         Assertions.assertThat(entity).isEmpty();
     }
 

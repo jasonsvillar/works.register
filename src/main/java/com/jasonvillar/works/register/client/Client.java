@@ -23,13 +23,13 @@ public class Client {
 
     String surname;
 
-    String dni;
+    String identificationNumber;
 
     @Builder
-    public Client(String name, String surname, String dni) {
+    public Client(String name, String surname, String identificationNumber) {
         this.name = name;
         this.surname = surname;
-        this.dni = dni;
+        this.identificationNumber = identificationNumber;
     }
 
     @OneToMany(mappedBy = "client")

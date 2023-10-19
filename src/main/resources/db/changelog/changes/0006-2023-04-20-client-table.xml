@@ -22,7 +22,7 @@
             <column name="surname" type="varchar(255)">
                 <constraints nullable="true"/>
             </column>
-            <column name="dni" type="varchar(255)">
+            <column name="identification_number" type="varchar(255)">
                 <constraints nullable="false" unique="true"/>
             </column>
         </createTable>

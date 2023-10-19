@@ -74,7 +74,7 @@ public class ClientService {
     public String getValidationsMessageWhenCantBeSaved(Client entity) {
         StringBuilder message = new StringBuilder();
 
-        if (this.isExistDni(entity.getDni())) {
+        if (this.isExistDni(entity.getIdentificationNumber())) {
             message.append("dni must be unique");
         }
 

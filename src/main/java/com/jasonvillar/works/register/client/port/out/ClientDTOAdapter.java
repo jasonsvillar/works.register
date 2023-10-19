@@ -9,6 +9,6 @@ import java.util.function.Function;
 public class ClientDTOAdapter implements Function<Client, ClientDTO> {
     @Override
     public ClientDTO apply(Client client) {
-        return new ClientDTO(client.getId(), client.getName(), client.getSurname(), client.getDni());
+        return new ClientDTO(client.getId(), client.getName(), client.getSurname(), client.getIdentificationNumber());
     }
 }

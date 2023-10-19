@@ -115,6 +115,7 @@ public class ClientController {
             ClientDTO dto = this.clientDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
+            // TODO: get existent clientId and save with the current user
             return ResponseEntity.badRequest().body(message);
         }
     }
