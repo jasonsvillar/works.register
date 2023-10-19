@@ -75,7 +75,7 @@ public class ClientService {
         StringBuilder message = new StringBuilder();
 
         if (this.isExistDni(entity.getIdentificationNumber())) {
-            message.append("dni must be unique");
+            message.append("identification number must be unique");
         }
 
         return message.toString();
