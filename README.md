@@ -26,7 +26,7 @@ D.E.R:
 - ~~Implement Spring Security with Basic Authentication.~~
 - ~~Implement Spring Security with OAuth2 GitHub Authentication and JSession.~~
 - ~~Implement Spring Security with JWT on the Basic Auth.~~
-- Transform all endpoints (clients, services, works) for the current user logged.
+- ~~Transform all endpoints (clients, services, works) for the current user logged.~~
 - Implement admin endpoints with secure privilege.
 - Develop Frontend using Angular 15 or 16.
 - Rewrite unit tests using BDD.
