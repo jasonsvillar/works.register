@@ -1,10 +1,7 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.authentication.JWTBlacklist;
-import com.jasonvillar.works.register.authentication.JWTBlacklistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 

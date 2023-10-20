@@ -1,7 +1,5 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.authentication.Role;
-import com.jasonvillar.works.register.authentication.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

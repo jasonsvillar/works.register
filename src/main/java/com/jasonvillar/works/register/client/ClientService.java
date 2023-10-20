@@ -81,8 +81,8 @@ public class ClientService {
         return clientRepository.findAllBySurnameContainingIgnoreCaseAndUserId(surname, userId);
     }
 
-    public List<Client> getListByIdentificationNumberLikeAndUserId(String IdentificationNumber, long userId) {
-        return clientRepository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId(IdentificationNumber, userId);
+    public List<Client> getListByIdentificationNumberLikeAndUserId(String identificationNumber, long userId) {
+        return clientRepository.findAllByIdentificationNumberContainingIgnoreCaseAndUserId(identificationNumber, userId);
     }
 
     public List<Client> getListByNameLikeAndSurnameLikeAndUserId(String name, String surname, long userId) {

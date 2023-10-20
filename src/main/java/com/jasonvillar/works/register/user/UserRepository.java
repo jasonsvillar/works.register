@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.user;
 
-import com.jasonvillar.works.register.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

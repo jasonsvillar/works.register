@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.authentication;
 
-import com.jasonvillar.works.register.authentication.Role;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;

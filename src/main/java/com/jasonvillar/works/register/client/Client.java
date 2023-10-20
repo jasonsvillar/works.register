@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.client;
 
-import com.jasonvillar.works.register.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
