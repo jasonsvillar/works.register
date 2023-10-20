@@ -52,7 +52,4 @@ public class User {
 
     @Transient
     private List<SimpleGrantedAuthority> authorityList;
-
-    @OneToMany(mappedBy = "user")
-    private List<Client> clientList;
 }

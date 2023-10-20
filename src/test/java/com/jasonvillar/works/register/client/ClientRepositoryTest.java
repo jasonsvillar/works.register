@@ -2,6 +2,7 @@ package com.jasonvillar.works.register.client;
 
 import com.jasonvillar.works.register.configs_for_tests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,22 +17,26 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     ClientRepository repository;
 
+    @Autowired
+    UserRepository userRepository;
+
     private User userInDatabase = User.builder()
             .name("Dummy name")
             .email("Dummy surname")
-            .id(1)
+            .password("topSecret")
             .build();
 
     private Client clientInDatabase = Client.builder()
             .name("Dummy name")
             .surname("Dummy surname")
             .identificationNumber("11222333")
-            .user(this.userInDatabase)
             .build();
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
+        this.userInDatabase = this.userRepository.save(this.userInDatabase);
+        this.clientInDatabase.setUserId(this.userInDatabase.getId());
         this.clientInDatabase = this.repository.save(this.clientInDatabase);
     }
 

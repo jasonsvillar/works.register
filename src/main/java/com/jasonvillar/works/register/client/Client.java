@@ -23,15 +23,13 @@ public class Client {
 
     private String identificationNumber;
 
+    private Long userId;
+
     @Builder
-    public Client(String name, String surname, String identificationNumber, User user) {
+    public Client(String name, String surname, String identificationNumber, long userId) {
         this.name = name;
         this.surname = surname;
         this.identificationNumber = identificationNumber;
-        this.user = user;
+        this.userId = userId;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
-    private User user;
 }

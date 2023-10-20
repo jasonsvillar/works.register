@@ -62,6 +62,8 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
     void setUp() {
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
         this.serviceInDatabase = this.serviceRepository.save(this.serviceInDatabase);
+
+        this.clientInDatabase.setUserId(this.userInDatabase.getId());
         this.clientInDatabase = this.clientRepository.save(this.clientInDatabase);
 
         this.workRegisterInDatabase.setUserId(this.userInDatabase.getId());
@@ -74,10 +76,10 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
     @AfterEach
     void setDown(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_role");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "\"user\"");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
     }
 
     @Test

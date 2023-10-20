@@ -34,7 +34,7 @@ class ClientServiceTest {
             .name("Name")
             .surname("Surname")
             .identificationNumber("11222333")
-            .user(this.userInDatabase)
+            .userId(this.userInDatabase.getId())
             .build();
 
     @BeforeEach
