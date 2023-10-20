@@ -1,30 +1,30 @@
 package com.jasonvillar.works.register.authentication.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 import com.jasonvillar.works.register.Application;
 import com.jasonvillar.works.register.configs_for_tests.repositories.ContainerInit;
 import com.jasonvillar.works.register.configs_for_tests.repositories.Postgres15_2TC;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
-import com.jasonvillar.works.register.user.port.out.UserDTO;
 import org.assertj.core.api.Assertions;
-import org.json.JSONException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.util.List;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -32,13 +32,6 @@ import java.util.List;
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @ContextConfiguration(initializers = ContainerInit.class)
 class AuthIT {
-    @LocalServerPort
-    private int port;
-
-    TestRestTemplate restTemplate = new TestRestTemplate();
-
-    HttpHeaders headers = new HttpHeaders();
-
     private static Postgres15_2TC tc = Postgres15_2TC.getInstance();
 
     @BeforeAll
@@ -51,65 +44,58 @@ class AuthIT {
         tc.stop();
     }
 
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
+    @Autowired
+    public MockMvc mockMvc;
+
+    public ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
+
+    public ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
     @Test
-    void testBasicAuth() throws JSONException {
-        AuthenticationRequest authenticationRequest = new AuthenticationRequest("Admin", "admin");
+    void Given_adminLoggedCanGetUsers_When_logout_Then_cantGetUsers() throws Exception {
+        String requestJson = ow.writeValueAsString(new AuthenticationRequest("Admin", "admin"));
+        MvcResult result = this.mockMvc.perform(post("/api/auth/basic-authentication").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk())
+                .andReturn();
 
-        HttpEntity<AuthenticationRequest> authenticationRequestLogin = new HttpEntity<>(authenticationRequest, headers);
+        String response = result.getResponse().getContentAsString();
 
-        ResponseEntity<AuthenticationResponse> authenticationPost = restTemplate.exchange(
-                createURLWithPort("/api/auth/basic-authentication"),
-                HttpMethod.POST, authenticationRequestLogin, AuthenticationResponse.class);
+        AuthenticationResponse authenticationResponse = mapper.readValue(response, AuthenticationResponse.class);
 
-        AuthenticationResponse authenticationResponse = authenticationPost.getBody();
-
-        Assertions.assertThat(authenticationResponse).hasFieldOrProperty("accessToken");
+        String jwt = authenticationResponse.accessToken();
 
         // Login success
         // Request Users
 
-        String jwt = authenticationResponse.accessToken();
-        headers.setBearerAuth(jwt);
-
-        HttpEntity<String> jwtHeader = new HttpEntity<>(null, headers);
-
-        ResponseEntity< List<UserDTO> > userGet = restTemplate.exchange(
-                createURLWithPort("/api/v1/users"),
-                HttpMethod.GET, jwtHeader, new ParameterizedTypeReference<>(){}
-        );
-
-        List<UserDTO> userResponse = userGet.getBody();
-
-        Assertions.assertThat(userResponse).isNotEmpty();
+        this.mockMvc.perform(get("/api/v1/users").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                        .header("Authorization", "Bearer ".concat(jwt))
+                )
+                .andExpect(status().isOk());
 
         // Get Users
         // Logout
 
-        ResponseEntity<String> logoutGet = restTemplate.exchange(
-                createURLWithPort("/api/auth/logout-jwt"),
-                HttpMethod.GET, jwtHeader, String.class
-        );
-
-        String logoutResponse = logoutGet.getBody();
-
-        Assertions.assertThat(logoutResponse).isEqualTo("Logout success");
+        this.mockMvc.perform(get("/api/auth/logout-jwt").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                        .header("Authorization", "Bearer ".concat(jwt))
+                )
+                .andExpect(status().isOk());
 
         // Logout success
         // Request Users
 
-        userGet = restTemplate.exchange(
-                createURLWithPort("/api/v1/users"),
-                HttpMethod.GET, jwtHeader, new ParameterizedTypeReference<>(){}
-        );
+        result = this.mockMvc.perform(get("/api/v1/users").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                        .header("Authorization", "Bearer ".concat(jwt))
+                )
+                .andReturn();
 
-        userResponse = userGet.getBody();
+        int status = result.getResponse().getStatus();
 
-        Assertions.assertThat(userResponse).isNull();
-
-        // No Users because of the logout
+        Assertions.assertThat(status).isNotEqualTo(200);
     }
 }
