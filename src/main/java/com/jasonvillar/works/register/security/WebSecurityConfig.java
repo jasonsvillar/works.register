@@ -49,9 +49,9 @@ public class WebSecurityConfig {
                         .anyRequest().permitAll()
         );
 
-        // For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
-        httpSecurity.oauth2Login()
-                .loginPage("/api/auth/authentication-required");
+//        For OAuth2 Link = http://localhost:8080/oauth2/authorization/github
+//        httpSecurity.oauth2Login()
+//                .loginPage("/api/auth/authentication-required");
 
         httpSecurity.authenticationProvider(authenticationProvider()); // For implement custom DAO Basic Auth
         httpSecurity.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
