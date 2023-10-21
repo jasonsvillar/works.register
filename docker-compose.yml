@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  works-api-postgres:
+    image: postgres:15.2-alpine
+    container_name: works-api-postgres
+    restart: always
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=works
+    ports:
+      - '5432:5432'
+
+  works-api-java:
+    container_name: works-api-java
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8081:8080'
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://works-api-postgres:5432/works
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=1234
+      - jwt.keyForEncrypt=KS8K7jIWqGh+RNPMaXnzY3G26x97HJ+YapFcMqXDbKL7+3rUUPNQcvnCNMZZ2CafKab+aV82brAzHCCL48NgEKbey-b3hqZnnUt6AvLHUu8TucBrZAUv96IJBfeKZtfnU2PApxCzCEqzBc-KnBw3kQ
+      # minimum length 150 letters+-NUMS
+    depends_on:
+      - works-api-postgres
