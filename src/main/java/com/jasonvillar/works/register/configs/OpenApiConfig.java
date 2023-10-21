@@ -29,22 +29,6 @@ public class OpenApiConfig {
                         .license(new License().name("Apache 2.0").url("https://springdoc.org"))
                 ).components(new Components().addSecuritySchemes("jwt-bearer-token",
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("Bearer").bearerFormat("JWT")
-                                .in(SecurityScheme.In.HEADER).name("Authorization")))
-                .addSecurityItem(
-                        new SecurityRequirement().addList("jwt-bearer-token", Arrays.asList("read", "write"))
-                ).path("/api/auth/logout", new PathItem()
-                        .post(new Operation()
-                                .tags(List.of(
-                                        "auth-controller"
-                                ))
-                                .summary("Logout")
-                                .description("Logout the current user.")
-                                .operationId("logout")
-                                .addSecurityItem(new SecurityRequirement())
-                                .responses(new ApiResponses()
-                                        .addApiResponse("200", new ApiResponse().description("Logout success"))
-                                )
-                        )
-                );
+                                .in(SecurityScheme.In.HEADER).name("Authorization")));
     }
 }

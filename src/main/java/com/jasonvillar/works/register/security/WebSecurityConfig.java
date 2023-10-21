@@ -4,6 +4,7 @@ import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -21,6 +22,13 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private final JwtTokenFilter jwtAuthenticationFilter;
     private final SecurityUserDetailsService securityUserDetailsService;
+
+    private static final String[] AUTH_WHITE_LIST = {
+            "/v3/api-docs/**",
+            "/doc/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/doc/swagger-resources/**"
+    };
 
     @Bean
     public AuthenticationProvider authenticationProvider() {
@@ -44,9 +52,10 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(
                 requests -> requests
-                        .requestMatchers("/api/v1/**").authenticated()
-                        .requestMatchers("/api/auth/custom-logout").authenticated()
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/basic-authentication").permitAll()
+                        .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                        .anyRequest().authenticated()
         );
 
 //        For OAuth2 Link = http://localhost:8080/oauth2/authorization/github

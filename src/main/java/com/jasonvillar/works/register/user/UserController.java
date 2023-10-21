@@ -20,7 +20,7 @@ import java.util.Optional;
 @RestController
 @Validated
 @RequiredArgsConstructor
-@RequestMapping("api/v1/users")
+@RequestMapping("api/v1")
 @Tag(name = "user", description = "the user API tag annotation")
 public class UserController {
 
@@ -31,7 +31,7 @@ public class UserController {
     private final UserDTOAdapter userDTOAdapter;
 
     @Secured("View users")
-    @GetMapping(value = "/{id}", produces = "application/json")
+    @GetMapping(value = "/user/{id}", produces = "application/json")
     public ResponseEntity<UserDTO> getUser(@PathVariable long id) {
         Optional<User> optional = this.service.getOptionalById(id);
         if (optional.isPresent()) {
@@ -43,7 +43,7 @@ public class UserController {
     }
 
     @Secured("View users")
-    @GetMapping(produces = "application/json")
+    @GetMapping(value = "/users",produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUser() {
         List<UserDTO> listDTO = this.service.getList().stream().map(userDTOAdapter).toList();
 
@@ -55,7 +55,7 @@ public class UserController {
     }
 
     @Secured("View users")
-    @GetMapping(value = "/name-like/{name}", produces = "application/json")
+    @GetMapping(value = "/users/name-like/{name}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByNameLike(@PathVariable String name) {
         List<UserDTO> listDTO = this.service.getListByNameLike(name).stream().map(userDTOAdapter).toList();
 
@@ -67,7 +67,7 @@ public class UserController {
     }
 
     @Secured("View users")
-    @GetMapping(value = "/email-like/{email}", produces = "application/json")
+    @GetMapping(value = "/users/email-like/{email}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByEmailLike(@PathVariable String email) {
         List<UserDTO> listDTO = this.service.getListByEmailLike(email).stream().map(userDTOAdapter).toList();
 
@@ -79,7 +79,7 @@ public class UserController {
     }
 
     @Secured("View users")
-    @GetMapping(value = "/name-like/{name}/email-like/{email}", produces = "application/json")
+    @GetMapping(value = "/users/name-like/{name}/email-like/{email}", produces = "application/json")
     public ResponseEntity<List<UserDTO>> getListUserByNameLikeAndEmailLike(@PathVariable String name, @PathVariable String email) {
         List<UserDTO> listDTO = this.service.getListByNameLikeAndEmailLike(name, email).stream().map(userDTOAdapter).toList();
 
@@ -90,7 +90,7 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping(value = "/user")
     public ResponseEntity<Object> saveUser(@Valid @RequestBody UserRequest request) {
         User entity = this.userRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
@@ -105,7 +105,7 @@ public class UserController {
     }
 
     @Secured("Add admin role to user")
-    @PostMapping(value = "/add-role/admin")
+    @PostMapping(value = "/user/add-role/admin")
     public ResponseEntity<String> addAdminRoleToUser(@Valid @RequestBody AddAdminRoleToUserRequest request) {
         if(this.service.addAdminRoleToUserById(request.id())) {
             return new ResponseEntity<>("Added admin role to user with id " + request.id(), HttpStatus.CREATED);

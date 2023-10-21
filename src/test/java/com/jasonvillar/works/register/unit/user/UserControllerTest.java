@@ -62,11 +62,11 @@ class UserControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getOptionalById(1)).thenReturn(Optional.of(entity));
         Mockito.when(service.getOptionalById(0)).thenReturn(Optional.empty());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/users/{id}", 1)
+        this.mockMvc.perform(get(this.endpointBegin + "/user/{id}", 1)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
-        this.mockMvc.perform(get(this.endpointBegin + "/users/{id}", 0)
+        this.mockMvc.perform(get(this.endpointBegin + "/user/{id}", 0)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -123,7 +123,7 @@ class UserControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("");
         Mockito.when(service.save(Mockito.any(User.class))).thenReturn(this.entity);
 
-        this.mockMvc.perform(post(this.endpointBegin + "/users").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
@@ -131,7 +131,7 @@ class UserControllerTest extends ControllerTestTemplate {
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("name must be unique");
 
-        this.mockMvc.perform(post(this.endpointBegin + "/users").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )
