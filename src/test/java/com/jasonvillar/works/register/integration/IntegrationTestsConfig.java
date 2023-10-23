@@ -19,6 +19,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -51,40 +53,89 @@ public class IntegrationTestsConfig {
 
     public ObjectWriter ow = mapper.writer().withDefaultPrettyPrinter();
 
-    public String loginAsAdminAndGetJWT() throws Exception {
-        String requestJson = ow.writeValueAsString(new AuthenticationRequest("Admin", "admin"));
-        MvcResult result = this.mockMvc.perform(post("/api/auth/basic-authentication").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isOk())
+    public ResultActions doGetRequestAndGetResultActions(String uri) throws Exception {
+        return this.mockMvc.perform(get(uri).contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+        );
+    }
+
+    public ResultActions doGetRequestWithJWTAndGetResultActions(String uri, String jwt) throws Exception {
+        return this.mockMvc.perform(get(uri).contentType(MediaType.APPLICATION_JSON)
+                .with(csrf())
+                .header("Authorization", "Bearer ".concat(jwt))
+        );
+    }
+
+    public ResultActions doPostRequestAndGetResultActions(String uri, String requestJson) throws Exception {
+        return this.mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+                .with(csrf())
+        );
+    }
+
+    public ResultActions doPostRequestWithJWTAndGetResultActions(String uri, String requestJson, String jwt) throws Exception {
+        return this.mockMvc.perform(post(uri).contentType(MediaType.APPLICATION_JSON)
+                .content(requestJson)
+                .with(csrf())
+                .header("Authorization", "Bearer ".concat(jwt))
+        );
+    }
+
+    /*--------------------------------------------------------------*/
+
+    public String doPostRequest(String uri, String requestJson, ResultMatcher resultMatcher) throws Exception {
+        MvcResult result = this.doPostRequestAndGetResultActions(uri, requestJson)
+                .andExpect(resultMatcher)
                 .andReturn();
 
-        String response = result.getResponse().getContentAsString();
+        return result.getResponse().getContentAsString();
+    }
 
+    public String doPostRequestWithJWT(String uri, String requestJson, ResultMatcher resultMatcher, String jwt) throws Exception {
+        MvcResult result = this.doPostRequestWithJWTAndGetResultActions(uri, requestJson, jwt)
+                .andExpect(resultMatcher)
+                .andReturn();
+
+        return result.getResponse().getContentAsString();
+    }
+
+    public String doGetRequest(String uri, ResultMatcher resultMatcher) throws Exception {
+        MvcResult result = this.doGetRequestAndGetResultActions(uri)
+                .andExpect(resultMatcher)
+                .andReturn();
+
+        return result.getResponse().getContentAsString();
+    }
+
+    public String doGetRequestWithJWT(String uri, ResultMatcher resultMatcher, String jwt) throws Exception {
+        MvcResult result = this.doGetRequestWithJWTAndGetResultActions(uri, jwt)
+                .andExpect(resultMatcher)
+                .andReturn();
+
+        return result.getResponse().getContentAsString();
+    }
+
+    public String loginAndGetJWT(AuthenticationRequest authenticationRequest) throws Exception {
+        String requestJson = ow.writeValueAsString(authenticationRequest);
+
+        String response = this.doPostRequest("/api/auth/basic-authentication", requestJson, status().isOk());
         AuthenticationResponse authenticationResponse = mapper.readValue(response, AuthenticationResponse.class);
 
         return authenticationResponse.accessToken();
     }
 
+    public String loginAsAdminAndGetJWT() throws Exception {
+        return this.loginAndGetJWT(new AuthenticationRequest("Admin", "admin"));
+    }
+
     public void logoutJWT(String jwt) throws Exception {
-        this.mockMvc.perform(get("/api/auth/logout-jwt").contentType(MediaType.APPLICATION_JSON)
-                        .with(csrf())
-                        .header("Authorization", "Bearer ".concat(jwt))
-                )
-                .andExpect(status().isOk());
+        this.doGetRequestWithJWT("/api/auth/logout-jwt", status().isOk(), jwt);
     }
 
     public UserDTO saveUser(UserRequest userRequest) throws Exception {
         String requestJson = ow.writeValueAsString(userRequest);
-        MvcResult result = this.mockMvc.perform(post("/api/v1/user").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isCreated())
-                .andReturn();
 
-        String response = result.getResponse().getContentAsString();
+        String response = this.doPostRequest("/api/v1/user", requestJson, status().isCreated());
 
         return mapper.readValue(response, UserDTO.class);
     }

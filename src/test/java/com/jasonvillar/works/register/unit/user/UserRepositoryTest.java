@@ -7,7 +7,9 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.jdbc.JdbcTestUtils;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,7 +24,8 @@ class UserRepositoryTest extends DataJpaTestTemplate {
             .build();
 
     @BeforeEach
-    void setUp() {
+    void setUp(@Autowired JdbcTemplate jdbcTemplate) {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
         this.userRepository.findAll().forEach(user -> user.getHasRoleList().forEach(user::removeRole));
         this.userRepository.deleteAll();
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
