@@ -111,6 +111,7 @@ public class ClientController {
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity, userId);
 
         if (message.isEmpty()) {
+            entity.setUserId(userId);
             entity = this.service.save(entity);
             ClientDTO dto = this.clientDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
