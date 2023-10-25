@@ -17,11 +17,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class ServiceIT extends IntegrationTestsConfig {
     @Test
     void Given_2users_When_theySaveServices_Then_canGetOwnedServices() throws Exception {
-        TypeReference<List<Service>> listTypeService = new TypeReference<>() {};
+        TypeReference<List<ServiceDTO>> listTypeServiceDTO = new TypeReference<>() {};
         String requestJson;
         String responseJson;
-
-        this.saveUser(new UserRequest("User1", "user1@gmail.com", "user1"));
 
         String adminJWT = this.loginAsAdminAndGetJWT();
 
@@ -30,7 +28,7 @@ public class ServiceIT extends IntegrationTestsConfig {
         ServiceDTO savedServiceOfAdminDTO = mapper.readValue(responseJson, ServiceDTO.class);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/services", status().isOk(), adminJWT);
-        List<Service> serviceOfAdminList = mapper.readValue(responseJson, listTypeService);
+        List<ServiceDTO> serviceOfAdminList = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfAdminList).hasSize(1);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/service/" + savedServiceOfAdminDTO.id(), status().isOk(), adminJWT);
@@ -38,7 +36,7 @@ public class ServiceIT extends IntegrationTestsConfig {
         Assertions.assertThat(getServiceOfAdminDTO).isEqualTo(savedServiceOfAdminDTO);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/services/name-like/AdMiN", status().isOk(), adminJWT);
-        List<Service> serviceOfAdminNameLikeDTO = mapper.readValue(responseJson, listTypeService);
+        List<ServiceDTO> serviceOfAdminNameLikeDTO = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfAdminNameLikeDTO).hasSize(1);
 
         //------------User------------//
@@ -57,11 +55,11 @@ public class ServiceIT extends IntegrationTestsConfig {
         Assertions.assertThat(getServiceOfUserDTO).isEqualTo(savedServiceOfUserDTO);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/services", status().isOk(), user1JWT);
-        List<Service> serviceOfUser1List = mapper.readValue(responseJson, listTypeService);
+        List<ServiceDTO> serviceOfUser1List = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfUser1List).hasSize(2);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/services/name-like/uSeR1", status().isOk(), user1JWT);
-        List<Service> serviceOfUser1NameLikeDTO = mapper.readValue(responseJson, listTypeService);
+        List<ServiceDTO> serviceOfUser1NameLikeDTO = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfUser1NameLikeDTO).hasSize(2);
     }
 }
