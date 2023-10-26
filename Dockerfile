@@ -1,6 +1,6 @@
 FROM maven:3.9.5-amazoncorretto-17-al2023 AS build
 COPY . .
-RUN mvn clean package -Prender -DskipTests
+RUN mvn clean package -DskipTests
 
 FROM openjdk:17
 COPY --from=build target/works-register-api-0.0.1-SNAPSHOT.jar works.jar
