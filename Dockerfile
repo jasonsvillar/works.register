@@ -1,7 +1,9 @@
-FROM maven:3.9.5-amazoncorretto-17-al2023
+FROM maven:3.9.5-amazoncorretto-17-al2023 AS build
 COPY . .
 RUN mvn clean package -Pprod -DskipTests
-COPY target/works-register-api-0.0.1-SNAPSHOT.jar works.jar
+
+FROM openjdk:17-nanoserver
+COPY --from=build target/works-register-api-0.0.1-SNAPSHOT.jar works.jar
 # ENV PORT=8080
 EXPOSE 8080
 # SECRETS
