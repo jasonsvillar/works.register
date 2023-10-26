@@ -93,7 +93,7 @@ public class WorkRegisterController {
     public ResponseEntity<Object> saveWorkRegister(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody WorkRegisterRequest request) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         WorkRegister entity = this.workRegisterRequestAdapter.toEntity(request);
-        entity.setId(userId);
+        entity.setUserId(userId);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {

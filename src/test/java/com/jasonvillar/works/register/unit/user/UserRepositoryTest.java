@@ -25,6 +25,7 @@ class UserRepositoryTest extends DataJpaTestTemplate {
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         this.userRepository.findAll().forEach(user -> user.getHasRoleList().forEach(user::removeRole));

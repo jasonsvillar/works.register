@@ -2,7 +2,6 @@ package com.jasonvillar.works.register.integration.client;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
-import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
 import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.integration.IntegrationTestsConfig;
@@ -21,11 +20,11 @@ public class ClientIT extends IntegrationTestsConfig {
         String requestJson;
         String responseJson;
 
-        this.saveUser(new UserRequest("User1", "user1@gmail.com", "user1"));
+        this.saveUser(new UserRequest("User1 - ClientIT", "user1client-it@gmail.com", "user1"));
 
         String adminJWT = this.loginAsAdminAndGetJWT();
 
-        requestJson = ow.writeValueAsString(new ClientRequest("Client1 name - Admin", "Client1 surname", "11.111.111"));
+        requestJson = ow.writeValueAsString(new ClientRequest("Client1 name - Admin", "Client1 surname", "44.444.444"));
         responseJson = this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), adminJWT);
         ClientDTO savedClientOfAdminDTO = mapper.readValue(responseJson, ClientDTO.class);
 
@@ -47,7 +46,7 @@ public class ClientIT extends IntegrationTestsConfig {
 
         //------------User------------//
 
-        String user1JWT = this.loginAndGetJWT(new AuthenticationRequest("User1", "user1"));
+        String user1JWT = this.loginAndGetJWT(new AuthenticationRequest("User1 - ClientIT", "user1"));
 
         requestJson = ow.writeValueAsString(new ClientRequest("Client1 name - User1", "Client1 surname", "22.222.222"));
         responseJson = this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), user1JWT);

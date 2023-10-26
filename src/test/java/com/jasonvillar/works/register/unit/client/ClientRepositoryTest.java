@@ -36,6 +36,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
+        JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
         this.clientInDatabase.setUserId(this.userInDatabase.getId());
