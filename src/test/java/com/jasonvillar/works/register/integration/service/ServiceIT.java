@@ -3,10 +3,8 @@ package com.jasonvillar.works.register.integration.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.integration.IntegrationTestsConfig;
-import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
-import com.jasonvillar.works.register.user.port.in.UserRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +12,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ServiceIT extends IntegrationTestsConfig {
+class ServiceIT extends IntegrationTestsConfig {
     @Test
     void Given_2users_When_theySaveServices_Then_canGetOwnedServices() throws Exception {
         TypeReference<List<ServiceDTO>> listTypeServiceDTO = new TypeReference<>() {};

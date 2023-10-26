@@ -1,7 +1,6 @@
 package com.jasonvillar.works.register.integration.work_register;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
 import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.integration.IntegrationTestsConfig;
@@ -16,14 +15,13 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class WorkRegisterIT extends IntegrationTestsConfig {
+class WorkRegisterIT extends IntegrationTestsConfig {
     @Test
-    void Given_2users_When_theySaveWorks_Then_canGetOwnedWorks() throws Exception {
+    void Given_userAdmin_When_SaveWorks_Then_canGetOwnedWorks() throws Exception {
         TypeReference<List<WorkRegisterDTO>> listTypeWorkDTO = new TypeReference<>() {};
         String requestJson;
         String responseJson;
@@ -69,28 +67,5 @@ public class WorkRegisterIT extends IntegrationTestsConfig {
         responseJson = this.doGetRequestWithJWT("/api/v1/works/title/aDmIn", status().isOk(), adminJWT);
         List<WorkRegisterDTO> workOfAdminNameLikeDTO = mapper.readValue(responseJson, listTypeWorkDTO);
         Assertions.assertThat(workOfAdminNameLikeDTO).hasSize(1);
-
-        //------------User------------//
-
-//        String user1JWT = this.loginAndGetJWT(new AuthenticationRequest("User1", "user1"));
-//
-//        requestJson = ow.writeValueAsString(new ClientRequest("Client1 name - User1", "Client1 surname", "22.222.222"));
-//        responseJson = this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), user1JWT);
-//
-//        requestJson = ow.writeValueAsString(new ClientRequest("Client2 name - User1", "Client2 surname", "33.333.333"));
-//        this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), user1JWT);
-//        ClientDTO savedClientOfUserDTO = mapper.readValue(responseJson, ClientDTO.class);
-//
-//        responseJson = this.doGetRequestWithJWT("/api/v1/client/" + savedClientOfUserDTO.id(), status().isOk(), user1JWT);
-//        ClientDTO getClientOfUserDTO = mapper.readValue(responseJson, ClientDTO.class);
-//        Assertions.assertThat(getClientOfUserDTO).isEqualTo(savedClientOfUserDTO);
-//
-//        responseJson = this.doGetRequestWithJWT("/api/v1/clients", status().isOk(), user1JWT);
-//        List<ClientDTO> clientOfUser1List = mapper.readValue(responseJson, listTypeClientDTO);
-//        Assertions.assertThat(clientOfUser1List).hasSize(2);
-//
-//        responseJson = this.doGetRequestWithJWT("/api/v1/clients/name-like/uSeR1", status().isOk(), user1JWT);
-//        List<ClientDTO> clientOfUser1NameLikeDTO = mapper.readValue(responseJson, listTypeClientDTO);
-//        Assertions.assertThat(clientOfUser1NameLikeDTO).hasSize(2);
     }
 }

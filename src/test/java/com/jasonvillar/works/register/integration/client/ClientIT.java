@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class ClientIT extends IntegrationTestsConfig {
+class ClientIT extends IntegrationTestsConfig {
     @Test
     void Given_2users_When_theySaveClients_Then_canGetOwnedClients() throws Exception {
         TypeReference<List<ClientDTO>> listTypeClientDTO = new TypeReference<>() {};
