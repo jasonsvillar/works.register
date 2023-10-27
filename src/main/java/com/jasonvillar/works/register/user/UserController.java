@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.user.port.in.UserRequestAdapter;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
 import com.jasonvillar.works.register.user.port.out.UserDTO;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-@Tag(name = "user", description = "the user API tag annotation")
+@Tag(name = "2 - User", description = "the user API tag annotation")
 public class UserController {
 
     private final UserService service;
@@ -90,6 +91,7 @@ public class UserController {
         }
     }
 
+    @SecurityRequirements
     @PostMapping(value = "/user")
     public ResponseEntity<Object> saveUser(@Valid @RequestBody UserRequest request) {
         User entity = this.userRequestAdapter.toEntity(request);

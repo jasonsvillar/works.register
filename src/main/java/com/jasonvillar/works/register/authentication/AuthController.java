@@ -4,6 +4,7 @@ import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -25,6 +26,7 @@ import java.util.Date;
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
+@Tag(name = "1 - Authentication")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;

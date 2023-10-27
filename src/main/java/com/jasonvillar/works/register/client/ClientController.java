@@ -22,7 +22,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-@Tag(name = "client", description = "the client API tag annotation")
+@Tag(name = "3 - Client", description = "the client API tag annotation")
 public class ClientController {
     private final ClientService service;
 
