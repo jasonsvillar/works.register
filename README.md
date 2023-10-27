@@ -1,5 +1,7 @@
 # WORKS REGISTER
-https://works-api-rest.onrender.com/doc/swagger-ui/index.html
+Master - https://works-api-rest.onrender.com/doc/swagger-ui/index.html
+
+Dev - https://works-api-rest-dev.onrender.com/doc/swagger-ui/index.html
 
 ## Project Description
 
