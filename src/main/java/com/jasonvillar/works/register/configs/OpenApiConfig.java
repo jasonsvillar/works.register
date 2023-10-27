@@ -17,7 +17,7 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("WORKS REGISTER")
+                        .title("WORKS REGISTER API")
                         .version("1.0")
                         .description("Spring Boot 3 API REST")
                         .termsOfService("")

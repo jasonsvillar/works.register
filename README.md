@@ -1,4 +1,6 @@
 # WORKS REGISTER
+https://works-api-rest.onrender.com/doc/swagger-ui/index.html
+
 ## Project Description
 
 Api Rest made with:
@@ -28,7 +30,7 @@ D.E.R:
 - ~~Implement Spring Security with JWT on the Basic Auth.~~
 - ~~Transform all endpoints (clients, services, works) for the current user logged.~~
 - Implement admin endpoints with secure privilege.
-- Develop Frontend using Angular 15 or 16.
+- Develop Frontend using Angular 15.
 - Rewrite unit tests using BDD.
 - Use kubernetes to run all the project.
 - Implement CI/CD.
