@@ -70,7 +70,7 @@ public class UserService {
 
         if (this.isExistEmail(entity.getEmail())) {
             if (!message.isEmpty()) {
-                message.append("\n");
+                message.append(", ");
             }
             message.append("email must be unique");
         }

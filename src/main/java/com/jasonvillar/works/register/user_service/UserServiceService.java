@@ -53,14 +53,14 @@ public class UserServiceService {
 
         if (!this.userService.isExistId(entity.getUserId())) {
             if (!message.isEmpty()) {
-                message.append("\n");
+                message.append(", ");
             }
             message.append("userId must exist");
         }
 
         if (!this.serviceService.isExistId(entity.getServiceId())) {
             if (!message.isEmpty()) {
-                message.append("\n");
+                message.append(", ");
             }
             message.append("serviceId must exist");
         }

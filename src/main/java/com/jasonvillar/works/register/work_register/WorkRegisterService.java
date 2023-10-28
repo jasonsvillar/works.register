@@ -65,14 +65,14 @@ public class WorkRegisterService {
 
         if (!this.serviceService.isExistId(entity.getServiceId())) {
             if (!message.isEmpty()) {
-                message.append("\n");
+                message.append(", ");
             }
             message.append("serviceId must exist");
         }
 
         if (!this.clientService.isExistId(entity.getClientId())) {
             if (!message.isEmpty()) {
-                message.append("\n");
+                message.append(", ");
             }
             message.append("clientId must exist");
         }
