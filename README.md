@@ -32,7 +32,7 @@ D.E.R:
 - ~~Implement Spring Security with JWT on the Basic Auth.~~
 - ~~Transform all endpoints (clients, services, works) for the current user logged.~~
 - Implement admin endpoints with secure privilege.
-- Develop Frontend using Angular 15.
+- Develop Frontend using Angular 16. WIP: https://github.com/jasonsvillar/works.register-frontend
 - Rewrite unit tests using BDD.
 - Use kubernetes to run all the project.
 - Implement CI/CD.
