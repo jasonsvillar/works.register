@@ -2,6 +2,8 @@ package com.jasonvillar.works.register.unit.authentication;
 
 import com.jasonvillar.works.register.authentication.AuthController;
 import com.jasonvillar.works.register.authentication.JWTBlacklistService;
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
+import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
 import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.security.SecurityUser;
 import com.jasonvillar.works.register.unit.configs_for_tests.controllers.ControllerTestTemplate;
@@ -38,6 +40,9 @@ class AuthControllerTest extends ControllerTestTemplate {
     @MockBean
     private TaskScheduler taskScheduler;
 
+    @MockBean
+    private SecurityUserDetailsService securityUserDetailsService;
+
     private final User user = User.builder()
             .name("Test Name")
             .password("Top Secret")
@@ -53,6 +58,9 @@ class AuthControllerTest extends ControllerTestTemplate {
 
         Mockito.when(authenticationManager.authenticate(any())).thenReturn(authentication);
         Mockito.when(jwtTokenProvider.createToken(any())).thenReturn("NewJwtToken");
+
+        SecurityUser securityUser = new SecurityUser(user);
+        Mockito.when(securityUserDetailsService.userDetailsToSecurityUser(any())).thenReturn(securityUser);
 
         String requestJson = ow.writeValueAsString(new AuthenticationRequest("Test Name", "Top Secret"));
         this.mockMvc.perform(post("/api/auth/basic-authentication").contentType(MediaType.APPLICATION_JSON)

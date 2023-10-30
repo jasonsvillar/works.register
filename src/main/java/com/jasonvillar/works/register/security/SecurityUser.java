@@ -26,6 +26,10 @@ public class SecurityUser implements UserDetails {
         return this.user.getId();
     }
 
+    public String getEmail() {
+        return this.user.getEmail();
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.user.getAuthorityList();

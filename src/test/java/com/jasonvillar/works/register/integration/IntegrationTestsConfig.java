@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.jasonvillar.works.register.Application;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
-import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.ContainerInit;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.Postgres15_2TC;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
@@ -124,10 +123,9 @@ public class IntegrationTestsConfig {
     public String loginAndGetJWT(AuthenticationRequest authenticationRequest) throws Exception {
         String requestJson = ow.writeValueAsString(authenticationRequest);
 
-        String response = this.doPostRequest("/api/auth/basic-authentication", requestJson, status().isOk());
-        AuthenticationResponse authenticationResponse = mapper.readValue(response, AuthenticationResponse.class);
+        ResultActions resultActions = this.doPostRequestAndGetResultActions("/api/auth/basic-authentication", requestJson);
 
-        return authenticationResponse.accessToken();
+        return resultActions.andReturn().getResponse().getHeader("authorization");
     }
 
     public String loginAsAdminAndGetJWT() throws Exception {

@@ -3,12 +3,14 @@ package com.jasonvillar.works.register.authentication;
 import com.jasonvillar.works.register.security.JwtTokenProvider;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
 import com.jasonvillar.works.register.authentication.port.out.AuthenticationResponse;
+import com.jasonvillar.works.register.security.SecurityUser;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.TaskScheduler;
@@ -16,6 +18,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -39,6 +42,8 @@ public class AuthController {
 
     private final TaskScheduler taskScheduler;
 
+    private final SecurityUserDetailsService securityUserDetailsService;
+
     @SecurityRequirements
     @PostMapping("/basic-authentication")
     public ResponseEntity<AuthenticationResponse> basicAuthentication(@Valid @RequestBody AuthenticationRequest authenticationRequest) {
@@ -49,9 +54,26 @@ public class AuthController {
                 )
         );
 
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenProvider.createToken(authentication);
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
+
+        SecurityUser securityUser = this.securityUserDetailsService.userDetailsToSecurityUser(userDetails);
+
+        AuthenticationResponse authenticationResponse = new AuthenticationResponse(
+                securityUser.getId(),
+                securityUser.getUsername(),
+                securityUser.getEmail(),
+                securityUser.getAuthorities()
+        );
+
+        return ResponseEntity.ok()
+                .header(
+                        HttpHeaders.AUTHORIZATION,
+                        jwt
+                )
+                .body(authenticationResponse);
     }
 
     @GetMapping("/authentication-required")

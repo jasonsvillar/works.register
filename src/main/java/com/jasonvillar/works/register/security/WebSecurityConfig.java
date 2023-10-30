@@ -11,6 +11,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -62,9 +63,12 @@ public class WebSecurityConfig {
     @Bean
     @SuppressWarnings("java:S4502")
     SecurityFilterChain getSecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.headers().frameOptions().disable();
         httpSecurity.cors();
         httpSecurity.csrf().disable();
+
+        httpSecurity.sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and();
 
         httpSecurity.authorizeHttpRequests(
                 requests -> requests

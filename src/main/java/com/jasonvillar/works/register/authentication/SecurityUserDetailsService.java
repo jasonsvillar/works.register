@@ -30,6 +30,10 @@ public class SecurityUserDetailsService implements UserDetailsService {
     }
 
     public long getAuthenticatedUserId(UserDetails userDetails) {
-        return ((SecurityUser) userDetails).getId();
+        return this.userDetailsToSecurityUser(userDetails).getId();
+    }
+
+    public SecurityUser userDetailsToSecurityUser(UserDetails userDetails) {
+        return (SecurityUser) userDetails;
     }
 }
