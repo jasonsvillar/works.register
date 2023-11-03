@@ -86,7 +86,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/logout-jwt")
+    @GetMapping(value = "/logout-jwt", produces = "application/json")
     public ResponseEntity<String> performLogout(Authentication authentication, HttpServletRequest request, HttpServletResponse response) {
         String jwt = this.jwtTokenProvider.resolveToken(request);
         this.logoutHandler.logout(request, response, authentication);
@@ -102,11 +102,6 @@ public class AuthController {
         DeleteToExpireJwtTask task = new DeleteToExpireJwtTask(jwt, this.jwtBlacklistService);
         this.taskScheduler.schedule(task, expiration.toInstant());
 
-        return ResponseEntity.ok("Logout success");
-    }
-
-    @GetMapping( "/logout/success")
-    public ResponseEntity<String> logoutSuccess() {
-        return ResponseEntity.ok("Logout success");
+        return ResponseEntity.ok().build();
     }
 }

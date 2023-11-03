@@ -71,13 +71,6 @@ class AuthControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void logoutSuccess() throws Exception {
-        this.mockMvc.perform(get("/api/auth/logout/success").contentType(MediaType.APPLICATION_JSON)
-                )
-                .andExpect(status().isOk());
-    }
-
-    @Test
     @WithMockUser(username = "Some User")
     void givenAuthenticatedUser_whenCheckAuthentication_thenStatusOk() throws Exception {
         this.mockMvc.perform(get("/api/auth/authentication-required").contentType(MediaType.APPLICATION_JSON)

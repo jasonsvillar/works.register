@@ -32,7 +32,7 @@ public class ClientController {
 
     private final SecurityUserDetailsService securityUserDetailsService;
 
-    @GetMapping(value = "/clients",produces = "application/json")
+    @GetMapping(value = "/clients", produces = "application/json")
     public ResponseEntity<List<ClientDTO>> getListClient(@AuthenticationPrincipal UserDetails userDetails) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         List<ClientDTO> listDTO = this.service.getListByUserId(userId).stream().map(clientDTOAdapter).toList();
