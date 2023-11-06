@@ -2,6 +2,7 @@ package com.jasonvillar.works.register.authentication;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -18,6 +19,7 @@ public class JWTBlacklistService {
         return this.jwtBlacklistRepository.save(entity);
     }
 
+    @Transactional
     public void deleteByToken(String jwt) {
         this.jwtBlacklistRepository.deleteByToken(jwt);
     }
