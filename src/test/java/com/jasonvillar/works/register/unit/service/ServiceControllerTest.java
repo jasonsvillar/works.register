@@ -47,9 +47,18 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     @Test
     void givenServices_whenGetRequest_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByUserId(0)).thenReturn(List.of(entity));
+        Mockito.when(service.getListByUserId(0, 1, 10)).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get(this.endpointBegin + "/services")
+        this.mockMvc.perform(get(this.endpointBegin + "/services/page/1/rows/10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenServices_whenGetRowCount_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListByUserId(0, 1, 10)).thenReturn(List.of(entity));
+
+        this.mockMvc.perform(get(this.endpointBegin + "/services/row-count")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

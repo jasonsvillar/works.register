@@ -13,11 +13,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 class ServiceServiceTest {
@@ -149,9 +152,9 @@ class ServiceServiceTest {
 
     @Test
     void givenRepositories_whenGetListByUserId_thenReturnList() {
-        Mockito.when(repository.findAllByUserServiceListUserId(1)).thenReturn(List.of(entity));
+        Mockito.when(repository.findAllByUserServiceListUserId(eq(1L), any())).thenReturn(List.of(entity));
 
-        List<Service> list = service.getListByUserId(1);
+        List<Service> list = service.getListByUserId(1, 1, 10);
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Service.class);
@@ -165,6 +168,15 @@ class ServiceServiceTest {
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Service.class);
+    }
+
+    @Test
+    void givenRepositories_whenGetRowCountByUserId_thenReturnLong() {
+        Mockito.when(repository.countByUserServiceListUserIdOrderByNameAsc(1)).thenReturn(1L);
+
+        Long count = service.getRowCountByUserId(1);
+
+        Assertions.assertThat(count.getClass()).isEqualTo(Long.class);
     }
 
     @Test

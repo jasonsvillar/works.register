@@ -9,6 +9,8 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -97,9 +99,16 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
 
     @Test
     void givenServiceInTable_whenFindAllByUserServiceListUserId_thenCheckIfEmpty() {
-        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1);
+        Pageable page = PageRequest.of(0, 10);
+        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1, page);
 
         Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void givenServiceInTable_whenCountByUserServiceListUserIdOrderByNameAsc_thenCheckIfGraterThan0() {
+        long count = this.serviceRepository.countByUserServiceListUserIdOrderByNameAsc(1);
+        Assertions.assertThat(count).isGreaterThan(0);
     }
 
     @Test

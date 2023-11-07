@@ -3,6 +3,8 @@ package com.jasonvillar.works.register.service;
 import com.jasonvillar.works.register.user_service.UserService;
 import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
@@ -59,8 +61,13 @@ public class ServiceService {
         return this.serviceRepository.findOptionalByIdAndUserServiceListUserId(id, userId);
     }
 
-    public List<Service> getListByUserId(long userId) {
-        return this.serviceRepository.findAllByUserServiceListUserId(userId);
+    public List<Service> getListByUserId(long userId, int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber - 1, rows); //page start from 0
+        return this.serviceRepository.findAllByUserServiceListUserId(userId, page);
+    }
+
+    public long getRowCountByUserId(long userId) {
+        return this.serviceRepository.countByUserServiceListUserIdOrderByNameAsc(userId);
     }
 
     public List<Service> getListByNameLikeAndUserId(String name, long userId) {

@@ -25,7 +25,7 @@ class ServiceIT extends IntegrationTestsConfig {
         responseJson = this.doPostRequestWithJWT("/api/v1/service", requestJson, status().isCreated(), adminJWT);
         ServiceDTO savedServiceOfAdminDTO = mapper.readValue(responseJson, ServiceDTO.class);
 
-        responseJson = this.doGetRequestWithJWT("/api/v1/services", status().isOk(), adminJWT);
+        responseJson = this.doGetRequestWithJWT("/api/v1/services/page/1/rows/10", status().isOk(), adminJWT);
         List<ServiceDTO> serviceOfAdminList = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfAdminList).hasSize(1);
 
@@ -52,7 +52,7 @@ class ServiceIT extends IntegrationTestsConfig {
         ServiceDTO getServiceOfUserDTO = mapper.readValue(responseJson, ServiceDTO.class);
         Assertions.assertThat(getServiceOfUserDTO).isEqualTo(savedServiceOfUserDTO);
 
-        responseJson = this.doGetRequestWithJWT("/api/v1/services", status().isOk(), user1JWT);
+        responseJson = this.doGetRequestWithJWT("/api/v1/services/page/1/rows/10", status().isOk(), user1JWT);
         List<ServiceDTO> serviceOfUser1List = mapper.readValue(responseJson, listTypeServiceDTO);
         Assertions.assertThat(serviceOfUser1List).hasSize(2);
 

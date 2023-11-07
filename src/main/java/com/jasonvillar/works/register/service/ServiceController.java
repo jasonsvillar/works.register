@@ -44,16 +44,24 @@ public class ServiceController {
         }
     }
 
-    @GetMapping(value = "/services", produces = "application/json")
-    public ResponseEntity<List<ServiceDTO>> getListService(@AuthenticationPrincipal UserDetails userDetails) {
+    @GetMapping(value = "/services/page/{page}/rows/{rows}", produces = "application/json")
+    public ResponseEntity<List<ServiceDTO>> getListService(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int page, @PathVariable int rows) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        List<ServiceDTO> listDTO = this.service.getListByUserId(userId).stream().map(serviceDTOAdapter).toList();
+        List<ServiceDTO> listDTO = this.service.getListByUserId(userId, page, rows).stream().map(serviceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok().body(listDTO);
         }
+    }
+
+    @GetMapping(value = "/services/row-count", produces = "application/json")
+    public ResponseEntity<Long> getRowCount(@AuthenticationPrincipal UserDetails userDetails) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        long rowCount = this.service.getRowCountByUserId(userId);
+
+        return ResponseEntity.ok().body(rowCount);
     }
 
     @GetMapping(value = "/services/name-like/{name}", produces = "application/json")
