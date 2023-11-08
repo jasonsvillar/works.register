@@ -16,5 +16,6 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     Optional<Service> findOptionalByIdAndUserServiceListUserId(long id, long userId);
     List<Service> findAllByUserServiceListUserId(long userId, Pageable pageable);
     List<Service> findAllByNameContainingIgnoreCaseAndUserServiceListUserId(String name, long userId);
-    long countByUserServiceListUserIdOrderByNameAsc(long userId);
+    long countByUserServiceListUserId(long userId);
+    long count();
 }

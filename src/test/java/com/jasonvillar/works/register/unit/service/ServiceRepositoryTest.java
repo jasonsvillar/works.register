@@ -9,6 +9,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -61,6 +62,36 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
+    void givenServiceInTable_whenFindAllPageable_thenCheckIfEmpty() {
+        Pageable page = PageRequest.of(0, 10);
+        Page<Service> servicePage = this.serviceRepository.findAll(page);
+
+        Assertions.assertThat(servicePage).isNotEmpty();
+    }
+
+    @Test
+    void givenServiceInTable_whenFindAllByUserServiceListUserId_thenCheckIfEmpty() {
+        Pageable page = PageRequest.of(0, 10);
+        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1, page);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void givenServiceInTable_whenCountByUserServiceListUserId_thenCheckRowCountIsGreaterThan0() {
+        long rowCount = this.serviceRepository.countByUserServiceListUserId(1);
+
+        Assertions.assertThat(rowCount).isGreaterThan(0);
+    }
+
+    @Test
+    void givenServiceInTable_whenCount_thenCheckRowContIsGreaterThan0() {
+        long rowCount = this.serviceRepository.count();
+
+        Assertions.assertThat(rowCount).isGreaterThan(0);
+    }
+
+    @Test
     void givenServiceInTable_whenFindAllByNameContainingIgnoreCase_thenCheckIfEmpty() {
         List<Service> serviceList = this.serviceRepository.findAllByNameContainingIgnoreCase("dummy Name");
         Assertions.assertThat(serviceList).isNotEmpty();
@@ -95,20 +126,6 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
 
         service = this.serviceRepository.findOptionalByName("Nonexistent name");
         Assertions.assertThat(service).isNotPresent();
-    }
-
-    @Test
-    void givenServiceInTable_whenFindAllByUserServiceListUserId_thenCheckIfEmpty() {
-        Pageable page = PageRequest.of(0, 10);
-        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1, page);
-
-        Assertions.assertThat(serviceList).isNotEmpty();
-    }
-
-    @Test
-    void givenServiceInTable_whenCountByUserServiceListUserIdOrderByNameAsc_thenCheckIfGraterThan0() {
-        long count = this.serviceRepository.countByUserServiceListUserIdOrderByNameAsc(1);
-        Assertions.assertThat(count).isGreaterThan(0);
     }
 
     @Test

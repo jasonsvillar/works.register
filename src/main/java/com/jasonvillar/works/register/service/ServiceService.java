@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,8 +16,22 @@ public class ServiceService {
     private final ServiceRepository serviceRepository;
     private final UserServiceRepository userServiceRepository;
 
-    public List<Service> getList() {
-        return this.serviceRepository.findAll();
+    public List<Service> getList(int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
+        return this.serviceRepository.findAll(page).stream().toList();
+    }
+
+    public List<Service> getListByUserId(long userId, int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
+        return this.serviceRepository.findAllByUserServiceListUserId(userId, page);
+    }
+
+    public long getRowCountByUserId(long userId) {
+        return this.serviceRepository.countByUserServiceListUserId(userId);
+    }
+
+    public long getRowCount() {
+        return this.serviceRepository.count();
     }
 
     public List<Service> getListByNameLike(String name) {
@@ -59,15 +74,6 @@ public class ServiceService {
 
     public Optional<Service> getOptionalByIdAndUserId(long id, long userId) {
         return this.serviceRepository.findOptionalByIdAndUserServiceListUserId(id, userId);
-    }
-
-    public List<Service> getListByUserId(long userId, int pageNumber, int rows) {
-        Pageable page = PageRequest.of(pageNumber - 1, rows); //page start from 0
-        return this.serviceRepository.findAllByUserServiceListUserId(userId, page);
-    }
-
-    public long getRowCountByUserId(long userId) {
-        return this.serviceRepository.countByUserServiceListUserIdOrderByNameAsc(userId);
     }
 
     public List<Service> getListByNameLikeAndUserId(String name, long userId) {

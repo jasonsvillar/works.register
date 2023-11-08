@@ -47,7 +47,7 @@ public class ServiceController {
     @GetMapping(value = "/services/page/{page}/rows/{rows}", produces = "application/json")
     public ResponseEntity<List<ServiceDTO>> getListService(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int page, @PathVariable int rows) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        List<ServiceDTO> listDTO = this.service.getListByUserId(userId, page, rows).stream().map(serviceDTOAdapter).toList();
+        List<ServiceDTO> listDTO = this.service.getListByUserId(userId, page - 1, rows).stream().map(serviceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -60,6 +60,24 @@ public class ServiceController {
     public ResponseEntity<Long> getRowCount(@AuthenticationPrincipal UserDetails userDetails) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
         long rowCount = this.service.getRowCountByUserId(userId);
+
+        return ResponseEntity.ok().body(rowCount);
+    }
+
+    @GetMapping(value = "/services/all/page/{page}/rows/{rows}", produces = "application/json")
+    public ResponseEntity<List<ServiceDTO>> getListAllService(@PathVariable int page, @PathVariable int rows) {
+        List<ServiceDTO> listDTO = this.service.getList(page - 1, rows).stream().map(serviceDTOAdapter).toList();
+
+        if (listDTO.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().body(listDTO);
+        }
+    }
+
+    @GetMapping(value = "/services/all/row-count", produces = "application/json")
+    public ResponseEntity<Long> getAllRowCount() {
+        long rowCount = this.service.getRowCount();
 
         return ResponseEntity.ok().body(rowCount);
     }
