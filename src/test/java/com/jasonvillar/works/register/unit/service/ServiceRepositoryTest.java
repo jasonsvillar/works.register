@@ -78,6 +78,14 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
+    void givenServiceInTable_whenFindAllByUserIdNot_thenCheckIfEmpty() {
+        Pageable page = PageRequest.of(0, 10);
+        List<Service> serviceList = this.serviceRepository.findAllByUserIdNot(999, page);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
     void givenServiceInTable_whenCountByUserServiceListUserId_thenCheckRowCountIsGreaterThan0() {
         long rowCount = this.serviceRepository.countByUserServiceListUserId(1);
 
@@ -87,6 +95,13 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     @Test
     void givenServiceInTable_whenCount_thenCheckRowContIsGreaterThan0() {
         long rowCount = this.serviceRepository.count();
+
+        Assertions.assertThat(rowCount).isGreaterThan(0);
+    }
+
+    @Test
+    void givenServiceInTable_whenCountByUserIdNot_thenCheckRowContIsGreaterThan0() {
+        long rowCount = this.serviceRepository.countByUserIdNot(999);
 
         Assertions.assertThat(rowCount).isGreaterThan(0);
     }

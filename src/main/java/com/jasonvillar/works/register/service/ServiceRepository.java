@@ -1,6 +1,8 @@
 package com.jasonvillar.works.register.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
@@ -18,4 +20,16 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     List<Service> findAllByNameContainingIgnoreCaseAndUserServiceListUserId(String name, long userId);
     long countByUserServiceListUserId(long userId);
     long count();
+
+    @Query("SELECT DISTINCT s " +
+            "FROM Service s " +
+            "LEFT JOIN UserService us " +
+            "WHERE us.userId != :userId")
+    List<Service> findAllByUserIdNot(@Param("userId") long userId, Pageable pageable);
+
+    @Query("SELECT DISTINCT COUNT(s) " +
+            "FROM Service s " +
+            "LEFT JOIN UserService us " +
+            "WHERE us.userId != :userId")
+   long countByUserIdNot(@Param("userId") long userId);
 }
