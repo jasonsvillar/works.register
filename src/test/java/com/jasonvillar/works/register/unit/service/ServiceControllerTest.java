@@ -64,6 +64,15 @@ class ServiceControllerTest extends ControllerTestTemplate {
     }
 
     @Test
+    void givenServices_whenGetUnusedRequest_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getUnusedListFromUserId(0, 0, 10)).thenReturn(List.of(entity));
+
+        this.mockMvc.perform(get(this.endpointBegin + "/services/unused/page/1/rows/10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void givenServices_whenGetRowCount_thenCheckIfOk() throws Exception {
         Mockito.when(service.getRowCountByUserId(0)).thenReturn(1L);
 
@@ -74,9 +83,18 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     @Test
     void givenServices_whenGetAllRowCount_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getRowCountByUserId(0)).thenReturn(1L);
+        Mockito.when(service.getRowCount()).thenReturn(1L);
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/all/row-count")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenServices_whenGetUnusedRowCountFromUserId_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getUnusedRowCountFromUserId(0)).thenReturn(1L);
+
+        this.mockMvc.perform(get(this.endpointBegin + "/services/unused/row-count")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

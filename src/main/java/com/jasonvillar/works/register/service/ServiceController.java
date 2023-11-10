@@ -82,6 +82,26 @@ public class ServiceController {
         return ResponseEntity.ok().body(rowCount);
     }
 
+    @GetMapping(value = "/services/unused/page/{page}/rows/{rows}", produces = "application/json")
+    public ResponseEntity<List<ServiceDTO>> getListUnusedServiceFromUserId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int page, @PathVariable int rows) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        List<ServiceDTO> listDTO = this.service.getUnusedListFromUserId(userId, page - 1, rows).stream().map(serviceDTOAdapter).toList();
+
+        if (listDTO.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok().body(listDTO);
+        }
+    }
+
+    @GetMapping(value = "/services/unused/row-count", produces = "application/json")
+    public ResponseEntity<Long> getUnusedRowCountFromUserId(@AuthenticationPrincipal UserDetails userDetails) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        long rowCount = this.service.getUnusedRowCountFromUserId(userId);
+
+        return ResponseEntity.ok().body(rowCount);
+    }
+
     @GetMapping(value = "/services/name-like/{name}", produces = "application/json")
     public ResponseEntity<List<ServiceDTO>> getListServiceByNameLike(@AuthenticationPrincipal UserDetails userDetails, @PathVariable String name) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);

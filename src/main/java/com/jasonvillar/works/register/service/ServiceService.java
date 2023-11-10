@@ -92,4 +92,13 @@ public class ServiceService {
 
         return serviceSaved;
     }
+
+    public List<Service> getUnusedListFromUserId(long userId, int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
+        return this.serviceRepository.findAllByUserIdNot(userId, page);
+    }
+
+    public long getUnusedRowCountFromUserId(long userId) {
+        return this.serviceRepository.countByUserIdNot(userId);
+    }
 }

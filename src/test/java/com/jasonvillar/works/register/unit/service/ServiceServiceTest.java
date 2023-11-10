@@ -76,6 +76,16 @@ class ServiceServiceTest {
     }
 
     @Test
+    void givenRepositories_whenGetUnusedListFromUserId_thenReturnList() {
+        Mockito.when(repository.findAllByUserIdNot(eq(1L), any())).thenReturn(List.of(entity));
+
+        List<Service> list = service.getUnusedListFromUserId(1, 0, 10);
+
+        Assertions.assertThat(list).isNotEmpty();
+        Assertions.assertThat(list.get(0).getClass()).isEqualTo(Service.class);
+    }
+
+    @Test
     void givenRepositories_whenGetRowCountByUserId_thenReturnLong() {
         Mockito.when(repository.countByUserServiceListUserId(1)).thenReturn(1L);
 
@@ -89,6 +99,15 @@ class ServiceServiceTest {
         Mockito.when(repository.count()).thenReturn(1L);
 
         Long count = service.getRowCount();
+
+        Assertions.assertThat(count.getClass()).isEqualTo(Long.class);
+    }
+
+    @Test
+    void givenRepositories_whenGetUnusedRowCountFromUserId_thenReturnLong() {
+        Mockito.when(repository.countByUserIdNot(1L)).thenReturn(1L);
+
+        Long count = service.getUnusedRowCountFromUserId(1L);
 
         Assertions.assertThat(count.getClass()).isEqualTo(Long.class);
     }
