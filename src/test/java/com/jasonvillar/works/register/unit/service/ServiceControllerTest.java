@@ -8,6 +8,12 @@ import com.jasonvillar.works.register.service.ServiceService;
 import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
+import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
+import com.jasonvillar.works.register.user_service.UserServiceService;
+import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -19,16 +25,22 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {ServiceController.class, ServiceRequestAdapter.class, ServiceDTOAdapter.class})
+@ContextConfiguration(classes = {ServiceController.class, ServiceRequestAdapter.class, ServiceDTOAdapter.class, UserServiceDTOAdapter.class, UserDTOAdapter.class})
 class ServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private ServiceService service;
+
+    @MockBean
+    private com.jasonvillar.works.register.user.UserService userService;
+
+    @MockBean
+    private UserServiceService userServiceService;
 
     private final Service entity = Service.builder()
             .name("Name")
@@ -148,5 +160,75 @@ class ServiceControllerTest extends ControllerTestTemplate {
                         .with(csrf())
                 )
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenNewService_whenSaveNotExistServiceOfUserService_thenCheckIfNotFound() throws Exception {
+        UserServiceRequest userServiceRequest = new UserServiceRequest(999L);
+        String requestJson = ow.writeValueAsString(userServiceRequest);
+
+        Mockito.when(service.isExistId(999L)).thenReturn(false);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenNewService_whenSaveExistentServiceOfUser_thenCheckIfFound() throws Exception {
+        UserServiceRequest userServiceRequest = new UserServiceRequest(1L);
+        String requestJson = ow.writeValueAsString(userServiceRequest);
+
+        Mockito.when(service.isExistId(1L)).thenReturn(true);
+        Mockito.when(userServiceService.isExistUserIdAndServiceId(0L, 1L)).thenReturn(true);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isFound());
+    }
+
+    @Test
+    void givenNewService_whenSaveServiceOfUser_thenCheckIfCreated() throws Exception {
+        com.jasonvillar.works.register.user_service.UserService userServiceEntitySaved = com.jasonvillar.works.register.user_service.UserService.builder()
+                .id(1L)
+                .userId(0L)
+                .serviceId(1L)
+                .build();
+
+        UserServiceRequest userServiceRequest = new UserServiceRequest(1L);
+        String requestJson = ow.writeValueAsString(userServiceRequest);
+
+        Mockito.when(service.isExistId(1L)).thenReturn(true);
+        Mockito.when(userServiceService.isExistUserIdAndServiceId(0L, 1L)).thenReturn(false);
+        Mockito.when(userServiceService.save(any())).thenReturn(userServiceEntitySaved);
+        Mockito.when(userService.getById(0L)).thenReturn(User.builder().id(0L).name("none").build());
+        Mockito.when(service.getById(1L)).thenReturn(this.entity);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void givenNewService_whenDeleteService_thenCheckStatusIfOk() throws Exception {
+        Mockito.when(userServiceService.deleteByServiceIdAndUserId(1L, 0L)).thenReturn(true);
+
+        this.mockMvc.perform(delete(this.endpointBegin + "/service/1").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk());
+
+        Mockito.when(userServiceService.deleteByServiceIdAndUserId(999L, 0L)).thenReturn(false);
+
+        this.mockMvc.perform(delete(this.endpointBegin + "/service/999").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
     }
 }

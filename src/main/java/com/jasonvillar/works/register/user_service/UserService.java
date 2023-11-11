@@ -33,7 +33,8 @@ public class UserService {
     User user;
 
     @Builder
-    public UserService(long userId, long serviceId) {
+    public UserService(long id, long userId, long serviceId) {
+        this.id = id;
         this.userId = userId;
         this.serviceId = serviceId;
     }
