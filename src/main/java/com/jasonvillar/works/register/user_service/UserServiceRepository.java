@@ -2,6 +2,7 @@ package com.jasonvillar.works.register.user_service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,4 +18,6 @@ public interface UserServiceRepository extends JpaRepository<UserService, Long> 
     UserService findUserServiceById(long id);
 
     Optional<UserService> findOptionalById(long id);
+
+    long deleteByServiceIdAndUserId(long serviceId, long userId);
 }

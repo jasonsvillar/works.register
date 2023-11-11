@@ -21,15 +21,23 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     long countByUserServiceListUserId(long userId);
     long count();
 
-    @Query("SELECT DISTINCT s " +
+    @Query("SELECT s " +
             "FROM Service s " +
-            "LEFT JOIN UserService us " +
-            "WHERE us.userId != :userId")
+            "WHERE s.id NOT IN " +
+            "( " +
+            "SELECT us.serviceId " +
+            "FROM UserService us " +
+            "WHERE us.userId = :userId" +
+            ")")
     List<Service> findAllByUserIdNot(@Param("userId") long userId, Pageable pageable);
 
-    @Query("SELECT DISTINCT COUNT(s) " +
+    @Query("SELECT COUNT(*) " +
             "FROM Service s " +
-            "LEFT JOIN UserService us " +
-            "WHERE us.userId != :userId")
-   long countByUserIdNot(@Param("userId") long userId);
+            "WHERE s.id NOT IN " +
+            "(" +
+            "SELECT us.serviceId " +
+            "FROM UserService us " +
+            "WHERE us.userId = :userId" +
+            ")")
+    long countByUserIdNot(@Param("userId") long userId);
 }

@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.user_service;
 import com.jasonvillar.works.register.service.ServiceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -70,5 +71,15 @@ public class UserServiceService {
 
     public UserService save(UserService userService) {
         return this.userServiceRepository.save(userService);
+    }
+
+    @Transactional
+    public boolean deleteByServiceIdAndUserId(long serviceId, long userId) {
+        long deletedRows = this.userServiceRepository.deleteByServiceIdAndUserId(serviceId, userId);
+        if (deletedRows > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

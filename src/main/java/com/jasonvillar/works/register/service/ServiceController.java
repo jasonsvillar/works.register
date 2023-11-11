@@ -5,6 +5,11 @@ import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
+import com.jasonvillar.works.register.user_service.UserService;
+import com.jasonvillar.works.register.user_service.UserServiceService;
+import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTO;
+import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +36,12 @@ public class ServiceController {
     private final ServiceRequestAdapter serviceRequestAdapter;
 
     private final SecurityUserDetailsService securityUserDetailsService;
+
+    private final UserServiceService userServiceService;
+
+    private final UserServiceDTOAdapter userServiceDTOAdapter;
+
+    private final com.jasonvillar.works.register.user.UserService userService;
 
     @GetMapping(value = "/service/{id}", produces = "application/json")
     public ResponseEntity<ServiceDTO> getService(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
@@ -126,6 +137,49 @@ public class ServiceController {
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
         } else {
             return ResponseEntity.badRequest().body(message);
+        }
+    }
+
+    @PostMapping(value = "/service/user")
+    public ResponseEntity<Object> saveUserService(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody UserServiceRequest request) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        long serviceId = request.serviceId();
+
+        boolean existService = this.service.isExistId(serviceId);
+
+        if (!existService) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Service not founded");
+        }
+
+        UserService entity = UserService.builder()
+                .serviceId(serviceId)
+                .userId(userId)
+                .build();
+
+        boolean existUserService = this.userServiceService.isExistUserIdAndServiceId(userId, serviceId);
+
+        if (existUserService) {
+            return ResponseEntity.status(HttpStatus.FOUND).body("Found existent user service");
+        } else {
+            entity = this.userServiceService.save(entity);
+            entity.setUser(this.userService.getById(userId));
+            entity.setService(this.service.getById(serviceId));
+
+            UserServiceDTO dto = this.userServiceDTOAdapter.apply(entity);
+            return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        }
+    }
+
+    @DeleteMapping(value = "/service/{serviceId}")
+    public ResponseEntity<Boolean> deleteServiceToUserId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long serviceId) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        boolean deleted = this.userServiceService.deleteByServiceIdAndUserId(serviceId, userId);
+        if (deleted) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
     }
 }
