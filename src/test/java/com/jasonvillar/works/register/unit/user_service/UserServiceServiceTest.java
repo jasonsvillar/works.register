@@ -144,4 +144,20 @@ class UserServiceServiceTest {
         exist = service.isExistUserIdAndServiceId(0, 0);
         Assertions.assertThat(exist).isFalse();
     }
+
+    @Test
+    void givenRequest_whenDeleteByServiceIdAndUserId_thenCheckIfDeleted() {
+        Mockito.when(repository.deleteByServiceIdAndUserId(1, 1)).thenReturn(1L);
+
+        boolean deleted = service.deleteByServiceIdAndUserId(1, 1);
+        Assertions.assertThat(deleted).isTrue();
+    }
+
+    @Test
+    void givenRequest_whenDeleteByServiceIdAndUserId_thenCheckIfNotDeleted() {
+        Mockito.when(repository.deleteByServiceIdAndUserId(1, 1)).thenReturn(0L);
+
+        boolean deleted = service.deleteByServiceIdAndUserId(1, 1);
+        Assertions.assertThat(deleted).isFalse();
+    }
 }
