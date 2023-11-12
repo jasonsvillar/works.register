@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -124,5 +125,14 @@ class UserServiceRepositoryTest extends DataJpaTestTemplate {
 
         userService = this.userServiceRepository.findAllByServiceId(0);
         Assertions.assertThat(userService).isEmpty();
+    }
+
+    @Test
+    void givenUserServiceInTable_whenDeleteByServiceIdInAndUserId_thenCheckListIsGreaterThan0() {
+        long[] serviceIdArray = new long[]{serviceInDatabase.getId().intValue()};
+
+        List<Long> list = Arrays.stream(serviceIdArray).boxed().toList();
+        List<UserService> userServiceList = this.userServiceRepository.deleteByServiceIdInAndUserId(list, userInDatabase.getId());
+        Assertions.assertThat(userServiceList).hasSizeGreaterThan(0);
     }
 }

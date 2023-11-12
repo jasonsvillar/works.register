@@ -13,8 +13,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceServiceTest {
@@ -159,5 +163,15 @@ class UserServiceServiceTest {
 
         boolean deleted = service.deleteByServiceIdAndUserId(1, 1);
         Assertions.assertThat(deleted).isFalse();
+    }
+
+    @Test
+    void givenRequest_whenDeleteByServicesIdAndUserId_thenCheckIfNotDeleted() {
+        long[] serviceIdArray = new long[]{1L};
+
+        Mockito.when(repository.deleteByServiceIdInAndUserId(any(), eq(1L))).thenReturn(List.of(entity));
+
+        List<UserService> userServiceList = service.deleteByServicesIdAndUserId(serviceIdArray, 1L);
+        Assertions.assertThat(userServiceList).hasSize(1);
     }
 }

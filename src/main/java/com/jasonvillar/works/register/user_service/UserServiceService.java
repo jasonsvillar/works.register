@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,5 +82,9 @@ public class UserServiceService {
         } else {
             return false;
         }
+    }
+
+    public List<UserService> deleteByServicesIdAndUserId(long[] serviceId, long userId) {
+        return this.userServiceRepository.deleteByServiceIdInAndUserId(Arrays.stream(serviceId).boxed().toList(), userId);
     }
 }
