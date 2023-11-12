@@ -9,6 +9,7 @@ import com.jasonvillar.works.register.unit.configs_for_tests.repositories.Postgr
 import com.jasonvillar.works.register.user.port.in.UserRequest;
 import com.jasonvillar.works.register.user.port.out.UserDTO;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -43,12 +44,16 @@ public class IntegrationTestsConfig {
     }
 
     @AfterAll
-    static void afterAll(@Autowired JdbcTemplate jdbcTemplate) {
+    static void afterAll() {
+        tc.stop();
+    }
+
+    @AfterEach
+    void afterEach(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
-        tc.stop();
     }
 
     @Autowired
