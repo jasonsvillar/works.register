@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
+import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user_service.UserService;
 import com.jasonvillar.works.register.user_service.UserServiceService;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -181,5 +183,27 @@ public class ServiceController {
         } else {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/services/delete/batch")
+    public ResponseEntity<List<UserServiceDTO>> deleteServicesBatchToUserId(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody List<Long> serviceIdLongList) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        User user = this.userService.getById(userId);
+
+        long[] serviceIdLongArray = serviceIdLongList.stream().mapToLong(l -> l).toArray();
+
+        List<UserService> userServiceListDeleted = this.userServiceService.deleteByServicesIdAndUserId(serviceIdLongArray, userId);
+
+        userServiceListDeleted.forEach(
+            userService -> {
+                userService.setUser(user);
+                Service service = this.service.getById(userService.getServiceId());
+                userService.setService(service);
+            }
+        );
+
+        List<UserServiceDTO> userServiceListDTO = userServiceListDeleted.stream().map(this.userServiceDTOAdapter).toList();
+
+        return new ResponseEntity<>(userServiceListDTO, HttpStatus.OK);
     }
 }
