@@ -167,11 +167,11 @@ class UserServiceServiceTest {
 
     @Test
     void givenRequest_whenDeleteByServicesIdAndUserId_thenCheckIfNotDeleted() {
-        long[] serviceIdArray = new long[]{1L};
+        List<Long> serviceIdList = List.of(1L);
 
         Mockito.when(repository.deleteByServiceIdInAndUserId(any(), eq(1L))).thenReturn(List.of(entity));
 
-        List<UserService> userServiceList = service.deleteByServicesIdAndUserId(serviceIdArray, 1L);
+        List<UserService> userServiceList = service.deleteByServicesIdAndUserId(serviceIdList, 1L);
         Assertions.assertThat(userServiceList).hasSize(1);
     }
 }

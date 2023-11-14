@@ -47,6 +47,11 @@ class ServiceControllerTest extends ControllerTestTemplate {
             .name("Name")
             .build();
 
+    private final User userEntity = User.builder()
+            .id(1L)
+            .name("Name")
+            .build();
+
     private final ServiceRequest request = new ServiceRequest("Name");
 
     @MockBean
@@ -244,13 +249,12 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
         com.jasonvillar.works.register.user_service.UserService userServiceEntity =
                 new com.jasonvillar.works.register.user_service.UserService(1L, 0L, 1L);
+        userServiceEntity.setUser(this.userEntity);
+        userServiceEntity.setService(this.entity);
 
         Mockito.when(userServiceService.deleteByServicesIdAndUserId(any(), eq(0L))).thenReturn(List.of(userServiceEntity));
 
-        Mockito.when(service.getById(1L)).thenReturn(this.entity);
-        Mockito.when(userService.getById(0L)).thenReturn(User.builder().id(0L).name("none").build());
-
-        this.mockMvc.perform(post(this.endpointBegin + "/services/delete/batch").contentType(MediaType.APPLICATION_JSON)
+        this.mockMvc.perform(post(this.endpointBegin + "/services/delete").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
                         .with(csrf())
                 )

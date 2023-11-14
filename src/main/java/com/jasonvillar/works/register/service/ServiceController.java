@@ -185,22 +185,11 @@ public class ServiceController {
         }
     }
 
-    @PostMapping(value = "/services/delete/batch")
+    @PostMapping(value = "/services/delete")
     public ResponseEntity<List<UserServiceDTO>> deleteServicesBatchToUserId(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody List<Long> serviceIdLongList) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        User user = this.userService.getById(userId);
 
-        long[] serviceIdLongArray = serviceIdLongList.stream().mapToLong(l -> l).toArray();
-
-        List<UserService> userServiceListDeleted = this.userServiceService.deleteByServicesIdAndUserId(serviceIdLongArray, userId);
-
-        userServiceListDeleted.forEach(
-            userService -> {
-                userService.setUser(user);
-                Service service = this.service.getById(userService.getServiceId());
-                userService.setService(service);
-            }
-        );
+        List<UserService> userServiceListDeleted = this.userServiceService.deleteByServicesIdAndUserId(serviceIdLongList, userId);
 
         List<UserServiceDTO> userServiceListDTO = userServiceListDeleted.stream().map(this.userServiceDTOAdapter).toList();
 

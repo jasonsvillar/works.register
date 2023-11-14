@@ -84,7 +84,8 @@ public class UserServiceService {
         }
     }
 
-    public List<UserService> deleteByServicesIdAndUserId(long[] serviceId, long userId) {
-        return this.userServiceRepository.deleteByServiceIdInAndUserId(Arrays.stream(serviceId).boxed().toList(), userId);
+    @Transactional
+    public List<UserService> deleteByServicesIdAndUserId(List<Long> serviceIdList, long userId) {
+        return this.userServiceRepository.deleteByServiceIdInAndUserId(serviceIdList, userId);
     }
 }
