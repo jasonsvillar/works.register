@@ -7,6 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -100,5 +101,13 @@ public class ServiceService {
 
     public long getUnusedRowCountFromUserId(long userId) {
         return this.serviceRepository.countByUserIdNot(userId);
+    }
+
+    public List<Service> getServiceListInUserService(List<UserService> userService) {
+        List<Service> serviceList = new ArrayList<>();
+        userService.stream().forEach(
+                service -> serviceList.add(service.getService())
+        );
+        return serviceList;
     }
 }
