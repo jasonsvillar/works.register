@@ -105,7 +105,7 @@ public class ServiceService {
 
     public List<Service> getServiceListInUserService(List<UserService> userService) {
         List<Service> serviceList = new ArrayList<>();
-        userService.stream().forEach(
+        userService.forEach(
                 service -> serviceList.add(service.getService())
         );
         return serviceList;
