@@ -5,7 +5,6 @@ import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
-import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user_service.UserService;
 import com.jasonvillar.works.register.user_service.UserServiceService;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
@@ -21,7 +20,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
