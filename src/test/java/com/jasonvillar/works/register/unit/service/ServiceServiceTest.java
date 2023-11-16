@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -226,5 +227,26 @@ class ServiceServiceTest {
 
         Service entitySaved = service.saveWithUser(newEntity, 1L);
         Assertions.assertThat(entitySaved.getId()).isEqualTo(1);
+    }
+
+    @Test
+    void givenUserService_whenGetServiceListInUserService_thenReturnServiceList() {
+        List<UserService> userServiceList = new ArrayList<>();
+
+        UserService userService1 = new UserService();
+        userService1.setServiceId(1L);
+        userService1.setService(Service.builder().id(1L).name("Service 1").build());
+
+        UserService userService2 = new UserService();
+        userService2.setServiceId(2L);
+        userService2.setService(Service.builder().id(2L).name("Service 2").build());
+
+        userServiceList.add(userService1);
+        userServiceList.add(userService2);
+
+        List<Service> serviceList = this.service.getServiceListInUserService(userServiceList);
+
+        Assertions.assertThat(serviceList.get(0).getName()).contains("Service");
+        Assertions.assertThat(serviceList.get(1).getName()).contains("Service");
     }
 }

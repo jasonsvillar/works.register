@@ -6,6 +6,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ServiceRequestAdapter {
     public Service toEntity(ServiceRequest serviceRequest) {
-        return new Service(serviceRequest.name());
+        return Service.builder().name(serviceRequest.name()).build();
     }
 }

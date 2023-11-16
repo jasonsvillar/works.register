@@ -22,7 +22,8 @@ public class Service {
     String name;
 
     @Builder
-    public Service(String name) {
+    public Service(long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
