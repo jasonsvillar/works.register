@@ -1,5 +1,7 @@
 package com.jasonvillar.works.register.unit.user_service;
 
+import com.jasonvillar.works.register.service.Service;
+import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user_service.UserService;
 import com.jasonvillar.works.register.user_service.UserServiceRepository;
 import com.jasonvillar.works.register.service.ServiceService;
@@ -13,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -173,5 +176,47 @@ class UserServiceServiceTest {
 
         List<UserService> userServiceList = service.deleteByServicesIdAndUserId(serviceIdList, 1L);
         Assertions.assertThat(userServiceList).hasSize(1);
+    }
+
+    @Test
+    void givenUserServiceWithIds_whenSetServiceEntity_thenUserServiceHasServiceEntity() {
+        Service service = Service.builder().name("Service 1").id(1L).build();
+        Mockito.when(this.serviceService.getById(1L)).thenReturn(service);
+
+        UserService userService = UserService.builder().userId(1L).serviceId(1L).build();
+
+        userService = this.service.setServiceEntityIntoUserService(userService);
+
+        Assertions.assertThat(userService.getService().getName()).isEqualTo("Service 1");
+    }
+
+    @Test
+    void givenUserServiceWithIds_whenSetUserEntity_thenUserServiceHasUserEntity() {
+        User user = User.builder().name("User 1").id(1L).build();
+        Mockito.when(this.userService.getById(1L)).thenReturn(user);
+
+        UserService userService = UserService.builder().userId(1L).serviceId(1L).build();
+
+        userService = this.service.setUserEntityIntoUserService(userService);
+
+        Assertions.assertThat(userService.getUser().getName()).isEqualTo("User 1");
+    }
+
+    @Test
+    void givenServiceIdLongListAndUser_whenMakeUserServices_thenCheckServiceAndUser() {
+        User user1 = User.builder().id(1L).name("User 1").build();
+        Service service1 = Service.builder().id(1L).name("Service 1").build();
+
+        UserService userService = UserService.builder().userId(1L).serviceId(1L).build();
+        userService.setService(service1);
+
+        Mockito.when(this.serviceService.getById(1L)).thenReturn(service1);
+
+        List<Long> serviceIdList = List.of(1L);
+
+        List<UserService> userServiceListReturned = this.service.makeUserServicesFromServiceIdListAndUser(serviceIdList, user1);
+
+        Assertions.assertThat(userServiceListReturned.get(0).getService().getName()).isEqualTo("Service 1");
+        Assertions.assertThat(userServiceListReturned.get(0).getUser().getName()).isEqualTo("User 1");
     }
 }

@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
+import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user_service.UserService;
 import com.jasonvillar.works.register.user_service.UserServiceService;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
@@ -163,8 +164,8 @@ public class ServiceController {
             return ResponseEntity.status(HttpStatus.FOUND).body("Found existent user service");
         } else {
             entity = this.userServiceService.save(entity);
-            entity.setUser(this.userService.getById(userId));
-            entity.setService(this.service.getById(serviceId));
+            entity = this.userServiceService.setServiceEntityIntoUserService(entity);
+            entity = this.userServiceService.setUserEntityIntoUserService(entity);
 
             UserServiceDTO dto = this.userServiceDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);
@@ -190,6 +191,19 @@ public class ServiceController {
         List<UserService> userServiceListDeleted = this.userServiceService.deleteByServicesIdAndUserId(serviceIdLongList, userId);
 
         List<UserServiceDTO> userServiceListDTO = userServiceListDeleted.stream().map(this.userServiceDTOAdapter).toList();
+
+        return new ResponseEntity<>(userServiceListDTO, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/services/user")
+    public ResponseEntity<List<UserServiceDTO>> addServicesBatchToUserId(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody List<Long> serviceIdLongList) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        User user = this.userService.getById(userId);
+
+        List<UserService> userServiceListToSave = this.userServiceService.makeUserServicesFromServiceIdListAndUser(serviceIdLongList, user);
+        List<UserService> userServiceListAdded = this.userServiceService.saveAll(userServiceListToSave);
+
+        List<UserServiceDTO> userServiceListDTO = userServiceListAdded.stream().map(this.userServiceDTOAdapter).toList();
 
         return new ResponseEntity<>(userServiceListDTO, HttpStatus.OK);
     }
