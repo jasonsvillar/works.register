@@ -27,9 +27,7 @@ class WorkRegisterIT extends IntegrationTestsConfig {
         String responseJson;
 
         TypeReference<List<ServiceDTO>> listTypeServiceDTO = new TypeReference<>() {};
-        TypeReference<List<ServiceDTO>> listTypeClientDTO = new TypeReference<>() {};
-
-        this.saveUser(new UserRequest("User1", "user1@gmail.com", "user1"));
+        TypeReference<List<ClientDTO>> listTypeClientDTO = new TypeReference<>() {};
 
         String adminJWT = this.loginAsAdminAndGetJWT();
 

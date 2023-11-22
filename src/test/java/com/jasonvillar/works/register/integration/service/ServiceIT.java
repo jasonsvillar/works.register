@@ -5,6 +5,7 @@ import com.jasonvillar.works.register.authentication.port.in.AuthenticationReque
 import com.jasonvillar.works.register.integration.IntegrationTestsConfig;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
+import com.jasonvillar.works.register.user.port.in.UserRequest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -20,6 +21,8 @@ class ServiceIT extends IntegrationTestsConfig {
         String responseJson;
 
         String adminJWT = this.loginAsAdminAndGetJWT();
+
+        this.saveUser(new UserRequest("User1 for service IT", "user1@serviceit.com", "sarasa"), adminJWT);
 
         requestJson = ow.writeValueAsString(new ServiceRequest("Service1 of admin"));
         responseJson = this.doPostRequestWithJWT("/api/v1/service", requestJson, status().isCreated(), adminJWT);
@@ -39,7 +42,7 @@ class ServiceIT extends IntegrationTestsConfig {
 
         //------------User------------//
 
-        String user1JWT = this.loginAndGetJWT(new AuthenticationRequest("User1", "user1"));
+        String user1JWT = this.loginAndGetJWT(new AuthenticationRequest("User1 for service IT", "sarasa"));
 
         requestJson = ow.writeValueAsString(new ServiceRequest("Service1 of user1"));
         responseJson = this.doPostRequestWithJWT("/api/v1/service", requestJson, status().isCreated(), user1JWT);

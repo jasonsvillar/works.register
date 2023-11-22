@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -120,8 +121,8 @@ class UserControllerTest extends ControllerTestTemplate {
     void givenNewUser_whenSave_thenCheckIfCreated() throws Exception {
         String requestJson = ow.writeValueAsString(this.request);
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("");
-        Mockito.when(service.save(Mockito.any(User.class))).thenReturn(this.entity);
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(any(User.class))).thenReturn("");
+        Mockito.when(service.save(any(User.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -129,7 +130,7 @@ class UserControllerTest extends ControllerTestTemplate {
                 )
                 .andExpect(status().isCreated());
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(User.class))).thenReturn("name must be unique");
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(any(User.class))).thenReturn("name must be unique");
 
         this.mockMvc.perform(post(this.endpointBegin + "/user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)

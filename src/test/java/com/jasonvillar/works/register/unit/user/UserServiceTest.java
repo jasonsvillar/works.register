@@ -194,4 +194,16 @@ class UserServiceTest {
         ok = BCrypt.checkpw(topSecretPassword, encrypted);
         Assertions.assertThat(ok).isTrue();
     }
+
+    @Test
+    void givenRequest_whenGetOptionalByNameAndEmail_thenCheckIfPresent() {
+        Mockito.when(repository.findOptionalByNameAndEmail("Name", "test@test.com")).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByNameAndEmail("Random name", "Nonexistent email")).thenReturn(Optional.empty());
+
+        Optional<User> userOptional = service.getOptionalByNameAndEmail("Name", "test@test.com");
+        Assertions.assertThat(userOptional).isPresent();
+
+        userOptional = service.getOptionalByNameAndEmail("Random name", "Nonexistent email");
+        Assertions.assertThat(userOptional).isNotPresent();
+    }
 }

@@ -114,4 +114,13 @@ class UserRepositoryTest extends DataJpaTestTemplate {
         userList = this.userRepository.findAllByNameContainingIgnoreCaseAndEmailContainingIgnoreCase("Nonexistent name", "Nonexistent email");
         Assertions.assertThat(userList).isEmpty();
     }
+
+    @Test
+    void givenUserInTable_whenFindOptionalByNameAndEmail_thenCheckIfEmpty() {
+        Optional<User> userOptional = this.userRepository.findOptionalByNameAndEmail(this.userInDatabase.getName(), this.userInDatabase.getEmail());
+        Assertions.assertThat(userOptional).isPresent();
+
+        userOptional = this.userRepository.findOptionalByNameAndEmail("Nonexistent name", "Nonexistent email");
+        Assertions.assertThat(userOptional).isEmpty();
+    }
 }

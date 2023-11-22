@@ -20,9 +20,9 @@ class ClientIT extends IntegrationTestsConfig {
         String requestJson;
         String responseJson;
 
-        this.saveUser(new UserRequest("User1 - ClientIT", "user1client-it@gmail.com", "user1"));
-
         String adminJWT = this.loginAsAdminAndGetJWT();
+
+        this.saveUser(new UserRequest("User1 - ClientIT", "user1client-it@gmail.com", "user1"), adminJWT);
 
         requestJson = ow.writeValueAsString(new ClientRequest("Client1 name - Admin", "Client1 surname", "44.444.444"));
         responseJson = this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), adminJWT);
