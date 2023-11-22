@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="create-table-user-not-validated" author="jason-villar">
+        <createTable tableName="user_not_validated">
+            <column name="name" type="varchar(255)">
+                <constraints nullable="false" unique="true" primaryKey="true" primaryKeyName="pk-user_not_validated-name-email"/>
+            </column>
+            <column name="email" type="varchar(255)">
+                <constraints nullable="false" unique="true" primaryKey="true" primaryKeyName="pk-user_not_validated-name-email"/>
+            </column>
+            <column name="password" type="varchar(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="varchar(6)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>

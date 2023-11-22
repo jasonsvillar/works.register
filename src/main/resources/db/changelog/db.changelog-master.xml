@@ -25,4 +25,7 @@
     <include file="db/changelog/changes/0020-2023-10-12-insert-user_role-admin.xml"/>
     <include file="db/changelog/changes/0021-2023-10-13-insert-privilege-view_user.xml"/>
     <include file="db/changelog/changes/0022-2023-10-13-insert-role_privilege-admin-view-users.xml"/>
+    <include file="db/changelog/changes/0023-2023-11-20-user-not-validated-table.xml"/>
+    <include file="db/changelog/changes/0024-2023-11-20-insert-privilege-add-user.xml"/>
+    <include file="db/changelog/changes/0025-2023-11-20-insert-role-privilege-admin-add_user.xml"/>
 </databaseChangeLog>
