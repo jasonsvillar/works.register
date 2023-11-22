@@ -8,7 +8,7 @@
 
     <changeSet id="insert-privilege-add-admin-role-to-user" author="jason-villar">
         <insert tableName="privilege">
-            <column name="name"  value="Add admin role to user"/>
+            <column name="name" value="Add admin role to user"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
