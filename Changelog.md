@@ -1,5 +1,14 @@
 # CHANGE LOG
 
+## [Unreleased] - 2023-11-22
+
+### Added
+- Added Validation code in the url frontend at pre-register user.
+
+### Changed
+
+### Fixed
+
 ## [1.1.0] - 2023-11-22
 
 ### Added

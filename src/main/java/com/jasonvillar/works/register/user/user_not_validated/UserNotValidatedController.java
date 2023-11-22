@@ -63,8 +63,8 @@ public class UserNotValidatedController {
 
         if (request.frontendUrlForValidating() != null) {
             if (!request.frontendUrlForValidating().isEmpty() && !request.frontendUrlForValidating().isBlank()) {
-                urlValidateAccount = request.frontendUrlForValidating();
-                href = "<a href='"+request.frontendUrlForValidating()+"'>here</a>";
+                urlValidateAccount = request.frontendUrlForValidating()+userNotValidated.getCode();
+                href = "<a href='"+request.frontendUrlForValidating()+userNotValidated.getCode()+"'>here.</a>";
             }
         }
 
