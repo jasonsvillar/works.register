@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.jasonvillar.works.register.Application;
 import com.jasonvillar.works.register.authentication.port.in.AuthenticationRequest;
+import com.jasonvillar.works.register.email.EmailService;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.ContainerInit;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.Postgres15_2TC;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
@@ -11,10 +12,12 @@ import com.jasonvillar.works.register.user.port.out.UserDTO;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
@@ -25,6 +28,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -58,6 +63,14 @@ public class IntegrationTestsConfig {
 
     @Autowired
     public MockMvc mockMvc;
+
+    @MockBean
+    public EmailService emailService;
+
+    @BeforeEach
+    void beforeEach() {
+        doNothing().when(emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+    }
 
     public ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();
 
@@ -141,10 +154,10 @@ public class IntegrationTestsConfig {
         this.doGetRequestWithJWT("/api/auth/logout-jwt", status().isOk(), jwt);
     }
 
-    public UserDTO saveUser(UserRequest userRequest) throws Exception {
+    public UserDTO saveUser(UserRequest userRequest, String jwt) throws Exception {
         String requestJson = ow.writeValueAsString(userRequest);
 
-        String response = this.doPostRequest("/api/v1/user", requestJson, status().isCreated());
+        String response = this.doPostRequestWithJWT("/api/v1/user", requestJson, status().isCreated() ,jwt);
 
         return mapper.readValue(response, UserDTO.class);
     }
