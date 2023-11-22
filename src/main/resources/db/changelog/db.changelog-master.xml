@@ -28,4 +28,5 @@
     <include file="db/changelog/changes/0023-2023-11-20-user-not-validated-table.xml"/>
     <include file="db/changelog/changes/0024-2023-11-20-insert-privilege-add-user.xml"/>
     <include file="db/changelog/changes/0025-2023-11-20-insert-role-privilege-admin-add_user.xml"/>
+    <include file="db/changelog/changes/0026-2023-11-22-user-table-add-column-validated.xml"/>
 </databaseChangeLog>

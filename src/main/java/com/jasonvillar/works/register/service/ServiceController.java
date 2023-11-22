@@ -28,7 +28,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-@Tag(name = "4 - Service", description = "the service API tag annotation")
+@Tag(name = "5 - Service", description = "the service API for user logged")
 public class ServiceController {
     private final ServiceService service;
 

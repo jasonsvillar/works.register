@@ -29,12 +29,15 @@ public class User {
 
     private String password;
 
+    private boolean validated = false;
+
     @Builder
-    public User(String name, String email, String password, long id) {
+    public User(String name, String email, String password, long id, boolean validated) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.id = id;
+        this.validated = validated;
     }
 
     @ManyToMany(mappedBy = "inUserList")

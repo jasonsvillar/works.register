@@ -3,7 +3,7 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 FROM openjdk:17
-COPY --from=build target/works-register-api-Next-1.0.1-SNAPSHOT.jar works.jar
+COPY --from=build target/works-register-api-1.1.0.jar works.jar
 # ENV PORT=80
 EXPOSE 80
 # SECRETS

@@ -18,7 +18,7 @@ public class OpenApiConfig {
         return new OpenAPI()
                 .info(new Info()
                         .title("WORKS REGISTER API")
-                        .version("Next 1.0.1")
+                        .version("1.1.0")
                         .description("Spring Boot 3 API REST")
                         .termsOfService("")
                         .license(new License().name("Apache 2.0").url("https://springdoc.org"))

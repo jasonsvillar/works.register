@@ -73,7 +73,8 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(
                 requests -> requests
-                        .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/v1/pre-user").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/v1/pre-user/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/basic-authentication").permitAll()
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
                         .anyRequest().authenticated()

@@ -29,7 +29,7 @@ import java.util.Date;
 @RequestMapping("/api/auth")
 @Validated
 @RequiredArgsConstructor
-@Tag(name = "1 - Authentication")
+@Tag(name = "2 - Authentication")
 public class AuthController {
 
     private final AuthenticationManager authenticationManager;

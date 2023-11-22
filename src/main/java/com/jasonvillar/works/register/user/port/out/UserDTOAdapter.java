@@ -13,7 +13,8 @@ public class UserDTOAdapter implements Function<User, UserDTO> {
         return new UserDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.isValidated()
         );
     }
 }

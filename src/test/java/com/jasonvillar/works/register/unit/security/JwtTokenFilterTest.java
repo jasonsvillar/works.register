@@ -49,7 +49,7 @@ class JwtTokenFilterTest {
         Mockito.when(userService.getList()).thenReturn(listUser);
         Mockito.when(userDTOAdapter.apply(
                 User.builder().name("extractedUserName").build()
-        )).thenReturn(new UserDTO(1, "extractedUserName", "test@test.com"));
+        )).thenReturn(new UserDTO(1, "extractedUserName", "test@test.com", true));
 
         standaloneSetup(new UserController(userService, userRequestAdapter, userDTOAdapter))
                 .addFilters(new JwtTokenFilter(jwtTokenProvider, securityUserDetailsService)).build()

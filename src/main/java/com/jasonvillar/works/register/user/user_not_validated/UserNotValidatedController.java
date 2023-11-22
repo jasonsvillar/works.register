@@ -7,13 +7,13 @@ import com.jasonvillar.works.register.user.port.out.UserDTO;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user.user_not_validated.port.in.UserNotValidatedRequest;
 import com.jasonvillar.works.register.user.user_not_validated.port.in.UserNotValidatedRequestAdapter;
-import com.jasonvillar.works.register.user.user_not_validated.port.in.ValidateUserRequest;
 import com.jasonvillar.works.register.user.user_not_validated.port.out.UserNotValidatedDTO;
 import com.jasonvillar.works.register.user.user_not_validated.port.out.UserNotValidatedDTOAdapter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("api/v1")
-@Tag(name = "6 - Not Validated User", description = "the not validated user API tag annotation")
+@Tag(name = "1 - Register User", description = "for user registration and validation")
 public class UserNotValidatedController {
     private final UserNotValidatedService userNotValidatedService;
 
@@ -39,6 +39,9 @@ public class UserNotValidatedController {
 
     private final EmailService emailService;
 
+    @Value("${backend.url}")
+    private String backendUrl;
+
     @SecurityRequirements
     @PostMapping(value = "/pre-user")
     public ResponseEntity<Object> savePreUser(@Valid @RequestBody UserNotValidatedRequest request) {
@@ -51,10 +54,26 @@ public class UserNotValidatedController {
 
         userNotValidated = this.userNotValidatedService.makeValidationCodeForUserNotValidated(userNotValidated);
 
+        String urlValidateAccount = backendUrl
+                +"/api/v1/pre-user/validate/name/"+request.name()
+                +"/email/"+request.email()
+                +"/code/"+userNotValidated.getCode();
+
+        String href = "<a href='"+urlValidateAccount+"'>here.</a>";
+
+        if (request.frontendUrlForValidating() != null) {
+            if (!request.frontendUrlForValidating().isEmpty() && !request.frontendUrlForValidating().isBlank()) {
+                urlValidateAccount = request.frontendUrlForValidating();
+                href = "<a href='"+request.frontendUrlForValidating()+"'>here</a>";
+            }
+        }
+
         this.emailService.sendSimpleMessage(
                 request.email(),
                 "Validate Works Api account",
-                "Your confirmation code is " + userNotValidated.getCode() + " Please validate your account here. " + request.frontendUrlForValidating()
+                "Your confirmation code is " + userNotValidated.getCode() + "."
+                + "<br>Please validate your account " + href
+                + "<br><br>" + urlValidateAccount
         );
 
         userNotValidated = this.userNotValidatedService.save(userNotValidated);
@@ -83,6 +102,7 @@ public class UserNotValidatedController {
                         .name(userNotValidated.getUserNotValidatedId().getName())
                         .email(userNotValidated.getUserNotValidatedId().getEmail())
                         .password(userNotValidated.getPassword())
+                        .validated(true)
                         .build();
 
                 user = userService.save(user);

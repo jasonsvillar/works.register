@@ -18,8 +18,6 @@ public record UserNotValidatedRequest(
         @NotBlank
         String password,
 
-        @NotNull
-        @NotBlank
         String frontendUrlForValidating
 ) {
 }
