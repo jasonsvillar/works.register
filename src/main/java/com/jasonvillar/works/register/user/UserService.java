@@ -98,4 +98,8 @@ public class UserService {
         user.addRole(roleAdmin);
         return true;
     }
+
+    public Optional<User> getOptionalByNameAndEmail(String name, String email) {
+        return this.userRepository.findOptionalByNameAndEmail(name, email);
+    }
 }
