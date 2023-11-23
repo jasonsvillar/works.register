@@ -11,6 +11,6 @@ class OpenApiConfigTest {
         OpenApiConfig openApiConfig = new OpenApiConfig();
         OpenAPI openAPI = openApiConfig.customOpenAPI();
 
-        Assertions.assertThat(openAPI.getInfo().getVersion()).isEqualTo("unreleased");
+        Assertions.assertThat(openAPI.getInfo().getVersion()).isEqualTo("1.1.1");
     }
 }

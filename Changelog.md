@@ -1,9 +1,10 @@
 # CHANGE LOG
 
-## [Unreleased] - 2023-11-22
+## [1.1.1] - 2023-11-23
 
 ### Added
 - Added Validation code in the url frontend at pre-register user.
+- Added cors for angular frontend on render.com.
 
 ### Changed
 
