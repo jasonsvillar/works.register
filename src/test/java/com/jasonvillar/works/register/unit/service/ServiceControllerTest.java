@@ -9,7 +9,6 @@ import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import com.jasonvillar.works.register.user.User;
-import com.jasonvillar.works.register.user.UserService;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user_service.UserServiceService;
 import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
@@ -288,12 +287,12 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
         List<com.jasonvillar.works.register.user_service.UserService> userServiceList = List.of(userService);
 
-        Mockito.when(userServiceService.makeUserServicesFromServiceIdListAndUser(eq(listLong), eq(this.userEntity))).thenReturn(userServiceList);
+        Mockito.when(userServiceService.makeUserServicesFromServiceIdListAndUser(listLong, this.userEntity)).thenReturn(userServiceList);
 
         userService.setId(1L);
         List<com.jasonvillar.works.register.user_service.UserService> userServiceListSaved = List.of(userService);
 
-        Mockito.when(userServiceService.saveAll(eq(userServiceList))).thenReturn(userServiceListSaved);
+        Mockito.when(userServiceService.saveAll(userServiceList)).thenReturn(userServiceListSaved);
 
         this.mockMvc.perform(post(this.endpointBegin + "/services/user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)

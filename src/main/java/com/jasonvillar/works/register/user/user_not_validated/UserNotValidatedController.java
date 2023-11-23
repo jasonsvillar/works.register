@@ -55,25 +55,28 @@ public class UserNotValidatedController {
         userNotValidated = this.userNotValidatedService.makeValidationCodeForUserNotValidated(userNotValidated);
 
         String urlValidateAccount = backendUrl
-                +"/api/v1/pre-user/validate/name/"+request.name()
-                +"/email/"+request.email()
-                +"/code/"+userNotValidated.getCode();
+                + "/api/v1/pre-user/validate/name/" + request.name()
+                + "/email/" + request.email()
+                + "/code/" + userNotValidated.getCode();
 
-        String href = "<a href='"+urlValidateAccount+"'>here.</a>";
+        String href = "<a href='" + urlValidateAccount + "'>here.</a>";
 
-        if (request.frontendUrlForValidating() != null) {
-            if (!request.frontendUrlForValidating().isEmpty() && !request.frontendUrlForValidating().isBlank()) {
-                urlValidateAccount = request.frontendUrlForValidating()+userNotValidated.getCode();
-                href = "<a href='"+request.frontendUrlForValidating()+userNotValidated.getCode()+"'>here.</a>";
-            }
+        String frontendUrlForValidating = request.frontendUrlForValidating();
+        if (frontendUrlForValidating == null) {
+            frontendUrlForValidating = "";
+        }
+
+        if (!frontendUrlForValidating.isEmpty() && !frontendUrlForValidating.isBlank()) {
+            urlValidateAccount = frontendUrlForValidating + userNotValidated.getCode();
+            href = "<a href='" + frontendUrlForValidating + userNotValidated.getCode() + "'>here.</a>";
         }
 
         this.emailService.sendSimpleMessage(
                 request.email(),
                 "Validate Works Api account",
                 "Your confirmation code is " + userNotValidated.getCode() + "."
-                + "<br>Please validate your account " + href
-                + "<br><br>" + urlValidateAccount
+                        + "<br>Please validate your account " + href
+                        + "<br><br>" + urlValidateAccount
         );
 
         userNotValidated = this.userNotValidatedService.save(userNotValidated);

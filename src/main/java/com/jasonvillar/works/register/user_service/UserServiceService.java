@@ -82,11 +82,7 @@ public class UserServiceService {
     @Transactional
     public boolean deleteByServiceIdAndUserId(long serviceId, long userId) {
         long deletedRows = this.userServiceRepository.deleteByServiceIdAndUserId(serviceId, userId);
-        if (deletedRows > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return deletedRows > 0;
     }
 
     @Transactional
@@ -109,15 +105,15 @@ public class UserServiceService {
 
         serviceIdLongList.forEach(
                 serviceId -> {
-                    UserService userService = UserService.builder()
+                    UserService serviceOfUser = UserService.builder()
                             .serviceId(serviceId)
                             .userId(user.getId())
                             .build();
 
-                    userService = setServiceEntityIntoUserService(userService);
-                    userService.setUser(user);
+                    serviceOfUser = setServiceEntityIntoUserService(serviceOfUser);
+                    serviceOfUser.setUser(user);
 
-                    userServiceListToSave.add(userService);
+                    userServiceListToSave.add(serviceOfUser);
                 }
         );
 

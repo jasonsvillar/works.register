@@ -89,21 +89,21 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     void givenServiceInTable_whenCountByUserServiceListUserId_thenCheckRowCountIsGreaterThan0() {
         long rowCount = this.serviceRepository.countByUserServiceListUserId(1);
 
-        Assertions.assertThat(rowCount).isGreaterThan(0);
+        Assertions.assertThat(rowCount).isPositive();
     }
 
     @Test
     void givenServiceInTable_whenCount_thenCheckRowContIsGreaterThan0() {
         long rowCount = this.serviceRepository.count();
 
-        Assertions.assertThat(rowCount).isGreaterThan(0);
+        Assertions.assertThat(rowCount).isPositive();
     }
 
     @Test
     void givenServiceInTable_whenCountByUserIdNot_thenCheckRowContIsGreaterThan0() {
         long rowCount = this.serviceRepository.countByUserIdNot(999);
 
-        Assertions.assertThat(rowCount).isGreaterThan(0);
+        Assertions.assertThat(rowCount).isPositive();
     }
 
     @Test

@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
 import java.util.Optional;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
@@ -13,8 +13,9 @@ public class UserNotValidatedService {
 
     private final UserNotValidatedRepository userNotValidatedRepository;
 
+    private SecureRandom rand = new SecureRandom();
+
     public String makeRandomValidationCode() {
-        Random rand = new Random();
         int upperbound = 10;
 
         StringBuilder code = new StringBuilder();

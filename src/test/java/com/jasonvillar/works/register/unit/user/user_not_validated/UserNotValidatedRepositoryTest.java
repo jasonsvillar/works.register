@@ -29,6 +29,6 @@ class UserNotValidatedRepositoryTest extends DataJpaTestTemplate {
 
         long rowsDeleted = this.userNotValidatedRepository.deleteByUserNotValidatedId(userNotValidatedId);
 
-        Assertions.assertThat(rowsDeleted).isGreaterThan(0);
+        Assertions.assertThat(rowsDeleted).isPositive();
     }
 }

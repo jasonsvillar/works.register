@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {UserNotValidatedController.class, UserNotValidatedRequestAdapter.class, UserNotValidatedDTOAdapter.class, UserDTOAdapter.class})
-public class UserNotValidatedControllerTest extends ControllerTestTemplate {
+class UserNotValidatedControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserNotValidatedService userNotValidatedService;
 
@@ -45,7 +45,7 @@ public class UserNotValidatedControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void savePreUser() throws Exception {
+    void savePreUserWithFrontEndUrlValidation() throws Exception {
         UserNotValidatedRequest userNotValidatedRequest = new UserNotValidatedRequest(
                 "Test user name",
                 "test@test.com",
@@ -76,6 +76,60 @@ public class UserNotValidatedControllerTest extends ControllerTestTemplate {
                         .with(csrf())
                 )
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    void savePreUserWithoutFrontEndUrlValidation() throws Exception {
+        UserNotValidatedRequest userNotValidatedRequest = new UserNotValidatedRequest(
+                "Test user name",
+                "test@test.com",
+                "sarasa",
+                null
+        );
+
+        String requestJson = ow.writeValueAsString(userNotValidatedRequest);
+
+        UserNotValidatedId userNotValidatedId = UserNotValidatedId.builder()
+                .name("Test user name")
+                .email("test@test.com")
+                .build();
+
+        UserNotValidated userNotValidated = UserNotValidated.builder()
+                .userNotValidatedId(userNotValidatedId)
+                .password("sarasa")
+                .code("123456")
+                .build();
+
+        Mockito.when(this.userNotValidatedService.makeValidationCodeForUserNotValidated(any())).thenReturn(userNotValidated);
+        Mockito.doNothing().when(this.emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+        Mockito.when(this.userNotValidatedService.save(any())).thenReturn(userNotValidated);
+        Mockito.when(this.userService.getOptionalByNameAndEmail(anyString(), anyString())).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(post(this.endpointBegin + "/pre-user").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void savePreUserExistent() throws Exception {
+        UserNotValidatedRequest userNotValidatedRequest = new UserNotValidatedRequest(
+                "Test user name",
+                "test@test.com",
+                "sarasa",
+                null
+        );
+
+        String requestJson = ow.writeValueAsString(userNotValidatedRequest);
+
+        Mockito.when(this.userService.getOptionalByNameAndEmail(anyString(), anyString())).thenReturn(Optional.of(User.builder().id(1L).build()));
+
+        this.mockMvc.perform(post(this.endpointBegin + "/pre-user").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isBadRequest());
     }
 
     @Test

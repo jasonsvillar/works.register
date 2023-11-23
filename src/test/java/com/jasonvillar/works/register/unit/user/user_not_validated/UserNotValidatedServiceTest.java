@@ -27,7 +27,7 @@ class UserNotValidatedServiceTest {
     @Test
     void makeRandomValidationCode() {
         String code = this.userNotValidatedService.makeRandomValidationCode();
-        Assertions.assertThat(code.length()).isEqualTo(6);
+        Assertions.assertThat(code).hasSize(6);
         Assertions.assertThat(Integer.valueOf(code).getClass()).hasSameClassAs(Integer.class);
     }
 
@@ -61,7 +61,7 @@ class UserNotValidatedServiceTest {
                 .password("sarasa")
                 .build();
 
-        Mockito.when(this.userNotValidatedRepository.save(eq(userNotValidated))).thenReturn(userNotValidated);
+        Mockito.when(this.userNotValidatedRepository.save(userNotValidated)).thenReturn(userNotValidated);
 
         UserNotValidated userNotValidatedReturned = this.userNotValidatedService.save(userNotValidated);
 
@@ -80,11 +80,11 @@ class UserNotValidatedServiceTest {
                 .password("sarasa")
                 .build();
 
-        Mockito.when(this.userNotValidatedRepository.findById(eq(userNotValidatedId))).thenReturn(Optional.of(userNotValidated));
+        Mockito.when(this.userNotValidatedRepository.findById(userNotValidatedId)).thenReturn(Optional.of(userNotValidated));
 
         Optional<UserNotValidated> userNotValidatedReturned = this.userNotValidatedService.findOptionalById(userNotValidatedId);
 
-        Assertions.assertThat(userNotValidatedReturned.get()).isEqualTo(userNotValidated);
+        Assertions.assertThat(userNotValidatedReturned).contains(userNotValidated);
     }
 
     @Test
@@ -100,11 +100,11 @@ class UserNotValidatedServiceTest {
                 .code("123456")
                 .build();
 
-        Mockito.when(this.userNotValidatedRepository.findByUserNotValidatedIdAndCode(eq(userNotValidatedId), eq("123456"))).thenReturn(Optional.of(userNotValidated));
+        Mockito.when(this.userNotValidatedRepository.findByUserNotValidatedIdAndCode(userNotValidatedId, "123456")).thenReturn(Optional.of(userNotValidated));
 
         Optional<UserNotValidated> userNotValidatedReturned = this.userNotValidatedService.findOptionalByIdAndCode(userNotValidatedId, "123456");
 
-        Assertions.assertThat(userNotValidatedReturned.get()).isEqualTo(userNotValidated);
+        Assertions.assertThat(userNotValidatedReturned).contains(userNotValidated);
     }
 
     @Test
@@ -120,7 +120,7 @@ class UserNotValidatedServiceTest {
                 .code("123456")
                 .build();
 
-        Mockito.when(this.userNotValidatedRepository.deleteByUserNotValidatedId(eq(userNotValidatedId))).thenReturn(1L);
+        Mockito.when(this.userNotValidatedRepository.deleteByUserNotValidatedId(userNotValidatedId)).thenReturn(1L);
 
         boolean deleted = this.userNotValidatedService.deleteById(userNotValidatedId);
 
