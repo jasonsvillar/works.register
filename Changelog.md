@@ -1,5 +1,13 @@
 # CHANGE LOG
 
+## [unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
 ## [1.1.1] - 2023-11-23
 
 ### Added

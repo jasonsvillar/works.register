@@ -3,6 +3,12 @@ Master - 1.1.1 - https://works-api-rest.onrender.com/doc/swagger-ui/index.html
 
 Dev - Unreleased - https://works-api-rest-dev.onrender.com/doc/swagger-ui/index.html
 
+_* These service are run with the free plan on render.com. Be patient._
+
+### Angular Frontend Project
+Master branch - https://github.com/jasonsvillar/works.register-frontend
+Develop branch - https://github.com/jasonsvillar/works.register-frontend/tree/develop
+
 ## Project Description
 
 Api Rest made with:
