@@ -51,6 +51,8 @@ public class WebSecurityConfig {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedOrigin("http://localhost:4200");
+        configuration.addAllowedOrigin("https://works-register-dev.onrender.com");
+        configuration.addAllowedOrigin("https://works-register.onrender.com");
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader("Authorization");
@@ -76,15 +78,6 @@ public class WebSecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/pre-user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/pre-user/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/basic-authentication").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "https://works-register-dev.onrender.com/api/v1/pre-user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "https://works-register-dev.onrender.com/api/v1/pre-user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "https://works-register-dev.onrender.com/api/auth/basic-authentication").permitAll()
-
-                        .requestMatchers(HttpMethod.POST, "https://works-register.onrender.com/api/v1/pre-user").permitAll()
-                        .requestMatchers(HttpMethod.GET, "https://works-register.onrender.com/api/v1/pre-user/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "https://works-register.onrender.com/api/auth/basic-authentication").permitAll()
-
                         .requestMatchers(AUTH_WHITE_LIST).permitAll()
                         .anyRequest().authenticated()
         );
