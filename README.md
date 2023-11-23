@@ -1,4 +1,4 @@
-# WORKS REGISTER
+# WORKS REGISTER API
 Master - 1.1.0 - https://works-api-rest.onrender.com/doc/swagger-ui/index.html
 
 Dev - Unreleased - https://works-api-rest-dev.onrender.com/doc/swagger-ui/index.html
