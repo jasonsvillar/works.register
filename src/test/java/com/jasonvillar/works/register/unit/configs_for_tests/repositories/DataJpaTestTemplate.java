@@ -25,7 +25,6 @@ public class DataJpaTestTemplate {
     @AfterAll
     static void afterAll(@Autowired JdbcTemplate jdbcTemplate) {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         tc.stop();

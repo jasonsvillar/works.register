@@ -7,7 +7,7 @@
     <include file="db/changelog/changes/0002-2023-04-14-user-table-drop-column-password.xml"/>
     <include file="db/changelog/changes/0003-2023-04-14-user-table-add-column-email.xml"/>
     <include file="db/changelog/changes/0004-2023-04-19-service-table.xml"/>
-    <include file="db/changelog/changes/0005-2023-04-20-user_service-table.xml"/>
+    <include file="db/changelog/changes/0005-2023-11-24-service-table-add-column-user_id.xml"/>
     <include file="db/changelog/changes/0006-2023-04-20-client-table.xml"/>
     <include file="db/changelog/changes/0007-2023-04-20-work_register-table.xml"/>
     <include file="db/changelog/changes/0008-2023-10-19-client-table-add_foreign_constraint.xml"/>

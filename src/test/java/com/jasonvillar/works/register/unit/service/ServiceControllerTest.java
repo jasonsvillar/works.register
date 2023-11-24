@@ -10,9 +10,6 @@ import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
-import com.jasonvillar.works.register.user_service.UserServiceService;
-import com.jasonvillar.works.register.user_service.port.in.UserServiceRequest;
-import com.jasonvillar.works.register.user_service.port.out.UserServiceDTOAdapter;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -20,18 +17,15 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ContextConfiguration;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@ContextConfiguration(classes = {ServiceController.class, ServiceRequestAdapter.class, ServiceDTOAdapter.class, UserServiceDTOAdapter.class, UserDTOAdapter.class})
+@ContextConfiguration(classes = {ServiceController.class, ServiceRequestAdapter.class, ServiceDTOAdapter.class, UserDTOAdapter.class})
 class ServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private ServiceService service;
@@ -39,16 +33,15 @@ class ServiceControllerTest extends ControllerTestTemplate {
     @MockBean
     private com.jasonvillar.works.register.user.UserService userService;
 
-    @MockBean
-    private UserServiceService userServiceService;
-
-    private final Service entity = Service.builder()
-            .name("Name")
-            .build();
-
     private final User userEntity = User.builder()
             .id(1L)
             .name("Name")
+            .validated(true)
+            .build();
+
+    private final Service entity = Service.builder()
+            .name("Name")
+            .user(this.userEntity)
             .build();
 
     private final ServiceRequest request = new ServiceRequest("Name");
@@ -81,15 +74,6 @@ class ServiceControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenServices_whenGetUnusedRequest_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getUnusedListFromUserId(0, 0, 10)).thenReturn(List.of(entity));
-
-        this.mockMvc.perform(get(this.endpointBegin + "/services/unused/page/1/rows/10")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
     void givenServices_whenGetRowCount_thenCheckIfOk() throws Exception {
         Mockito.when(service.getRowCountByUserId(0)).thenReturn(1L);
 
@@ -103,15 +87,6 @@ class ServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.getRowCount()).thenReturn(1L);
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/all/row-count")
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void givenServices_whenGetUnusedRowCountFromUserId_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getUnusedRowCountFromUserId(0)).thenReturn(1L);
-
-        this.mockMvc.perform(get(this.endpointBegin + "/services/unused/row-count")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }
@@ -150,7 +125,8 @@ class ServiceControllerTest extends ControllerTestTemplate {
         String requestJson = ow.writeValueAsString(this.request);
 
         Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("");
-        Mockito.when(service.saveWithUser(Mockito.any(Service.class), eq(0L))).thenReturn(this.entity);
+        Mockito.when(userService.getById(0)).thenReturn(userEntity);
+        Mockito.when(service.save(Mockito.any(Service.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -168,136 +144,19 @@ class ServiceControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenNewService_whenSaveNotExistServiceOfUserService_thenCheckIfNotFound() throws Exception {
-        UserServiceRequest userServiceRequest = new UserServiceRequest(999L);
-        String requestJson = ow.writeValueAsString(userServiceRequest);
-
-        Mockito.when(service.isExistId(999L)).thenReturn(false);
-
-        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void givenNewService_whenSaveExistentServiceOfUser_thenCheckIfFound() throws Exception {
-        UserServiceRequest userServiceRequest = new UserServiceRequest(1L);
-        String requestJson = ow.writeValueAsString(userServiceRequest);
-
-        Mockito.when(service.isExistId(1L)).thenReturn(true);
-        Mockito.when(userServiceService.isExistUserIdAndServiceId(0L, 1L)).thenReturn(true);
-
-        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isFound());
-    }
-
-    @Test
-    void givenNewService_whenSaveServiceOfUser_thenCheckIfCreated() throws Exception {
-        com.jasonvillar.works.register.user_service.UserService userServiceEntitySaved = com.jasonvillar.works.register.user_service.UserService.builder()
-                .id(1L)
-                .userId(0L)
-                .serviceId(1L)
-                .build();
-
-        userServiceEntitySaved.setService(Service.builder().id(1L).name("Service 1").build());
-        userServiceEntitySaved.setUser(User.builder().id(0L).name("No name").build());
-
-        UserServiceRequest userServiceRequest = new UserServiceRequest(1L);
-        String requestJson = ow.writeValueAsString(userServiceRequest);
-
-        Mockito.when(service.isExistId(1L)).thenReturn(true);
-        Mockito.when(userServiceService.isExistUserIdAndServiceId(0L, 1L)).thenReturn(false);
-        Mockito.when(userServiceService.save(any())).thenReturn(userServiceEntitySaved);
-        Mockito.when(userServiceService.setServiceEntityIntoUserService(any())).thenReturn(userServiceEntitySaved);
-        Mockito.when(userServiceService.setUserEntityIntoUserService(any())).thenReturn(userServiceEntitySaved);
-        Mockito.when(userService.getById(0L)).thenReturn(User.builder().id(0L).name("none").build());
-        Mockito.when(service.getById(1L)).thenReturn(this.entity);
-
-        this.mockMvc.perform(post(this.endpointBegin + "/service/user").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isCreated());
-    }
-
-    @Test
     void givenNewService_whenDeleteService_thenCheckStatusIfOk() throws Exception {
-        Mockito.when(userServiceService.deleteByServiceIdAndUserId(1L, 0L)).thenReturn(true);
+        Mockito.when(service.deleteByServiceIdAndUserId(1L, 0L)).thenReturn(true);
 
         this.mockMvc.perform(delete(this.endpointBegin + "/service/1").contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                 )
                 .andExpect(status().isOk());
 
-        Mockito.when(userServiceService.deleteByServiceIdAndUserId(999L, 0L)).thenReturn(false);
+        Mockito.when(service.deleteByServiceIdAndUserId(999L, 0L)).thenReturn(false);
 
         this.mockMvc.perform(delete(this.endpointBegin + "/service/999").contentType(MediaType.APPLICATION_JSON)
                         .with(csrf())
                 )
                 .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void givenNewService_whenDeleteServicesBatchToUserId_thenCheckLengthOfResponseGreaterThan0() throws Exception {
-        List<Long> listLong = new ArrayList<>();
-        listLong.add(1L);
-        listLong.add(2L);
-        listLong.add(3L);
-
-        String requestJson = ow.writeValueAsString(listLong);
-
-        com.jasonvillar.works.register.user_service.UserService userServiceEntity =
-                new com.jasonvillar.works.register.user_service.UserService(1L, 0L, 1L);
-        userServiceEntity.setUser(this.userEntity);
-        userServiceEntity.setService(this.entity);
-
-        Mockito.when(userServiceService.deleteByServicesIdAndUserId(any(), eq(0L))).thenReturn(List.of(userServiceEntity));
-
-        this.mockMvc.perform(post(this.endpointBegin + "/services/delete").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    void givenServicesIds_whenBulkSave_thenCheckUserServiceList() throws Exception {
-        List<Long> listLong = new ArrayList<>();
-        listLong.add(1L);
-
-        Service service1 = Service.builder().name("Service 1").id(1L).build();
-
-        String requestJson = ow.writeValueAsString(listLong);
-
-        Mockito.when(userService.getById(0L)).thenReturn(this.userEntity);
-
-        com.jasonvillar.works.register.user_service.UserService userService = com.jasonvillar.works.register.user_service.UserService
-                .builder()
-                .userId(0L)
-                .serviceId(1L)
-                .build();
-
-        userService.setService(service1);
-        userService.setUser(this.userEntity);
-
-        List<com.jasonvillar.works.register.user_service.UserService> userServiceList = List.of(userService);
-
-        Mockito.when(userServiceService.makeUserServicesFromServiceIdListAndUser(listLong, this.userEntity)).thenReturn(userServiceList);
-
-        userService.setId(1L);
-        List<com.jasonvillar.works.register.user_service.UserService> userServiceListSaved = List.of(userService);
-
-        Mockito.when(userServiceService.saveAll(userServiceList)).thenReturn(userServiceListSaved);
-
-        this.mockMvc.perform(post(this.endpointBegin + "/services/user").contentType(MediaType.APPLICATION_JSON)
-                        .content(requestJson)
-                        .with(csrf())
-                )
-                .andExpect(status().isOk());
     }
 }

@@ -3,8 +3,7 @@ package com.jasonvillar.works.register.unit.service;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.service.ServiceRepository;
-import com.jasonvillar.works.register.user_service.UserService;
-import com.jasonvillar.works.register.user_service.UserServiceRepository;
+import com.jasonvillar.works.register.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,31 +21,24 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     ServiceRepository serviceRepository;
 
-    @Autowired
-    UserServiceRepository userServiceRepository;
+    User adminUser = User.builder().id(1L).name("Admin").validated(true).build();
 
     private Service serviceInDatabase = Service.builder()
             .name("Dummy name")
-            .build();
-
-    private UserService userServiceInDatabase = UserService.builder()
-            .userId(1)
-            .serviceId(0)
+            .user(this.adminUser)
             .build();
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate) {
-        JdbcTestUtils.deleteFromTables(jdbcTemplate, "user_service");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "service");
         this.serviceInDatabase = this.serviceRepository.save(this.serviceInDatabase);
-        this.userServiceInDatabase.setServiceId(this.serviceInDatabase.getId());
-        this.userServiceInDatabase = this.userServiceRepository.save(this.userServiceInDatabase);
     }
 
     @Test
     void givenService_whenSave_thenCheckIfNotNull() {
         Service service = Service.builder()
                 .name("test")
+                .user(this.adminUser)
                 .build();
 
         Service serviceSaved = this.serviceRepository.save(service);
@@ -70,51 +62,36 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
-    void givenServiceInTable_whenFindAllByUserServiceListUserId_thenCheckIfEmpty() {
+    void givenServiceInTable_whenFindAllByUserId_thenCheckIfEmpty() {
         Pageable page = PageRequest.of(0, 10);
-        List<Service> serviceList = this.serviceRepository.findAllByUserServiceListUserId(1, page);
+        List<Service> serviceList = this.serviceRepository.findAllByUserId(1, page);
 
         Assertions.assertThat(serviceList).isNotEmpty();
     }
 
     @Test
-    void givenServiceInTable_whenFindAllByUserIdNot_thenCheckIfEmpty() {
-        Pageable page = PageRequest.of(0, 10);
-        List<Service> serviceList = this.serviceRepository.findAllByUserIdNot(999, page);
-
-        Assertions.assertThat(serviceList).isNotEmpty();
-    }
-
-    @Test
-    void givenServiceInTable_whenCountByUserServiceListUserId_thenCheckRowCountIsGreaterThan0() {
-        long rowCount = this.serviceRepository.countByUserServiceListUserId(1);
+    void givenServiceInTable_whenCountByUserId_thenCheckIsPositive() {
+        long rowCount = this.serviceRepository.countByUserId(1);
 
         Assertions.assertThat(rowCount).isPositive();
     }
 
     @Test
-    void givenServiceInTable_whenCount_thenCheckRowContIsGreaterThan0() {
+    void givenServiceInTable_whenCount_thenCheckIsPositive() {
         long rowCount = this.serviceRepository.count();
 
         Assertions.assertThat(rowCount).isPositive();
     }
 
     @Test
-    void givenServiceInTable_whenCountByUserIdNot_thenCheckRowContIsGreaterThan0() {
-        long rowCount = this.serviceRepository.countByUserIdNot(999);
-
-        Assertions.assertThat(rowCount).isPositive();
-    }
-
-    @Test
-    void givenServiceInTable_whenFindAllByNameContainingIgnoreCase_thenCheckIfEmpty() {
-        List<Service> serviceList = this.serviceRepository.findAllByNameContainingIgnoreCase("dummy Name");
+    void givenServiceInTable_whenFindAllByNameContainingIgnoreCaseAndUserId_thenCheckIfEmpty() {
+        List<Service> serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserId("dummy Name", 1);
         Assertions.assertThat(serviceList).isNotEmpty();
 
-        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCase("dummy Name");
+        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserId("dummy Name", 1);
         Assertions.assertThat(serviceList).isNotEmpty();
 
-        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCase("dummy surname");
+        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserId("dummy surname", 1);
         Assertions.assertThat(serviceList).isEmpty();
     }
 
@@ -135,30 +112,11 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
     }
 
     @Test
-    void givenServiceInTable_whenFindOptionalByName_thenIsPresentAssertionsTrueAndFalse() {
-        Optional<Service> service = this.serviceRepository.findOptionalByName(this.serviceInDatabase.getName());
+    void givenServiceInTable_whenFindOptionalByNameAndUserId_thenIsNotPresent() {
+        Optional<Service> service = this.serviceRepository.findOptionalByNameAndUserId(this.serviceInDatabase.getName(), 1);
         Assertions.assertThat(service).isPresent();
 
-        service = this.serviceRepository.findOptionalByName("Nonexistent name");
+        service = this.serviceRepository.findOptionalByNameAndUserId("Nonexistent name", 1);
         Assertions.assertThat(service).isNotPresent();
-    }
-
-    @Test
-    void givenServiceInTable_whenFindAllByNameContainingIgnoreCaseAndUserServiceListUserId_thenCheckIfEmpty() {
-        List<Service> serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 1);
-        Assertions.assertThat(serviceList).isNotEmpty();
-
-        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 1);
-        Assertions.assertThat(serviceList).isNotEmpty();
-
-        serviceList = this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserServiceListUserId("dummy Name", 0);
-        Assertions.assertThat(serviceList).isEmpty();
-    }
-
-    @Test
-    void givenServiceInTable_whenFindOptionalByIdAndUserServiceListUserId_thenIsPresentAssertionsTrue() {
-        Optional<Service> service = this.serviceRepository.findOptionalByIdAndUserServiceListUserId(this.serviceInDatabase.getId(), 1);
-
-        Assertions.assertThat(service).isPresent();
     }
 }

@@ -6,7 +6,6 @@ import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.integration.IntegrationTestsConfig;
 import com.jasonvillar.works.register.service.port.in.ServiceRequest;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
-import com.jasonvillar.works.register.user.port.in.UserRequest;
 import com.jasonvillar.works.register.work_register.port.in.WorkRegisterRequest;
 import com.jasonvillar.works.register.work_register.port.out.WorkRegisterDTO;
 import org.assertj.core.api.Assertions;

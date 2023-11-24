@@ -102,4 +102,8 @@ public class UserService {
     public Optional<User> getOptionalByNameAndEmail(String name, String email) {
         return this.userRepository.findOptionalByNameAndEmail(name, email);
     }
+
+    public User getReferenceById(long userId) {
+        return this.userRepository.getReferenceById(userId);
+    }
 }

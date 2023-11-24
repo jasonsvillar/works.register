@@ -5,8 +5,12 @@
 ### Added
 
 ### Changed
+- Now the services are not shared between users.
 
 ### Fixed
+
+### Removed
+- Remove User Service entity.
 
 ## [1.1.1] - 2023-11-23
 
@@ -17,6 +21,8 @@
 ### Changed
 
 ### Fixed
+
+### Removed
 
 ## [1.1.0] - 2023-11-22
 
@@ -31,3 +37,5 @@
 - JWT now is transferred in header requests.
 
 ### Fixed
+
+### Removed

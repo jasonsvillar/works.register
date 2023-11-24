@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="service-table-add-column-user_id" author="jason-villar">
+        <addColumn tableName="service">
+            <column name="user_id"
+                    type="bigint">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet  author="jason-villar"  id="addForeignKeyConstraint-user_id">
+        <addForeignKeyConstraint  baseColumnNames="user_id"
+                                  baseTableName="service"
+                                  constraintName="fk_service_user_user_id"
+                                  referencedColumnNames="id"
+                                  referencedTableName="user"/>
+    </changeSet>
+
+    <changeSet  author="jason-villar"  id="addUniqueConstraint-user_id-name">
+        <addUniqueConstraint
+                columnNames="user_id, name"
+                constraintName="service_unique_user_id_name"
+                tableName="service"
+        />
+    </changeSet>
+</databaseChangeLog>
