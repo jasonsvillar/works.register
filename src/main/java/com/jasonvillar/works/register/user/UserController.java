@@ -97,6 +97,8 @@ public class UserController {
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 
         if (message.isEmpty()) {
+            String passwordInBcrypt = this.service.plainPasswordToBcrypt(request.password());
+            entity.setPassword(passwordInBcrypt);
             entity = this.service.save(entity);
             UserDTO dto = this.userDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);

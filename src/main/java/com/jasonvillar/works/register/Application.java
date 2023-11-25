@@ -9,7 +9,12 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableEncryptableProperties
 @EnableScheduling
 public class Application {
+
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
+    }
+
+    public static void exitApplication() {
+        System.exit(0);
     }
 }

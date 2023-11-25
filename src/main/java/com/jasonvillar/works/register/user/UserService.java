@@ -83,8 +83,6 @@ public class UserService {
     }
 
     public User save(User user) {
-        String password = this.plainPasswordToBcrypt(user.getPassword());
-        user.setPassword(password);
         return this.userRepository.save(user);
     }
 

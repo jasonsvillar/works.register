@@ -3,6 +3,7 @@
 ## [unreleased]
 
 ### Added
+- Add initial setup for set the password to admin account.
 
 ### Changed
 - Now the services are not shared between users.

@@ -22,6 +22,10 @@
             <column name="user_password" type="varchar(1024)">
                 <constraints nullable="false"/>
             </column>
+            <column name="validated"
+                    defaultValueBoolean="false"
+                    type="boolean">
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>
