@@ -2,7 +2,10 @@ package com.jasonvillar.works.register.user;
 
 import com.jasonvillar.works.register.authentication.Role;
 import com.jasonvillar.works.register.authentication.RoleService;
+import com.jasonvillar.works.register.user.user_not_validated.UserNotValidatedService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,8 @@ import java.util.Set;
 public class UserService {
     private final UserRepository userRepository;
     private final RoleService roleService;
+    private final UserNotValidatedService userNotValidatedService;
+    Logger logger = LoggerFactory.getLogger(UserService.class);
 
     public List<User> getList() {
         return this.userRepository.findAll();
@@ -82,6 +87,25 @@ public class UserService {
         return new BCryptPasswordEncoder().encode(password);
     }
 
+    public boolean passwordMatchWithActual(String plainPassword, String actualPasswordBcrypt) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        return passwordEncoder.matches(plainPassword, actualPasswordBcrypt);
+    }
+
+    public User generateCodeToUser(User user) {
+        user.setCode(this.userNotValidatedService.makeRandomValidationCode());
+        user.setValidated(false);
+        return this.save(user);
+    }
+
+    public User updateEmailAndGenerateCodeToUser(User user, String newEmail) {
+        user.setEmail(newEmail);
+        user.setValidated(false);
+        user = generateCodeToUser(user);
+        logger.info("... The email has been changed ...");
+        return user;
+    }
+
     public User save(User user) {
         return this.userRepository.save(user);
     }
@@ -101,7 +125,11 @@ public class UserService {
         return this.userRepository.findOptionalByNameAndEmail(name, email);
     }
 
-    public User getReferenceById(long userId) {
-        return this.userRepository.getReferenceById(userId);
+    public Optional<User> getOptionalByNameAndEmailAndValidated(String name, String email, boolean validated) {
+        return this.userRepository.findOptionalByNameAndEmailAndValidated(name, email, validated);
+    }
+
+    public Optional<User> getOptionalByNameAndEmailAndValidatedAndCode(String name, String email, boolean validated, String code) {
+        return this.userRepository.findOptionalByNameAndEmailAndValidatedAndCode(name, email, validated, code);
     }
 }

@@ -178,4 +178,16 @@ class ServiceServiceTest {
         optional = service.getOptionalByIdAndUserId(1, 0);
         Assertions.assertThat(optional).isNotPresent();
     }
+
+    @Test
+    void deleteByServiceIdAndUserId() {
+        Mockito.when(repository.deleteByIdAndUserId(1, 1)).thenReturn(true);
+        Mockito.when(repository.deleteByIdAndUserId(0, 0)).thenReturn(false);
+
+        boolean deleted = service.deleteByServiceIdAndUserId(1, 1);
+        Assertions.assertThat(deleted).isTrue();
+
+        deleted = service.deleteByServiceIdAndUserId(0, 0);
+        Assertions.assertThat(deleted).isFalse();
+    }
 }

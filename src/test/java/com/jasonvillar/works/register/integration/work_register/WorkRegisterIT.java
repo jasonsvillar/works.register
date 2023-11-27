@@ -30,7 +30,7 @@ class WorkRegisterIT extends IntegrationTestsConfig {
 
         String adminJWT = this.loginAsAdminAndGetJWT();
 
-        requestJson = ow.writeValueAsString(new ServiceRequest("Service1 - Admin"));
+        requestJson = ow.writeValueAsString(new ServiceRequest("Service1 - Admin - WorksIT"));
         responseJson = this.doPostRequestWithJWT("/api/v1/service", requestJson, status().isCreated(), adminJWT);
         ServiceDTO savedServiceOfAdminDTO = mapper.readValue(responseJson, ServiceDTO.class);
 

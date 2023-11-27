@@ -51,7 +51,7 @@ class JwtTokenFilterTest {
                 User.builder().name("extractedUserName").build()
         )).thenReturn(new UserDTO(1, "extractedUserName", "test@test.com", true));
 
-        standaloneSetup(new UserController(userService, userRequestAdapter, userDTOAdapter))
+        standaloneSetup(new UserController(userService, userRequestAdapter, userDTOAdapter, securityUserDetailsService))
                 .addFilters(new JwtTokenFilter(jwtTokenProvider, securityUserDetailsService)).build()
                 .perform(
                         get("/api/v1/users").header("Authorization", "Bearer randomBearerToken")
@@ -60,7 +60,7 @@ class JwtTokenFilterTest {
 
         Mockito.when(jwtTokenProvider.validateToken(Mockito.anyString())).thenReturn(false);
 
-        standaloneSetup(new UserController(userService, userRequestAdapter, userDTOAdapter))
+        standaloneSetup(new UserController(userService, userRequestAdapter, userDTOAdapter, securityUserDetailsService))
                 .addFilters(new JwtTokenFilter(jwtTokenProvider, securityUserDetailsService)).build()
                 .perform(
                         get("/api/v1/users")

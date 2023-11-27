@@ -100,7 +100,7 @@ public class ServiceController {
     @PostMapping(value = "/service")
     public ResponseEntity<Object> saveService(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ServiceRequest request) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        User user = userService.getById(userId);
+        User user = this.userService.getById(userId);
         Service entity = this.serviceRequestAdapter.toEntity(request, user);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity);
 

@@ -4,6 +4,9 @@
 
 ### Added
 - Add initial setup for set the password to admin account.
+- Add initial setup for set the email to admin account.
+- Add endpoint for self update user password.
+- Add endpoint for validate existent user account.
 
 ### Changed
 - Now the services are not shared between users.

@@ -26,6 +26,9 @@
                     defaultValueBoolean="false"
                     type="boolean">
             </column>
+            <column name="code" type="varchar(6)">
+                <constraints nullable="true"/>
+            </column>
         </createTable>
     </changeSet>
 </databaseChangeLog>

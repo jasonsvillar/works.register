@@ -1,9 +1,12 @@
 package com.jasonvillar.works.register.unit.user;
 
+import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.unit.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserController;
 import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.user.port.in.AddAdminRoleToUserRequest;
+import com.jasonvillar.works.register.user.port.in.ChangePasswordRequest;
 import com.jasonvillar.works.register.user.port.in.UserRequestAdapter;
 import com.jasonvillar.works.register.user.port.out.UserDTOAdapter;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
@@ -19,6 +22,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -28,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class UserControllerTest extends ControllerTestTemplate {
     @MockBean
     private UserService service;
+
+    @MockBean
+    private SecurityUserDetailsService securityUserDetailsService;
 
     private final User entity = User.builder()
             .name("Name")
@@ -137,5 +144,111 @@ class UserControllerTest extends ControllerTestTemplate {
                         .with(csrf())
                 )
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenUser_whenAddToAdmin_thenCheckIfCreated() throws Exception {
+        AddAdminRoleToUserRequest addAdminRoleToUserRequest = new AddAdminRoleToUserRequest(1L);
+        String requestJson = ow.writeValueAsString(addAdminRoleToUserRequest);
+
+        Mockito.when(service.addAdminRoleToUserById(1L)).thenReturn(true);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/add-role/admin").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void givenUser_whenAddToAdmin_thenCheckIfBad() throws Exception {
+        AddAdminRoleToUserRequest addAdminRoleToUserRequest = new AddAdminRoleToUserRequest(1L);
+        String requestJson = ow.writeValueAsString(addAdminRoleToUserRequest);
+
+        Mockito.when(service.addAdminRoleToUserById(1L)).thenReturn(false);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/add-role/admin").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void givenInvalidateUser_whenValidate_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getOptionalByNameAndEmailAndValidatedAndCode("Name","test@test.com", false, "123456")).thenReturn(Optional.of(entity));
+        entity.setId(1L);
+        Mockito.when(service.save(any())).thenReturn(entity);
+
+        this.mockMvc.perform(get(this.endpointBegin + "/user/validate/name/Name/email/test@test.com/code/123456", "test@test.com")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenValidateUser_whenValidate_thenCheckIfNotFound() throws Exception {
+        Mockito.when(service.getOptionalByNameAndEmailAndValidatedAndCode("Name","test@test.com", false, "123456")).thenReturn(Optional.empty());
+
+        this.mockMvc.perform(get(this.endpointBegin + "/user/validate/name/Name/email/test@test.com/code/123456", "test@test.com")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenUser_whenChangePassword_thenCheckIfOk() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("none", "newPassword", "newPassword");
+        String requestJson = ow.writeValueAsString(changePasswordRequest);
+
+        Mockito.when(service.getById(0)).thenReturn(entity);
+        Mockito.when(service.passwordMatchWithActual(anyString(), anyString())).thenReturn(true);
+        Mockito.when(service.plainPasswordToBcrypt(anyString())).thenReturn("new-encrypted-password");
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/change-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenUser_whenChangePassword_thenCheckIfConflict() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("none", "newPassword", "newPassword");
+        String requestJson = ow.writeValueAsString(changePasswordRequest);
+
+        Mockito.when(service.getById(0)).thenReturn(entity);
+        Mockito.when(service.passwordMatchWithActual(anyString(), anyString())).thenReturn(false);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/change-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void givenUser_whenChangePasswordAndBadOldPassword_thenCheckIfConflict() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("none", "newPassword", "newPassword");
+        String requestJson = ow.writeValueAsString(changePasswordRequest);
+
+        Mockito.when(service.getById(0)).thenReturn(entity);
+        Mockito.when(service.passwordMatchWithActual(anyString(), anyString())).thenReturn(false);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/change-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isConflict());
+    }
+
+    @Test
+    void givenUser_whenChangePasswordAndBadNewPassword_thenCheckIfConflict() throws Exception {
+        ChangePasswordRequest changePasswordRequest = new ChangePasswordRequest("none", "newPassword-1", "newPassword-2");
+        String requestJson = ow.writeValueAsString(changePasswordRequest);
+
+        this.mockMvc.perform(post(this.endpointBegin + "/user/change-password").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isConflict());
     }
 }

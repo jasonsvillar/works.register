@@ -9,10 +9,12 @@ import com.jasonvillar.works.register.unit.configs_for_tests.repositories.Contai
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.Postgres15_2TC;
 import com.jasonvillar.works.register.user.port.in.UserRequest;
 import com.jasonvillar.works.register.user.port.out.UserDTO;
+import com.jasonvillar.works.register.user.user_not_validated.UserNotValidatedService;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -29,7 +31,6 @@ import org.springframework.test.web.servlet.ResultMatcher;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -66,9 +67,12 @@ public class IntegrationTestsConfig {
     @MockBean
     public EmailService emailService;
 
+    @MockBean
+    public UserNotValidatedService userNotValidatedService;
+
     @BeforeEach
     void beforeEach() {
-        doNothing().when(emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+        Mockito.when(emailService.sendSimpleMessage(anyString(), anyString(), anyString())).thenReturn(true);
     }
 
     public ObjectMapper mapper = new ObjectMapper().findAndRegisterModules();

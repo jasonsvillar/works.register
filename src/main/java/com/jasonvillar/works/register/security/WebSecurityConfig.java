@@ -75,6 +75,7 @@ public class WebSecurityConfig {
 
         httpSecurity.authorizeHttpRequests(
                 requests -> requests
+                        .requestMatchers(HttpMethod.GET, "/api/v1/user/validate/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/pre-user").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/pre-user/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/basic-authentication").permitAll()

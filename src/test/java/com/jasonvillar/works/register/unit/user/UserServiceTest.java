@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.unit.user;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserRepository;
 import com.jasonvillar.works.register.user.UserService;
+import com.jasonvillar.works.register.user.user_not_validated.UserNotValidatedService;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
     @Mock
@@ -23,6 +26,9 @@ class UserServiceTest {
 
     @InjectMocks
     private UserService service;
+
+    @Mock
+    private UserNotValidatedService userNotValidatedService;
 
     private User entity = User.builder()
             .name("Name")
@@ -204,6 +210,86 @@ class UserServiceTest {
         Assertions.assertThat(userOptional).isPresent();
 
         userOptional = service.getOptionalByNameAndEmail("Random name", "Nonexistent email");
+        Assertions.assertThat(userOptional).isNotPresent();
+    }
+
+    @Test
+    void givenPlainPasswordAndBcrypted_whenPasswordMatchWithActual_thenCheckIsTrue() {
+        String password = "123456";
+        String bcryptPassword = this.service.plainPasswordToBcrypt(password);
+
+        boolean match = this.service.passwordMatchWithActual(password, bcryptPassword);
+        Assertions.assertThat(match).isTrue();
+    }
+
+    @Test
+    void givenPlainPasswordAndBcrypted_whenPasswordMatchWithActual_thenCheckIsFalse() {
+        String password = "123456";
+        String bcryptPassword = this.service.plainPasswordToBcrypt(password);
+
+        boolean match = this.service.passwordMatchWithActual("bad-password", bcryptPassword);
+        Assertions.assertThat(match).isFalse();
+    }
+
+    @Test
+    void generateCodeToUser() {
+        User user = User.builder()
+                .id(1L)
+                .build();
+
+        User userWhitCode = User.builder()
+                .id(1L)
+                .code("123456")
+                .build();
+
+        Mockito.when(userNotValidatedService.makeRandomValidationCode()).thenReturn("123456");
+        Mockito.when(repository.save(any())).thenReturn(userWhitCode);
+
+        user = this.service.generateCodeToUser(user);
+        Assertions.assertThat(user.getCode()).isEqualTo("123456");
+    }
+
+    @Test
+    void updateEmailAndGenerateCodeToUser() {
+        User user = User.builder()
+                .id(1L)
+                .build();
+
+        User userWhitCodeAndEmail = User.builder()
+                .id(1L)
+                .code("123456")
+                .email("new@mail.com")
+                .build();
+
+        Mockito.when(userNotValidatedService.makeRandomValidationCode()).thenReturn("123456");
+        Mockito.when(repository.save(any())).thenReturn(userWhitCodeAndEmail);
+
+        user = this.service.updateEmailAndGenerateCodeToUser(user, "new@mail.com");
+        Assertions.assertThat(user.getCode()).isEqualTo("123456");
+        Assertions.assertThat(user.getEmail()).isEqualTo("new@mail.com");
+    }
+
+    @Test
+    void givenRequest_whenGetOptionalByNameAndEmailAndValidated_thenCheckIfPresent() {
+        Mockito.when(repository.findOptionalByNameAndEmailAndValidated("Name", "test@test.com", true)).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByNameAndEmailAndValidated("Random name", "Nonexistent email", true)).thenReturn(Optional.empty());
+
+        Optional<User> userOptional = service.getOptionalByNameAndEmailAndValidated("Name", "test@test.com", true);
+        Assertions.assertThat(userOptional).isPresent();
+
+        userOptional = service.getOptionalByNameAndEmailAndValidated("Random name", "Nonexistent email", true);
+        Assertions.assertThat(userOptional).isNotPresent();
+    }
+
+    @Test
+    void givenRequest_whenGetOptionalByNameAndEmailAndValidatedAndCode_thenCheckIfPresent() {
+        Mockito.when(repository.findOptionalByNameAndEmailAndValidatedAndCode("Name", "test@test.com", true, "123456")).thenReturn(Optional.of(entity));
+        Mockito.when(repository.findOptionalByNameAndEmailAndValidatedAndCode("Random name", "Nonexistent email", true, "123456")).thenReturn(Optional.empty());
+
+        Optional<User> userOptional = service.getOptionalByNameAndEmailAndValidatedAndCode("Name", "test@test.com", true, "123456");
+        Assertions.assertThat(userOptional).isPresent();
+
+        userOptional = service.getOptionalByNameAndEmailAndValidatedAndCode("Random name", "Nonexistent email", true, "123456");
         Assertions.assertThat(userOptional).isNotPresent();
     }
 }

@@ -1,6 +1,5 @@
 package com.jasonvillar.works.register.unit.user.user_not_validated;
 
-import com.jasonvillar.works.register.email.EmailService;
 import com.jasonvillar.works.register.unit.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserService;
@@ -21,8 +20,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,9 +33,6 @@ class UserNotValidatedControllerTest extends ControllerTestTemplate {
 
     @MockBean
     private UserService userService;
-
-    @MockBean
-    private EmailService emailService;
 
     @BeforeEach
     public void setup() {
@@ -66,10 +61,10 @@ class UserNotValidatedControllerTest extends ControllerTestTemplate {
                 .code("123456")
                 .build();
 
-        Mockito.when(this.userNotValidatedService.makeValidationCodeForUserNotValidated(any())).thenReturn(userNotValidated);
-        Mockito.doNothing().when(this.emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+        Mockito.when(this.userNotValidatedService.makeRandomValidationCode()).thenReturn("123456");
+        Mockito.when(this.userNotValidatedService.sendValidationCode(anyString(), anyString(), anyString(), anyString(), eq(false))).thenReturn(true);
         Mockito.when(this.userNotValidatedService.save(any())).thenReturn(userNotValidated);
-        Mockito.when(this.userService.getOptionalByNameAndEmail(anyString(), anyString())).thenReturn(Optional.empty());
+        Mockito.when(this.userService.getOptionalByNameAndEmailAndValidated(anyString(), anyString(), eq(true))).thenReturn(Optional.empty());
 
         this.mockMvc.perform(post(this.endpointBegin + "/pre-user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -100,10 +95,10 @@ class UserNotValidatedControllerTest extends ControllerTestTemplate {
                 .code("123456")
                 .build();
 
-        Mockito.when(this.userNotValidatedService.makeValidationCodeForUserNotValidated(any())).thenReturn(userNotValidated);
-        Mockito.doNothing().when(this.emailService).sendSimpleMessage(anyString(), anyString(), anyString());
+        Mockito.when(this.userNotValidatedService.makeRandomValidationCode()).thenReturn("123456");
+        Mockito.when(this.userNotValidatedService.sendValidationCode(anyString(), anyString(), anyString(), eq(null), eq(false))).thenReturn(true);
         Mockito.when(this.userNotValidatedService.save(any())).thenReturn(userNotValidated);
-        Mockito.when(this.userService.getOptionalByNameAndEmail(anyString(), anyString())).thenReturn(Optional.empty());
+        Mockito.when(this.userService.getOptionalByNameAndEmailAndValidated(anyString(), anyString(), eq(true))).thenReturn(Optional.empty());
 
         this.mockMvc.perform(post(this.endpointBegin + "/pre-user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -123,7 +118,7 @@ class UserNotValidatedControllerTest extends ControllerTestTemplate {
 
         String requestJson = ow.writeValueAsString(userNotValidatedRequest);
 
-        Mockito.when(this.userService.getOptionalByNameAndEmail(anyString(), anyString())).thenReturn(Optional.of(User.builder().id(1L).build()));
+        Mockito.when(this.userService.getOptionalByNameAndEmailAndValidated(anyString(), anyString(), eq(true))).thenReturn(Optional.of(User.builder().id(1L).build()));
 
         this.mockMvc.perform(post(this.endpointBegin + "/pre-user").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
