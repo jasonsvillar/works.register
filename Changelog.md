@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## [unreleased]
+## [1.2.1]
 
 ### Added
 - Add initial setup for set the password to admin account.
