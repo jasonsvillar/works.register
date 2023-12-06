@@ -75,6 +75,15 @@ public class ServiceService {
         return this.serviceRepository.findAllByNameContainingIgnoreCaseAndUserId(name, userId);
     }
 
+    public List<Service> getListByIdListAndUserIdAndNotInWorkRegister(List<Long> idList, long userId) {
+        return this.serviceRepository.findAllByIdAndUserIdAndServiceNotInWorkRegister(idList, userId);
+    }
+
+    @Transactional
+    public void deleteByServiceList(List<Service> serviceList) {
+        this.serviceRepository.deleteAll(serviceList);
+    }
+
     @Transactional
     public boolean deleteByServiceIdAndUserId(long id, long userId) {
         return this.serviceRepository.deleteByIdAndUserId(id, userId);

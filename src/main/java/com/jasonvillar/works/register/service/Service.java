@@ -27,6 +27,7 @@ public class Service {
         this.user = user;
     }
 
-    @ManyToOne
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
 }

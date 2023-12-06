@@ -1,6 +1,8 @@
 package com.jasonvillar.works.register.service;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.domain.Pageable;
@@ -18,4 +20,13 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     Optional<Service> findOptionalByIdAndUserId(long id, long userId);
     List<Service> findAllByNameContainingIgnoreCaseAndUserId(String name, long userId);
     boolean deleteByIdAndUserId(long id, long userId);
+
+    @Query("SELECT s " +
+            "FROM Service s " +
+            "LEFT JOIN WorkRegister w ON (s.id = w.serviceId) " +
+            "WHERE " +
+            "s.id IN :idList AND " +
+            "s.user.id = :userId AND " +
+            "w.id IS NULL")
+    List<Service> findAllByIdAndUserIdAndServiceNotInWorkRegister(@Param("idList") List<Long> idList, @Param("userId") long userId);
 }

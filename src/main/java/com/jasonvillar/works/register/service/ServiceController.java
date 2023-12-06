@@ -113,15 +113,28 @@ public class ServiceController {
         }
     }
 
-    @DeleteMapping(value = "/service/{serviceId}")
-    public ResponseEntity<Boolean> deleteServiceToUserId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long serviceId) {
+    @DeleteMapping(value = "/service/{id}")
+    public ResponseEntity<Boolean> deleteServiceToUserId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
 
-        boolean deleted = this.service.deleteByServiceIdAndUserId(serviceId, userId);
+        boolean deleted = this.service.deleteByServiceIdAndUserId(id, userId);
         if (deleted) {
             return new ResponseEntity<>(true, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PostMapping(value = "/services/delete")
+    public ResponseEntity<List<ServiceDTO>> deleteServicesBatchToUserId(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody List<Long> serviceIdLongList) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        List<Service> serviceThatCanBeDeleted = this.service.getListByIdListAndUserIdAndNotInWorkRegister(serviceIdLongList, userId);
+
+        this.service.deleteByServiceList(serviceThatCanBeDeleted);
+
+        List<ServiceDTO> serviceListDTO = serviceThatCanBeDeleted.stream().map(this.serviceDTOAdapter).toList();
+
+        return new ResponseEntity<>(serviceListDTO, HttpStatus.OK);
     }
 }

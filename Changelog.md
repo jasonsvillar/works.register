@@ -1,5 +1,16 @@
 # CHANGE LOG
 
+## [unreleased]
+
+### Added
+- New endpoint for bulk delete services.
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [1.2.1]
 
 ### Added
@@ -19,7 +30,7 @@
 ## [1.1.1] - 2023-11-23
 
 ### Added
-- Added Validation code in the url frontend at pre-register user.
+- Added validation code in the url frontend at pre-register user.
 - Added cors for angular frontend on render.com.
 
 ### Changed
