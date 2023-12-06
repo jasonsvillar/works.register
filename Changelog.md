@@ -11,7 +11,7 @@
 
 ### Removed
 
-## [1.2.1]
+## [1.2.1] - 2023-12-05
 
 ### Added
 - Add initial setup for set the password to admin account.
