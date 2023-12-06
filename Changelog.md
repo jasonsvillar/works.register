@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## [unreleased]
+## [1.2.2]
 
 ### Added
 - New endpoint for bulk delete services.
