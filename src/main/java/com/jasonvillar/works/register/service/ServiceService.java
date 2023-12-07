@@ -86,6 +86,6 @@ public class ServiceService {
 
     @Transactional
     public boolean deleteByServiceIdAndUserId(long id, long userId) {
-        return this.serviceRepository.deleteByIdAndUserId(id, userId);
+        return this.serviceRepository.deleteByIdAndUserId(id, userId) > 0;
     }
 }

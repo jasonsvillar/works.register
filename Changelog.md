@@ -7,6 +7,7 @@
 ### Changed
 
 ### Fixed
+- Fix repository for delete user service.
 
 ### Removed
 

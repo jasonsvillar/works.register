@@ -19,7 +19,7 @@ public interface ServiceRepository extends JpaRepository<Service, Long> {
     long count();
     Optional<Service> findOptionalByIdAndUserId(long id, long userId);
     List<Service> findAllByNameContainingIgnoreCaseAndUserId(String name, long userId);
-    boolean deleteByIdAndUserId(long id, long userId);
+    Integer deleteByIdAndUserId(long id, long userId);
 
     @Query("SELECT s " +
             "FROM Service s " +

@@ -181,8 +181,8 @@ class ServiceServiceTest {
 
     @Test
     void deleteByServiceIdAndUserId() {
-        Mockito.when(repository.deleteByIdAndUserId(1, 1)).thenReturn(true);
-        Mockito.when(repository.deleteByIdAndUserId(0, 0)).thenReturn(false);
+        Mockito.when(repository.deleteByIdAndUserId(1, 1)).thenReturn(1);
+        Mockito.when(repository.deleteByIdAndUserId(0, 0)).thenReturn(0);
 
         boolean deleted = service.deleteByServiceIdAndUserId(1, 1);
         Assertions.assertThat(deleted).isTrue();
