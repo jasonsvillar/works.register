@@ -59,19 +59,10 @@ public class JwtTokenProvider {
 
             boolean isInBlacklist = this.jwtBlacklistService.isInBlacklist(jwt);
             return !isInBlacklist;
-        } catch (MalformedJwtException ex) {
-            log.error("Invalid JWT token");
-        } catch (ExpiredJwtException ex) {
-            log.error("Expired JWT token");
-        } catch (UnsupportedJwtException ex) {
-            log.error("Unsupported JWT token");
-        } catch (IllegalArgumentException ex) {
-            log.error("JWT claims string is empty");
-        } catch (SignatureException e) {
-            log.error("there is an error with the signature of you token ");
+        } catch (MalformedJwtException | ExpiredJwtException | UnsupportedJwtException | IllegalArgumentException |
+                 SignatureException ex) {
+            return false;
         }
-
-        return false;
     }
 
     public String getUsername(String jwt) {
