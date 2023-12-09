@@ -9,6 +9,7 @@ import com.jasonvillar.works.register.user.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -48,9 +49,16 @@ public class ServiceController {
     }
 
     @GetMapping(value = "/services/page/{page}/rows/{rows}", produces = "application/json")
-    public ResponseEntity<List<ServiceDTO>> getListService(@AuthenticationPrincipal UserDetails userDetails, @PathVariable int page, @PathVariable int rows) {
+    public ResponseEntity<List<ServiceDTO>> getListService(@AuthenticationPrincipal UserDetails userDetails,
+                                                           @PathVariable int page,
+                                                           @PathVariable int rows,
+                                                           @RequestParam(required = false) Long id,
+                                                           @RequestParam(required = false) String name) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        List<ServiceDTO> listDTO = this.service.getListByUserId(userId, page - 1, rows).stream().map(serviceDTOAdapter).toList();
+
+        Specification<Service> specifications = this.service.makeSpecification(userId, id, name);
+
+        List<ServiceDTO> listDTO = this.service.getListBySpecificationAndPage(specifications, page - 1, rows).stream().map(serviceDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -60,9 +68,14 @@ public class ServiceController {
     }
 
     @GetMapping(value = "/services/row-count", produces = "application/json")
-    public ResponseEntity<Long> getRowCount(@AuthenticationPrincipal UserDetails userDetails) {
+    public ResponseEntity<Long> getRowCount(@AuthenticationPrincipal UserDetails userDetails,
+                                            @RequestParam(required = false) Long id,
+                                            @RequestParam(required = false) String name) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        long rowCount = this.service.getRowCountByUserId(userId);
+
+        Specification<Service> specifications = this.service.makeSpecification(userId, id, name);
+
+        long rowCount = this.service.getRowCountBySpecification(specifications);
 
         return ResponseEntity.ok().body(rowCount);
     }

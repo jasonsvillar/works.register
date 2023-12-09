@@ -15,12 +15,15 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ServiceServiceTest {
@@ -189,5 +192,51 @@ class ServiceServiceTest {
 
         deleted = service.deleteByServiceIdAndUserId(0, 0);
         Assertions.assertThat(deleted).isFalse();
+    }
+
+    @Test
+    void makeSpecification() {
+        Specification<Service> specification = service.makeSpecification(1L, 1L, "Service 1");
+        Assertions.assertThat(specification).isNotNull();
+    }
+
+    @Test
+    void getRowCountBySpecification() {
+        Specification<Service> specification = service.makeSpecification(1L, 1L, "Service 1");
+
+        Mockito.when(repository.count(specification)).thenReturn(1L);
+
+        long count = service.getRowCountBySpecification(specification);
+        Assertions.assertThat(count).isEqualTo(1L);
+    }
+
+    @Test
+    void getListByIdListAndUserIdAndNotInWorkRegister() {
+        Mockito.when(repository.findAllByIdListAndUserIdAndServiceNotInWorkRegister(List.of(1L, 2L), 1L)).thenReturn(
+                List.of(
+                        Service.builder().id(1L).build(),
+                        Service.builder().id(2L).build()
+                )
+        );
+
+        List<Service> serviceList = service.getListByIdListAndUserIdAndNotInWorkRegister(List.of(1L, 2L), 1L);
+
+        Assertions.assertThat(serviceList).hasSize(2);
+    }
+
+    @Test
+    void deleteByServiceList() {
+        Mockito.doNothing().when(repository).deleteAll(any());
+
+        service.deleteByServiceList(
+                List.of(
+                    Service.builder().id(1L).build(),
+                    Service.builder().id(2L).build()
+                )
+        );
+
+        verify(repository, times(1)).deleteAll(
+                any()
+        );
     }
 }

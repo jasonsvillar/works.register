@@ -21,6 +21,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,7 +59,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     @Test
     void givenServices_whenGetRequest_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByUserId(0, 0, 10)).thenReturn(List.of(entity));
+        Mockito.when(service.getListBySpecificationAndPage(any(), eq(0), eq(10))).thenReturn(List.of(entity));
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/page/1/rows/10")
                         .accept(MediaType.APPLICATION_JSON))
@@ -75,7 +77,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
 
     @Test
     void givenServices_whenGetRowCount_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getRowCountByUserId(0)).thenReturn(1L);
+        Mockito.when(service.getRowCountBySpecification(any())).thenReturn(1L);
 
         this.mockMvc.perform(get(this.endpointBegin + "/services/row-count")
                         .accept(MediaType.APPLICATION_JSON))
@@ -124,9 +126,9 @@ class ServiceControllerTest extends ControllerTestTemplate {
     void givenNewService_whenSave_thenCheckIfCreated() throws Exception {
         String requestJson = ow.writeValueAsString(this.request);
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("");
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(any(Service.class))).thenReturn("");
         Mockito.when(userService.getById(0)).thenReturn(userEntity);
-        Mockito.when(service.save(Mockito.any(Service.class))).thenReturn(this.entity);
+        Mockito.when(service.save(any(Service.class))).thenReturn(this.entity);
 
         this.mockMvc.perform(post(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)
@@ -134,7 +136,7 @@ class ServiceControllerTest extends ControllerTestTemplate {
                 )
                 .andExpect(status().isCreated());
 
-        Mockito.when(service.getValidationsMessageWhenCantBeSaved(Mockito.any(Service.class))).thenReturn("name must be unique");
+        Mockito.when(service.getValidationsMessageWhenCantBeSaved(any(Service.class))).thenReturn("name must be unique");
 
         this.mockMvc.perform(post(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson)

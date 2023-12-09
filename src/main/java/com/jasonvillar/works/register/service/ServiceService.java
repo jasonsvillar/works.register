@@ -1,10 +1,10 @@
 package com.jasonvillar.works.register.service;
 
-import com.jasonvillar.works.register.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,9 +15,30 @@ import java.util.Optional;
 public class ServiceService {
     private final ServiceRepository serviceRepository;
 
+    public Specification<Service> makeSpecification(long userId, Long id, String name) {
+        Specification<Service> specifications = ServiceRepository.equalsUserId(userId);
+
+        if (id != null)
+            specifications = specifications.and(ServiceRepository.equalsId(id));
+
+        if (name != null)
+            specifications = specifications.and(ServiceRepository.containsName(name));
+
+        return specifications;
+    }
+
     public List<Service> getList(int pageNumber, int rows) {
         Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
         return this.serviceRepository.findAll(page).stream().toList();
+    }
+
+    public List<Service> getListBySpecificationAndPage(Specification<Service> specification, int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
+        return this.serviceRepository.findAll(specification, page).stream().toList();
+    }
+
+    public long getRowCountBySpecification(Specification<Service> specification) {
+        return this.serviceRepository.count(specification);
     }
 
     public List<Service> getListByUserId(long userId, int pageNumber, int rows) {
@@ -76,7 +97,7 @@ public class ServiceService {
     }
 
     public List<Service> getListByIdListAndUserIdAndNotInWorkRegister(List<Long> idList, long userId) {
-        return this.serviceRepository.findAllByIdAndUserIdAndServiceNotInWorkRegister(idList, userId);
+        return this.serviceRepository.findAllByIdListAndUserIdAndServiceNotInWorkRegister(idList, userId);
     }
 
     @Transactional

@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
@@ -118,5 +120,59 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
 
         service = this.serviceRepository.findOptionalByNameAndUserId("Nonexistent name", 1);
         Assertions.assertThat(service).isNotPresent();
+    }
+
+    @Test
+    void specificationName() {
+        Specification<Service> specificationName = ServiceRepository.containsName("umMy Nam");
+
+        List<Service> serviceList = serviceRepository.findAll(specificationName);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void specificationUserId() {
+        Specification<Service> specificationUserId = ServiceRepository.equalsUserId(this.serviceInDatabase.getUser().getId());
+
+        List<Service> serviceList = serviceRepository.findAll(specificationUserId);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void specificationId() {
+        Specification<Service> specificationId = ServiceRepository.equalsId(this.serviceInDatabase.getId());
+
+        List<Service> serviceList = serviceRepository.findAll(specificationId);
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void specificationNameAndIdAndUserIdWithPage() {
+        Pageable page = PageRequest.of(0, 5, Sort.by("name"));
+
+        Specification<Service> specificationName = ServiceRepository.containsName("umMy Nam");
+        Specification<Service> specificationId = ServiceRepository.equalsId(this.serviceInDatabase.getId());
+        Specification<Service> specificationUserId = ServiceRepository.equalsUserId(this.serviceInDatabase.getUser().getId());
+
+        Specification<Service> allSpecifications =
+                specificationName
+                .and(specificationId)
+                .and(specificationUserId);
+
+        List<Service> serviceList = serviceRepository.findAll(allSpecifications, page).toList();
+
+        Assertions.assertThat(serviceList).isNotEmpty();
+
+
+        Specification<Service> specifications = ServiceRepository.equalsUserId(this.serviceInDatabase.getUser().getId());
+        specifications = specifications.and(ServiceRepository.equalsId(this.serviceInDatabase.getId()));
+        specifications = specifications.and(ServiceRepository.containsName("umMy Nam"));
+
+        serviceList = serviceRepository.findAll(specifications, page).toList();
+
+        Assertions.assertThat(serviceList).isNotEmpty();
     }
 }

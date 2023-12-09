@@ -5,6 +5,7 @@
 ### Added
 
 ### Changed
+- Change endpoint for get services. Now can accept filters by name and id.
 
 ### Fixed
 - Fix repository for delete user service.
