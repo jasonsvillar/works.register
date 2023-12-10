@@ -1,6 +1,7 @@
 package com.jasonvillar.works.register.unit.service;
 
 import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
+import com.jasonvillar.works.register.service.port.in.ServicePutUpdateRequest;
 import com.jasonvillar.works.register.unit.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.service.ServiceController;
@@ -157,6 +158,34 @@ class ServiceControllerTest extends ControllerTestTemplate {
         Mockito.when(service.deleteByServiceIdAndUserId(999L, 0L)).thenReturn(false);
 
         this.mockMvc.perform(delete(this.endpointBegin + "/service/999").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenNewService_whenPutUpdateService_thenCheckStatusIfOk() throws Exception {
+        Mockito.when(service.getOptionalByIdAndUserId(1L, 0L)).thenReturn(Optional.of(entity));
+        Mockito.when(userService.getById(0)).thenReturn(userEntity);
+        Mockito.when(service.save(any())).thenReturn(entity);
+
+        ServicePutUpdateRequest servicePutUpdateRequest = new ServicePutUpdateRequest(1L, "Name");
+        String requestJson = ow.writeValueAsString(servicePutUpdateRequest);
+
+        this.mockMvc.perform(put(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk());
+
+
+        Mockito.when(service.getOptionalByIdAndUserId(999L, 0L)).thenReturn(Optional.empty());
+
+        servicePutUpdateRequest = new ServicePutUpdateRequest(999L, "Name");
+        requestJson = ow.writeValueAsString(servicePutUpdateRequest);
+
+        this.mockMvc.perform(put(this.endpointBegin + "/service").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
                         .with(csrf())
                 )
                 .andExpect(status().isNotFound());

@@ -1,6 +1,7 @@
 package com.jasonvillar.works.register.service;
 
 import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
+import com.jasonvillar.works.register.service.port.in.ServicePutUpdateRequest;
 import com.jasonvillar.works.register.service.port.in.ServiceRequestAdapter;
 import com.jasonvillar.works.register.service.port.out.ServiceDTO;
 import com.jasonvillar.works.register.service.port.out.ServiceDTOAdapter;
@@ -149,5 +150,33 @@ public class ServiceController {
         List<ServiceDTO> serviceListDTO = serviceThatCanBeDeleted.stream().map(this.serviceDTOAdapter).toList();
 
         return new ResponseEntity<>(serviceListDTO, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/service")
+    public ResponseEntity<ServiceDTO> putUpdateService(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ServicePutUpdateRequest servicePutUpdateRequest) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        Optional<Service> serviceOptional = this.service.getOptionalByIdAndUserId(
+                servicePutUpdateRequest.id(),
+                userId
+        );
+
+        if (serviceOptional.isPresent()) {
+            User user = this.userService.getById(userId);
+
+            Service serviceToUpdate = Service.builder()
+                    .id(servicePutUpdateRequest.id())
+                    .name(servicePutUpdateRequest.name())
+                    .user(user)
+                    .build();
+
+            serviceToUpdate = this.service.save(serviceToUpdate);
+
+            ServiceDTO serviceDTO = this.serviceDTOAdapter.apply(serviceToUpdate);
+
+            return new ResponseEntity<>(serviceDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

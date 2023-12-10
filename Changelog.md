@@ -3,6 +3,7 @@
 ## [unreleased]
 
 ### Added
+- New endpoint for put update user service.
 
 ### Changed
 - Change endpoint for get services. Now can accept filters by name and id.
