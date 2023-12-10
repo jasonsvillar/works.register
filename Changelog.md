@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## [unreleased]
+## [1.3]
 
 ### Added
 - New endpoint for put update user service.
