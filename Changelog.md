@@ -3,6 +3,7 @@
 ## [unreleased]
 
 ### Added
+- New endpoint for delete user client.
 
 ### Changed
 - Change endpoint for get clients. Now can accept filters by name and id.

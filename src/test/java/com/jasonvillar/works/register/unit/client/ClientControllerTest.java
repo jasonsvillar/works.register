@@ -22,8 +22,8 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ContextConfiguration(classes = {ClientController.class, ClientRequestAdapter.class, ClientDTOAdapter.class})
@@ -177,5 +177,22 @@ class ClientControllerTest extends ControllerTestTemplate {
                         .with(csrf())
                 )
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void givenNewClient_whenDeleteClient_thenCheckStatusIfOk() throws Exception {
+        Mockito.when(service.deleteByClientIdAndUserId(1L, 0L)).thenReturn(true);
+
+        this.mockMvc.perform(delete(this.endpointBegin + "/client/1").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk());
+
+        Mockito.when(service.deleteByClientIdAndUserId(999L, 0L)).thenReturn(false);
+
+        this.mockMvc.perform(delete(this.endpointBegin + "/client/999").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
     }
 }

@@ -54,4 +54,5 @@ public interface ClientRepository extends JpaRepository<Client, Long>, JpaSpecif
     List<Client> findAllBySurnameContainingIgnoreCaseAndUserId(String surname, long userId);
     List<Client> findAllByIdentificationNumberContainingIgnoreCaseAndUserId(String identificationNumber, long userId);
     List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId(String name, String surname, long userId);
+    Integer deleteByIdAndUserId(long id, long userId);
 }

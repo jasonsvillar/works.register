@@ -149,4 +149,16 @@ public class ClientController {
             return ResponseEntity.badRequest().body(message);
         }
     }
+
+    @DeleteMapping(value = "/client/{id}")
+    public ResponseEntity<Boolean> deleteClientToUserId(@AuthenticationPrincipal UserDetails userDetails, @PathVariable long id) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        boolean deleted = this.service.deleteByClientIdAndUserId(id, userId);
+        if (deleted) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
+        }
+    }
 }

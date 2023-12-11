@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -118,5 +119,10 @@ public class ClientService {
 
     public List<Client> getListByNameLikeAndSurnameLikeAndUserId(String name, String surname, long userId) {
         return this.clientRepository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId(name, surname, userId);
+    }
+
+    @Transactional
+    public boolean deleteByClientIdAndUserId(long id, long userId) {
+        return this.clientRepository.deleteByIdAndUserId(id, userId) > 0;
     }
 }

@@ -271,4 +271,16 @@ class ClientServiceTest {
 
         Assertions.assertThat(clientList).hasSize(2);
     }
+
+    @Test
+    void deleteByClientIdAndUserId() {
+        Mockito.when(repository.deleteByIdAndUserId(1, 1)).thenReturn(1);
+        Mockito.when(repository.deleteByIdAndUserId(0, 0)).thenReturn(0);
+
+        boolean deleted = service.deleteByClientIdAndUserId(1, 1);
+        Assertions.assertThat(deleted).isTrue();
+
+        deleted = service.deleteByClientIdAndUserId(0, 0);
+        Assertions.assertThat(deleted).isFalse();
+    }
 }
