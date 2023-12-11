@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -32,6 +33,9 @@ class ClientControllerTest extends ControllerTestTemplate {
 
     @MockBean
     private SecurityUserDetailsService securityUserDetailsService;
+
+    @MockBean
+    private com.jasonvillar.works.register.user.UserService userService;
 
     private final Client entity = Client.builder()
             .name("Name")
@@ -48,10 +52,19 @@ class ClientControllerTest extends ControllerTestTemplate {
     }
 
     @Test
-    void givenClients_whenGetRequestByUserId_thenCheckIfOk() throws Exception {
-        Mockito.when(service.getListByUserId(0)).thenReturn(List.of(entity));
+    void givenClients_whenGetRequest_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getListBySpecificationAndPage(any(), eq(0), eq(10))).thenReturn(List.of(entity));
 
-        this.mockMvc.perform(get(this.endpointBegin + "/clients")
+        this.mockMvc.perform(get(this.endpointBegin + "/clients/page/1/rows/10")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenClients_whenGetRowCount_thenCheckIfOk() throws Exception {
+        Mockito.when(service.getRowCountBySpecification(any())).thenReturn(1L);
+
+        this.mockMvc.perform(get(this.endpointBegin + "/clients/row-count")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
     }

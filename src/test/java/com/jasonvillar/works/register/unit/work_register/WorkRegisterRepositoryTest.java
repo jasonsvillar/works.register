@@ -65,7 +65,7 @@ class WorkRegisterRepositoryTest extends DataJpaTestTemplate {
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
         this.serviceInDatabase = this.serviceRepository.save(this.serviceInDatabase);
 
-        this.clientInDatabase.setUserId(this.userInDatabase.getId());
+        this.clientInDatabase.setUser(this.userInDatabase);
         this.clientInDatabase = this.clientRepository.save(this.clientInDatabase);
 
         this.workRegisterInDatabase.setUserId(this.userInDatabase.getId());

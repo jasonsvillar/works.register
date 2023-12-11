@@ -1,6 +1,10 @@
 package com.jasonvillar.works.register.client;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,8 +15,35 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepository clientRepository;
 
+    public Specification<Client> makeSpecification(long userId, Long id, String name, String surname, String identificationNumber) {
+        Specification<Client> specifications = ClientRepository.equalsUserId(userId);
+
+        if (id != null)
+            specifications = specifications.and(ClientRepository.equalsId(id));
+
+        if (name != null)
+            specifications = specifications.and(ClientRepository.containsName(name));
+
+        if (surname != null)
+            specifications = specifications.and(ClientRepository.containsSurname(surname));
+
+        if (identificationNumber != null)
+            specifications = specifications.and(ClientRepository.containsIdentificationNumber(identificationNumber));
+
+        return specifications;
+    }
+
     public List<Client> getList() {
         return clientRepository.findAll();
+    }
+
+    public List<Client> getListBySpecificationAndPage(Specification<Client> specification, int pageNumber, int rows) {
+        Pageable page = PageRequest.of(pageNumber, rows, Sort.by("name"));
+        return this.clientRepository.findAll(specification, page).stream().toList();
+    }
+
+    public long getRowCountBySpecification(Specification<Client> specification) {
+        return this.clientRepository.count(specification);
     }
 
     public Client getById(long id) {

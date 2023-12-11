@@ -39,7 +39,7 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "work_register");
         JdbcTestUtils.deleteFromTables(jdbcTemplate, "client");
         this.userInDatabase = this.userRepository.save(this.userInDatabase);
-        this.clientInDatabase.setUserId(this.userInDatabase.getId());
+        this.clientInDatabase.setUser(this.userInDatabase);
         this.clientInDatabase = this.repository.save(this.clientInDatabase);
     }
 

@@ -17,11 +17,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -238,5 +238,22 @@ class ServiceServiceTest {
         verify(repository, times(1)).deleteAll(
                 any()
         );
+    }
+
+    @Test
+    void getListBySpecificationAndPage() {
+        Specification<Service> specification = service.makeSpecification(1L, 1L, "Service 1");
+
+        List<Service> services = new ArrayList<>();
+        services.add(Service.builder().id(1).build());
+        services.add(Service.builder().id(2).build());
+
+        Page<Service> page = new PageImpl<>(services);
+
+        Mockito.when(repository.findAll(eq(specification), any(Pageable.class))).thenReturn(page);
+
+        List<Service> serviceList = service.getListBySpecificationAndPage(specification, 0, 5);
+
+        Assertions.assertThat(serviceList).hasSize(2);
     }
 }

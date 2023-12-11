@@ -5,9 +5,11 @@ import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
+import com.jasonvillar.works.register.user.User;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,16 +34,42 @@ public class ClientController {
 
     private final SecurityUserDetailsService securityUserDetailsService;
 
-    @GetMapping(value = "/clients", produces = "application/json")
-    public ResponseEntity<List<ClientDTO>> getListClient(@AuthenticationPrincipal UserDetails userDetails) {
+    private final com.jasonvillar.works.register.user.UserService userService;
+
+    @GetMapping(value = "/clients/page/{page}/rows/{rows}", produces = "application/json")
+    public ResponseEntity<List<ClientDTO>> getListClient(@AuthenticationPrincipal UserDetails userDetails,
+                                                          @PathVariable int page,
+                                                          @PathVariable int rows,
+                                                          @RequestParam(required = false) Long id,
+                                                          @RequestParam(required = false) String name,
+                                                          @RequestParam(required = false) String surname,
+                                                          @RequestParam(required = false) String identificationNumber) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
-        List<ClientDTO> listDTO = this.service.getListByUserId(userId).stream().map(clientDTOAdapter).toList();
+
+        Specification<Client> specifications = this.service.makeSpecification(userId, id, name, surname, identificationNumber);
+
+        List<ClientDTO> listDTO = this.service.getListBySpecificationAndPage(specifications, page - 1, rows).stream().map(clientDTOAdapter).toList();
 
         if (listDTO.isEmpty()) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.ok().body(listDTO);
         }
+    }
+
+    @GetMapping(value = "/clients/row-count", produces = "application/json")
+    public ResponseEntity<Long> getRowCount(@AuthenticationPrincipal UserDetails userDetails,
+                                            @RequestParam(required = false) Long id,
+                                            @RequestParam(required = false) String name,
+                                            @RequestParam(required = false) String surname,
+                                            @RequestParam(required = false) String identificationNumber) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        Specification<Client> specifications = this.service.makeSpecification(userId, id, name, surname, identificationNumber);
+
+        long rowCount = this.service.getRowCountBySpecification(specifications);
+
+        return ResponseEntity.ok().body(rowCount);
     }
 
     @GetMapping(value = "/client/{id}", produces = "application/json")
@@ -107,11 +135,13 @@ public class ClientController {
     @PostMapping(value = "/client")
     public ResponseEntity<Object> saveClient(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ClientRequest request) {
         long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+        User user = this.userService.getById(userId);
+
         Client entity = this.clientRequestAdapter.toEntity(request);
         String message = this.service.getValidationsMessageWhenCantBeSaved(entity, userId);
 
         if (message.isEmpty()) {
-            entity.setUserId(userId);
+            entity.setUser(user);
             entity = this.service.save(entity);
             ClientDTO dto = this.clientDTOAdapter.apply(entity);
             return new ResponseEntity<>(dto, HttpStatus.CREATED);

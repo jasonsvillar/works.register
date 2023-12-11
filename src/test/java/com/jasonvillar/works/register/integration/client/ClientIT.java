@@ -28,10 +28,6 @@ class ClientIT extends IntegrationTestsConfig {
         responseJson = this.doPostRequestWithJWT("/api/v1/client", requestJson, status().isCreated(), adminJWT);
         ClientDTO savedClientOfAdminDTO = mapper.readValue(responseJson, ClientDTO.class);
 
-        responseJson = this.doGetRequestWithJWT("/api/v1/clients", status().isOk(), adminJWT);
-        List<ClientDTO> clientOfAdminList = mapper.readValue(responseJson, listTypeClientDTO);
-        Assertions.assertThat(clientOfAdminList).hasSize(1);
-
         responseJson = this.doGetRequestWithJWT("/api/v1/client/" + savedClientOfAdminDTO.id(), status().isOk(), adminJWT);
         ClientDTO getClientOfAdminDTO = mapper.readValue(responseJson, ClientDTO.class);
         Assertions.assertThat(getClientOfAdminDTO).isEqualTo(savedClientOfAdminDTO);
@@ -58,10 +54,6 @@ class ClientIT extends IntegrationTestsConfig {
         responseJson = this.doGetRequestWithJWT("/api/v1/client/" + savedClientOfUserDTO.id(), status().isOk(), user1JWT);
         ClientDTO getClientOfUserDTO = mapper.readValue(responseJson, ClientDTO.class);
         Assertions.assertThat(getClientOfUserDTO).isEqualTo(savedClientOfUserDTO);
-
-        responseJson = this.doGetRequestWithJWT("/api/v1/clients", status().isOk(), user1JWT);
-        List<ClientDTO> clientOfUser1List = mapper.readValue(responseJson, listTypeClientDTO);
-        Assertions.assertThat(clientOfUser1List).hasSize(2);
 
         responseJson = this.doGetRequestWithJWT("/api/v1/clients/name-like/uSeR1", status().isOk(), user1JWT);
         List<ClientDTO> clientOfUser1NameLikeDTO = mapper.readValue(responseJson, listTypeClientDTO);

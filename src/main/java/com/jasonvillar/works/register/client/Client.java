@@ -1,5 +1,6 @@
 package com.jasonvillar.works.register.client;
 
+import com.jasonvillar.works.register.user.User;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,13 +23,16 @@ public class Client {
 
     private String identificationNumber;
 
-    private Long userId;
-
     @Builder
-    public Client(String name, String surname, String identificationNumber, long userId) {
+    public Client(long id, String name, String surname, String identificationNumber, User user) {
+        this.id = id;
         this.name = name;
         this.surname = surname;
         this.identificationNumber = identificationNumber;
-        this.userId = userId;
+        this.user = user;
     }
+
+    @OneToOne
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }

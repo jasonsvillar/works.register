@@ -5,12 +5,13 @@
 ### Added
 
 ### Changed
+- Change endpoint for get clients. Now can accept filters by name and id.
 
 ### Fixed
 
 ### Removed
 
-## [1.3]
+## [1.3] - 2023-12-09
 
 ### Added
 - New endpoint for put update user service.
@@ -23,7 +24,7 @@
 
 ### Removed
 
-## [1.2.2]
+## [1.2.2] - 2023-12-05
 
 ### Added
 - New endpoint for bulk delete services.

@@ -4,6 +4,6 @@ public record ClientDTO(
         long id,
         String name,
         String surname,
-        String dni
+        String identificationNumber
 ) {
 }

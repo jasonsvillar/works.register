@@ -3,6 +3,7 @@ package com.jasonvillar.works.register.unit.client;
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.client.ClientRepository;
 import com.jasonvillar.works.register.client.ClientService;
+import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.user.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,11 +14,17 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
@@ -37,7 +44,7 @@ class ClientServiceTest {
             .name("Name")
             .surname("Surname")
             .identificationNumber("11222333")
-            .userId(this.userInDatabase.getId())
+            .user(this.userInDatabase)
             .build();
 
     @BeforeEach
@@ -230,5 +237,38 @@ class ClientServiceTest {
 
         Assertions.assertThat(list).isNotEmpty();
         Assertions.assertThat(list.get(0).getClass()).isEqualTo(Client.class);
+    }
+
+    @Test
+    void makeSpecification() {
+        Specification<Client> specification = service.makeSpecification(1L, 1L, "Client 1 name", "surname", "11.222.333");
+        Assertions.assertThat(specification).isNotNull();
+    }
+
+    @Test
+    void getRowCountBySpecification() {
+        Specification<Client> specification = service.makeSpecification(1L, 1L, "Client 1 name", "surname", "11.222.333");
+
+        Mockito.when(repository.count(specification)).thenReturn(1L);
+
+        long count = service.getRowCountBySpecification(specification);
+        Assertions.assertThat(count).isEqualTo(1L);
+    }
+
+    @Test
+    void getListBySpecificationAndPage() {
+        Specification<Client> specification = service.makeSpecification(1L, 1L, "Client 1 name", "surname", "11.222.333");
+
+        List<Client> clients = new ArrayList<>();
+        clients.add(Client.builder().id(1).build());
+        clients.add(Client.builder().id(2).build());
+
+        Page<Client> page = new PageImpl<>(clients);
+
+        Mockito.when(repository.findAll(eq(specification), any(Pageable.class))).thenReturn(page);
+
+        List<Client> clientList = service.getListBySpecificationAndPage(specification, 0, 5);
+
+        Assertions.assertThat(clientList).hasSize(2);
     }
 }
