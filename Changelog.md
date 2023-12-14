@@ -4,6 +4,7 @@
 
 ### Added
 - New endpoint for delete user client.
+- New endpoint for bulk delete clients.
 
 ### Changed
 - Change endpoint for get clients. Now can accept filters by name and id.

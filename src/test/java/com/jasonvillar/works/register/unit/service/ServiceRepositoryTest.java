@@ -1,9 +1,13 @@
 package com.jasonvillar.works.register.unit.service;
 
+import com.jasonvillar.works.register.client.Client;
+import com.jasonvillar.works.register.client.ClientRepository;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.service.Service;
 import com.jasonvillar.works.register.service.ServiceRepository;
 import com.jasonvillar.works.register.user.User;
+import com.jasonvillar.works.register.work_register.WorkRegister;
+import com.jasonvillar.works.register.work_register.WorkRegisterRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,12 +20,22 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 class ServiceRepositoryTest extends DataJpaTestTemplate {
     @Autowired
     ServiceRepository serviceRepository;
+
+    @Autowired
+    WorkRegisterRepository workRegisterRepository;
+
+    @Autowired
+    ClientRepository clientRepository;
 
     User adminUser = User.builder().id(1L).name("Admin").validated(true).build();
 
@@ -174,5 +188,37 @@ class ServiceRepositoryTest extends DataJpaTestTemplate {
         serviceList = serviceRepository.findAll(specifications, page).toList();
 
         Assertions.assertThat(serviceList).isNotEmpty();
+    }
+
+    @Test
+    void findAllByIdListAndUserIdAndServiceNotInWorkRegister() {
+        Client client = Client.builder()
+                .user(this.adminUser)
+                .identificationNumber("11222333")
+                .name("Client name")
+                .surname("Client surname")
+                .build();
+
+        client = clientRepository.save(client);
+
+        Service service2 = this.serviceRepository.save(Service.builder().name("Service 2").user(this.adminUser).build());
+
+        workRegisterRepository.save(
+          WorkRegister.builder()
+                  .serviceId(service2.getId())
+                  .userId(this.adminUser.getId())
+                  .title("Some work")
+                  .dateFrom(LocalDate.now())
+                  .timeFrom(LocalTime.now())
+                  .dateTo(LocalDate.now())
+                  .timeTo(LocalTime.now())
+                  .payment(BigDecimal.valueOf(100))
+                  .clientId(client.getId())
+                  .build()
+        );
+
+        List<Service> serviceList = serviceRepository.findAllByIdListAndUserIdAndServiceNotInWorkRegister(List.of(this.serviceInDatabase.getId(), service2.getId()), 1L);
+
+        Assertions.assertThat(serviceList).hasSize(1);
     }
 }

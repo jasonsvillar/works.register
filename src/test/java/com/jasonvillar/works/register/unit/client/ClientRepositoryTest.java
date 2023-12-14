@@ -2,9 +2,13 @@ package com.jasonvillar.works.register.unit.client;
 
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.client.ClientRepository;
+import com.jasonvillar.works.register.service.Service;
+import com.jasonvillar.works.register.service.ServiceRepository;
 import com.jasonvillar.works.register.unit.configs_for_tests.repositories.DataJpaTestTemplate;
 import com.jasonvillar.works.register.user.User;
 import com.jasonvillar.works.register.user.UserRepository;
+import com.jasonvillar.works.register.work_register.WorkRegister;
+import com.jasonvillar.works.register.work_register.WorkRegisterRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.jdbc.JdbcTestUtils;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,6 +28,12 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    ServiceRepository serviceRepository;
+
+    @Autowired
+    WorkRegisterRepository workRegisterRepository;
 
     private User userInDatabase = User.builder()
             .name("Dummy name")
@@ -188,5 +201,37 @@ class ClientRepositoryTest extends DataJpaTestTemplate {
 
         entity = this.repository.findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId("dummy nam", "dummy surnam", 0);
         Assertions.assertThat(entity).isEmpty();
+    }
+
+    @Test
+    void findAllByIdListAndUserIdAndClientNotInWorkRegister() {
+        Service service = this.serviceRepository.save(Service.builder().name("Service name").user(this.userInDatabase).build());
+
+        Client client2 = repository.save(
+                Client.builder()
+                        .name("Client name")
+                        .surname("Client surname")
+                        .identificationNumber("22333444")
+                        .user(this.userInDatabase)
+                        .build()
+        );
+
+        workRegisterRepository.save(
+                WorkRegister.builder()
+                        .serviceId(service.getId())
+                        .userId(this.userInDatabase.getId())
+                        .title("Some work")
+                        .dateFrom(LocalDate.now())
+                        .timeFrom(LocalTime.now())
+                        .dateTo(LocalDate.now())
+                        .timeTo(LocalTime.now())
+                        .payment(BigDecimal.valueOf(100))
+                        .clientId(client2.getId())
+                        .build()
+        );
+
+        List<Client> clientList = repository.findAllByIdListAndUserIdAndClientNotInWorkRegister(List.of(this.clientInDatabase.getId(), client2.getId()), this.userInDatabase.getId());
+
+        Assertions.assertThat(clientList).hasSize(1);
     }
 }

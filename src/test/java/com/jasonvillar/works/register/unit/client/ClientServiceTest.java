@@ -25,6 +25,8 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 class ClientServiceTest {
@@ -282,5 +284,35 @@ class ClientServiceTest {
 
         deleted = service.deleteByClientIdAndUserId(0, 0);
         Assertions.assertThat(deleted).isFalse();
+    }
+
+    @Test
+    void getListByIdListAndUserIdAndNotInWorkRegister() {
+        Mockito.when(repository.findAllByIdListAndUserIdAndClientNotInWorkRegister(List.of(1L, 2L), 1L)).thenReturn(
+                List.of(
+                        Client.builder().id(1L).build(),
+                        Client.builder().id(2L).build()
+                )
+        );
+
+        List<Client> clientList = service.getListByIdListAndUserIdAndNotInWorkRegister(List.of(1L, 2L), 1L);
+
+        Assertions.assertThat(clientList).hasSize(2);
+    }
+
+    @Test
+    void deleteByClientList() {
+        Mockito.doNothing().when(repository).deleteAll(any());
+
+        service.deleteByClientList(
+                List.of(
+                        Client.builder().id(1L).build(),
+                        Client.builder().id(2L).build()
+                )
+        );
+
+        verify(repository, times(1)).deleteAll(
+                any()
+        );
     }
 }

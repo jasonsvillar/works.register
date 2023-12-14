@@ -3,6 +3,8 @@ package com.jasonvillar.works.register.client;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -55,4 +57,13 @@ public interface ClientRepository extends JpaRepository<Client, Long>, JpaSpecif
     List<Client> findAllByIdentificationNumberContainingIgnoreCaseAndUserId(String identificationNumber, long userId);
     List<Client> findAllByNameContainingIgnoreCaseAndSurnameContainingIgnoreCaseAndUserId(String name, String surname, long userId);
     Integer deleteByIdAndUserId(long id, long userId);
+
+    @Query("SELECT c " +
+            "FROM Client c " +
+            "LEFT JOIN WorkRegister w ON (c.id = w.clientId) " +
+            "WHERE " +
+            "c.id IN :idList AND " +
+            "c.user.id = :userId AND " +
+            "w.id IS NULL")
+    List<Client> findAllByIdListAndUserIdAndClientNotInWorkRegister(@Param("idList") List<Long> idList, @Param("userId") long userId);
 }

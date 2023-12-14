@@ -161,4 +161,17 @@ public class ClientController {
             return new ResponseEntity<>(false, HttpStatus.NOT_FOUND);
         }
     }
+
+    @PostMapping(value = "/clients/delete")
+    public ResponseEntity<List<ClientDTO>> deleteClientsBatchToUserId(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody List<Long> clientIdLongList) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        List<Client> clientThatCanBeDeleted = this.service.getListByIdListAndUserIdAndNotInWorkRegister(clientIdLongList, userId);
+
+        this.service.deleteByClientList(clientThatCanBeDeleted);
+
+        List<ClientDTO> clientListDTO = clientThatCanBeDeleted.stream().map(this.clientDTOAdapter).toList();
+
+        return new ResponseEntity<>(clientListDTO, HttpStatus.OK);
+    }
 }

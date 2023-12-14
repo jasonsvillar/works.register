@@ -125,4 +125,13 @@ public class ClientService {
     public boolean deleteByClientIdAndUserId(long id, long userId) {
         return this.clientRepository.deleteByIdAndUserId(id, userId) > 0;
     }
+
+    public List<Client> getListByIdListAndUserIdAndNotInWorkRegister(List<Long> idList, long userId) {
+        return this.clientRepository.findAllByIdListAndUserIdAndClientNotInWorkRegister(idList, userId);
+    }
+
+    @Transactional
+    public void deleteByClientList(List<Client> clientList) {
+        this.clientRepository.deleteAll(clientList);
+    }
 }
