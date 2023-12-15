@@ -1,6 +1,7 @@
 package com.jasonvillar.works.register.client;
 
 import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
+import com.jasonvillar.works.register.client.port.in.ClientPutUpdateRequest;
 import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.client.port.out.ClientDTO;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
@@ -173,5 +174,35 @@ public class ClientController {
         List<ClientDTO> clientListDTO = clientThatCanBeDeleted.stream().map(this.clientDTOAdapter).toList();
 
         return new ResponseEntity<>(clientListDTO, HttpStatus.OK);
+    }
+
+    @PutMapping(value = "/client")
+    public ResponseEntity<ClientDTO> putUpdateClient(@AuthenticationPrincipal UserDetails userDetails, @Valid @RequestBody ClientPutUpdateRequest clientPutUpdateRequest) {
+        long userId = this.securityUserDetailsService.getAuthenticatedUserId(userDetails);
+
+        Optional<Client> clientOptional = this.service.getOptionalByIdAndUserId(
+                clientPutUpdateRequest.id(),
+                userId
+        );
+
+        if (clientOptional.isPresent()) {
+            User user = this.userService.getById(userId);
+
+            Client clientToUpdate = Client.builder()
+                    .id(clientPutUpdateRequest.id())
+                    .name(clientPutUpdateRequest.name())
+                    .surname(clientPutUpdateRequest.surname())
+                    .identificationNumber(clientPutUpdateRequest.identificationNumber())
+                    .user(user)
+                    .build();
+
+            clientToUpdate = this.service.save(clientToUpdate);
+
+            ClientDTO clientDTO = this.clientDTOAdapter.apply(clientToUpdate);
+
+            return new ResponseEntity<>(clientDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }

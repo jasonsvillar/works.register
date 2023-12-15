@@ -4,10 +4,12 @@ import com.jasonvillar.works.register.authentication.SecurityUserDetailsService;
 import com.jasonvillar.works.register.client.Client;
 import com.jasonvillar.works.register.client.ClientController;
 import com.jasonvillar.works.register.client.ClientService;
+import com.jasonvillar.works.register.client.port.in.ClientPutUpdateRequest;
 import com.jasonvillar.works.register.client.port.in.ClientRequestAdapter;
 import com.jasonvillar.works.register.unit.configs_for_tests.controllers.ControllerTestTemplate;
 import com.jasonvillar.works.register.client.port.out.ClientDTOAdapter;
 import com.jasonvillar.works.register.client.port.in.ClientRequest;
+import com.jasonvillar.works.register.user.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,10 +39,13 @@ class ClientControllerTest extends ControllerTestTemplate {
     @MockBean
     private com.jasonvillar.works.register.user.UserService userService;
 
+    User user0 = User.builder().id(0).build();
+
     private final Client entity = Client.builder()
             .name("Name")
             .surname("Surname")
             .identificationNumber("11222333")
+            .user(this.user0)
             .build();
 
     private final ClientRequest request = new ClientRequest("Name", "Surname", "11222333");
@@ -191,6 +196,34 @@ class ClientControllerTest extends ControllerTestTemplate {
         Mockito.when(service.deleteByClientIdAndUserId(999L, 0L)).thenReturn(false);
 
         this.mockMvc.perform(delete(this.endpointBegin + "/client/999").contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
+                )
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void givenNewService_whenPutUpdateClient_thenCheckStatusIfOk() throws Exception {
+        Mockito.when(service.getOptionalByIdAndUserId(1L, 0L)).thenReturn(Optional.of(entity));
+        Mockito.when(userService.getById(0)).thenReturn(user0);
+        Mockito.when(service.save(any())).thenReturn(entity);
+
+        ClientPutUpdateRequest clientPutUpdateRequest = new ClientPutUpdateRequest(1L, "Name", "Surname", "88888888");
+        String requestJson = ow.writeValueAsString(clientPutUpdateRequest);
+
+        this.mockMvc.perform(put(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
+                        .with(csrf())
+                )
+                .andExpect(status().isOk());
+
+
+        Mockito.when(service.getOptionalByIdAndUserId(999L, 0L)).thenReturn(Optional.empty());
+
+        clientPutUpdateRequest = new ClientPutUpdateRequest(999L, "Name", "Surname", "77777777");
+        requestJson = ow.writeValueAsString(clientPutUpdateRequest);
+
+        this.mockMvc.perform(put(this.endpointBegin + "/client").contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson)
                         .with(csrf())
                 )
                 .andExpect(status().isNotFound());
