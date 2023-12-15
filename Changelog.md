@@ -1,6 +1,6 @@
 # CHANGE LOG
 
-## [unreleased]
+## [1.4] - 2023-12-15
 
 ### Added
 - New endpoint for delete user client.
