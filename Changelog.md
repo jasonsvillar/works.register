@@ -1,5 +1,15 @@
 # CHANGE LOG
 
+## [unreleased] - 2023-12-XX
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
 ## [1.4] - 2023-12-15
 
 ### Added

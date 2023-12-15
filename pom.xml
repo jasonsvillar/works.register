@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.jasonvillar</groupId>
 	<artifactId>works-register-api</artifactId>
-	<version>1.4</version>
+	<version>unreleased</version>
 	<name>works.register</name>
 	<description>Api to Register User's Works</description>
 	<properties>
